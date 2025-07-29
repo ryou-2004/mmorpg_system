@@ -1,4 +1,4 @@
-class Admin::DashboardController < ApplicationController
+class Admin::DashboardsController < ApplicationController
   include Authenticable
 
   def show
@@ -8,7 +8,16 @@ class Admin::DashboardController < ApplicationController
         active_admin_users: AdminUser.active.count,
         inactive_admin_users: AdminUser.inactive.count,
         total_permissions: AdminPermission.count,
-        active_permissions: AdminPermission.active.count
+        active_permissions: AdminPermission.active.count,
+        total_users: User.count,
+        active_users: User.active.count,
+        total_players: Player.count,
+        active_players: Player.active.count,
+        total_job_classes: JobClass.count,
+        active_job_classes: JobClass.active.count,
+        basic_jobs: JobClass.basic.count,
+        advanced_jobs: JobClass.advanced.count,
+        special_jobs: JobClass.special.count
       },
       recent_logins: recent_admin_logins,
       system_info: {
@@ -23,6 +32,12 @@ class Admin::DashboardController < ApplicationController
         role: current_user.role,
         last_login_at: current_user.last_login_at,
         permissions_count: current_user.admin_permissions.active.count
+      },
+      job_classes: JobClass.active.select(:id, :name, :job_type, :max_level, :required_level),
+      recent_activity: {
+        new_users_today: User.where('created_at >= ?', Date.current).count,
+        new_players_today: Player.where('created_at >= ?', Date.current).count,
+        active_players_today: Player.where('last_login_at >= ?', Date.current).count
       }
     }
 
