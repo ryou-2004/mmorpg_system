@@ -13,7 +13,6 @@ class Admin::JobClassesController < ApplicationController
           job_type: job_class.job_type,
           max_level: job_class.max_level,
           experience_multiplier: job_class.exp_multiplier,
-          description: job_class.description,
           created_at: job_class.created_at,
           players_count: job_class.player_job_classes.count
         }
