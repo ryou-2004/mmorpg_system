@@ -1,24 +1,28 @@
-# README
+# MMORPG System
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+セミリアルタイム+ポジション制バトルシステムを持つMMORPGのバックエンドAPI
 
-Things you may want to cover:
+## 技術スタック
 
-* Ruby version
+* Ruby 3.3+
+* Rails 8.0 (API mode)
+* SQLite3 (開発環境)
+* ActionCable (リアルタイム通信)
+* bcrypt (パスワード認証)
 
-* System dependencies
+## セットアップ
 
-* Configuration
+```bash
+bundle install
+rails db:create
+rails db:migrate
+rails db:seed
+```
 
-* Database creation
+## 機能
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- 管理者アカウント管理
+- プレイヤーアカウント管理
+- リアルタイム戦闘システム
+- ポジション制バトル
+- スキル・アイテムシステム
