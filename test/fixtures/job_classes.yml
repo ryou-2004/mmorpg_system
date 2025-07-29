@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  description: MyText
+  job_type: MyString
+  required_level: 1
+  max_level: 1
+  exp_multiplier: 9.99
+
+two:
+  name: MyString
+  description: MyText
+  job_type: MyString
+  required_level: 1
+  max_level: 1
+  exp_multiplier: 9.99

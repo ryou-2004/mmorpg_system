@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
     resource :session, only: [:show, :create, :destroy]
+    resource :dashboard, only: [:show]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
