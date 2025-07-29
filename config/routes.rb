@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resource :dashboard, only: [:show]
     resources :users, only: [:index]
     resources :players, only: [:index]
+    resources :job_classes, only: [:index]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
