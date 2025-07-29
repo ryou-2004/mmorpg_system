@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_114733) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_29_122651) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -46,7 +46,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_114733) do
     t.string "name", null: false
     t.text "description"
     t.string "job_type", null: false
-    t.integer "required_level", default: 1, null: false
     t.integer "max_level", default: 50, null: false
     t.decimal "exp_multiplier", precision: 3, scale: 1, default: "1.0", null: false
     t.boolean "active", default: true, null: false
@@ -55,7 +54,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_114733) do
     t.index ["active"], name: "index_job_classes_on_active"
     t.index ["job_type"], name: "index_job_classes_on_job_type"
     t.index ["name"], name: "index_job_classes_on_name", unique: true
-    t.index ["required_level"], name: "index_job_classes_on_required_level"
   end
 
   create_table "player_job_classes", force: :cascade do |t|

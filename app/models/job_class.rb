@@ -4,11 +4,8 @@ class JobClass < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
   validates :job_type, presence: true, inclusion: { in: %w[basic advanced special] }
-  validates :required_level, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
   validates :max_level, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
   validates :exp_multiplier, presence: true, numericality: { greater_than: 0 }
-
-  validate :max_level_greater_than_required_level
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
@@ -42,13 +39,4 @@ class JobClass < ApplicationRecord
     (base_exp * exp_multiplier).to_i
   end
 
-  private
-
-  def max_level_greater_than_required_level
-    return unless max_level && required_level
-    
-    if max_level <= required_level
-      errors.add(:max_level, 'は必要レベルより大きい値である必要があります')
-    end
-  end
 end
