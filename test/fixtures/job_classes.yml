@@ -1,17 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
-  job_type: MyString
-  required_level: 1
-  max_level: 1
-  exp_multiplier: 9.99
+warrior:
+  name: 戦士
+  description: 剣と盾を使った近接戦闘のエキスパート
+  job_type: basic
+  max_level: 50
+  exp_multiplier: 1.0
 
-two:
-  name: MyString
-  description: MyText
-  job_type: MyString
-  required_level: 1
-  max_level: 1
-  exp_multiplier: 9.99
+mage:
+  name: 魔法使い
+  description: 強力な攻撃魔法を操る魔術師
+  job_type: basic
+  max_level: 50
+  exp_multiplier: 1.2

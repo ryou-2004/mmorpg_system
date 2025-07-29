@@ -22,18 +22,18 @@ module Authenticable
   end
 
   def extract_token_from_header
-    auth_header = request.headers['Authorization']
-    return nil unless auth_header&.start_with?('Bearer ')
-    
-    auth_header.split(' ').last
+    auth_header = request.headers["Authorization"]
+    return nil unless auth_header&.start_with?("Bearer ")
+
+    auth_header.split(" ").last
   end
 
   def find_user_from_token(decoded_token)
-    user_type = decoded_token['user_type']
-    user_id = decoded_token['user_id']
-    
+    user_type = decoded_token["user_type"]
+    user_id = decoded_token["user_id"]
+
     case user_type
-    when 'AdminUser'
+    when "AdminUser"
       AdminUser.find_by(id: user_id)
     else
       nil
@@ -41,12 +41,12 @@ module Authenticable
   end
 
   def render_unauthorized
-    render json: { error: '認証が必要です' }, status: :unauthorized
+    render json: { error: "認証が必要です" }, status: :unauthorized
   end
 
   def require_permission(action, resource_type, resource_id = nil)
     unless current_user.can?(action.to_s, resource_type, resource_id)
-      render json: { error: '権限がありません' }, status: :forbidden
+      render json: { error: "権限がありません" }, status: :forbidden
     end
   end
 end

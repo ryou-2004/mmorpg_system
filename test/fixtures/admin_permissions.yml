@@ -1,17 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  admin_user: one
-  resource_type: MyString
-  resource_id: 1
-  action: MyString
-  granted_at: 2025-07-29 20:18:44
-  granted_by: one
+admin_all_permission:
+  admin_user: admin
+  resource_type: all
+  resource_id: 
+  action: manage
+  granted_at: <%= 1.week.ago %>
+  granted_by: admin
+  active: true
 
-two:
-  admin_user: two
-  resource_type: MyString
-  resource_id: 1
-  action: MyString
-  granted_at: 2025-07-29 20:18:44
-  granted_by: two
+moderator_read_permission:
+  admin_user: moderator
+  resource_type: User
+  resource_id: 
+  action: read
+  granted_at: <%= 1.week.ago %>
+  granted_by: admin
+  active: true

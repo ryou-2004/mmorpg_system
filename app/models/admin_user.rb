@@ -1,9 +1,9 @@
 class AdminUser < ApplicationRecord
   include JwtAuthenticable
-  
+
   has_secure_password
   has_many :admin_permissions, dependent: :destroy
-  has_many :granted_permissions, class_name: 'AdminPermission', foreign_key: 'granted_by_id'
+  has_many :granted_permissions, class_name: "AdminPermission", foreign_key: "granted_by_id"
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :name, presence: true, length: { minimum: 2, maximum: 50 }
@@ -13,15 +13,15 @@ class AdminUser < ApplicationRecord
   scope :inactive, -> { where(active: false) }
 
   def super_admin?
-    role == 'super_admin'
+    role == "super_admin"
   end
 
   def admin?
-    role == 'admin'
+    role == "admin"
   end
 
   def moderator?
-    role == 'moderator'
+    role == "moderator"
   end
 
   def update_last_login!
@@ -38,14 +38,14 @@ class AdminUser < ApplicationRecord
 
   def can?(action, resource_type, resource_id = nil)
     return true if super_admin?
-    
+
     admin_permissions.active
                     .for_resource(resource_type, resource_id)
-                    .with_action([action, 'manage'])
+                    .with_action([ action, "manage" ])
                     .exists? ||
     admin_permissions.active
                     .for_resource(resource_type, nil)
-                    .with_action([action, 'manage'])
+                    .with_action([ action, "manage" ])
                     .exists?
   end
 

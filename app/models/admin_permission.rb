@@ -1,6 +1,6 @@
 class AdminPermission < ApplicationRecord
   belongs_to :admin_user
-  belongs_to :granted_by, class_name: 'AdminUser'
+  belongs_to :granted_by, class_name: "AdminUser"
 
   ACTIONS = %w[index show create update destroy manage].freeze
 
@@ -9,7 +9,7 @@ class AdminPermission < ApplicationRecord
   validates :granted_at, presence: true
 
   scope :active, -> { where(active: true) }
-  scope :for_resource, ->(resource_type, resource_id = nil) { 
+  scope :for_resource, ->(resource_type, resource_id = nil) {
     where(resource_type: resource_type, resource_id: resource_id)
   }
   scope :with_action, ->(action) { where(action: action) }

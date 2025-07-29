@@ -1,8 +1,8 @@
 module JwtAuthenticable
   extend ActiveSupport::Concern
 
-  JWT_SECRET = Rails.application.credentials.secret_key_base || 'fallback_secret'
-  ALGORITHM = 'HS256'
+  JWT_SECRET = Rails.application.credentials.secret_key_base || "fallback_secret"
+  ALGORITHM = "HS256"
 
   class_methods do
     def encode_token(payload)

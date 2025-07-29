@@ -1,6 +1,6 @@
 class Admin::JobClassesController < ApplicationController
   before_action :authenticate_admin_user!
-  
+
   def index
     job_classes = JobClass.includes(:player_job_classes)
                          .order(:job_type, :id)

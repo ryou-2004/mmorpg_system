@@ -10,9 +10,9 @@ class JobClass < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
   scope :by_type, ->(job_type) { where(job_type: job_type) }
-  scope :basic, -> { where(job_type: 'basic') }
-  scope :advanced, -> { where(job_type: 'advanced') }
-  scope :special, -> { where(job_type: 'special') }
+  scope :basic, -> { where(job_type: "basic") }
+  scope :advanced, -> { where(job_type: "advanced") }
+  scope :special, -> { where(job_type: "special") }
 
   def deactivate!
     update!(active: false)
@@ -23,20 +23,19 @@ class JobClass < ApplicationRecord
   end
 
   def basic?
-    job_type == 'basic'
+    job_type == "basic"
   end
 
   def advanced?
-    job_type == 'advanced'
+    job_type == "advanced"
   end
 
   def special?
-    job_type == 'special'
+    job_type == "special"
   end
 
   def calculate_required_exp(level)
     base_exp = level * 100
     (base_exp * exp_multiplier).to_i
   end
-
 end

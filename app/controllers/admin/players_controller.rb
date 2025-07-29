@@ -1,6 +1,6 @@
 class Admin::PlayersController < ApplicationController
   before_action :authenticate_admin_user!
-  
+
   def index
     players = Player.includes(:user, player_job_classes: :job_class)
                    .order(created_at: :desc)

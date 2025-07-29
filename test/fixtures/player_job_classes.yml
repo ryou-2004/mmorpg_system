@@ -1,17 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  player: one
-  job_class: one
-  level: 1
-  experience: 1
-  active: false
-  unlocked_at: 2025-07-29 20:47:33
+warrior_player_one:
+  player: player_one
+  job_class: warrior
+  level: 15
+  experience: 2500
+  active: true
+  unlocked_at: <%= 1.week.ago %>
 
-two:
-  player: two
-  job_class: two
-  level: 1
-  experience: 1
-  active: false
-  unlocked_at: 2025-07-29 20:47:33
+mage_player_two:
+  player: player_two
+  job_class: mage
+  level: 25
+  experience: 5000
+  active: true
+  unlocked_at: <%= 1.week.ago %>
