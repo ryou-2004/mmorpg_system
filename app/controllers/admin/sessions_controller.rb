@@ -1,16 +1,14 @@
 class Admin::SessionsController < ApplicationController
-  include Authenticable
-
-  skip_before_action :authenticate_request, only: [ :create ]
 
   def show
+    authenticate_admin_user!
     render json: {
       admin_user: {
-        id: current_user.id,
-        email: current_user.email,
-        name: current_user.name,
-        role: current_user.role,
-        last_login_at: current_user.last_login_at
+        id: current_admin_user.id,
+        email: current_admin_user.email,
+        name: current_admin_user.name,
+        role: current_admin_user.role,
+        last_login_at: current_admin_user.last_login_at
       }
     }
   end
