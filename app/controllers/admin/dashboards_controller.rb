@@ -33,7 +33,7 @@ class Admin::DashboardsController < ApplicationController
         last_login_at: current_user.last_login_at,
         permissions_count: current_user.admin_permissions.active.count
       },
-      job_classes: JobClass.active.select(:id, :name, :job_type, :max_level, :required_level),
+      job_classes: JobClass.active.select(:id, :name, :job_type, :max_level),
       recent_activity: {
         new_users_today: User.where('created_at >= ?', Date.current).count,
         new_players_today: Player.where('created_at >= ?', Date.current).count,
