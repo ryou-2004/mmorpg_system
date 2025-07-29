@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resource :session, only: [:show, :create, :destroy]
     resource :dashboard, only: [:show]
     resources :users, only: [:index]
+    resources :players, only: [:index]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
