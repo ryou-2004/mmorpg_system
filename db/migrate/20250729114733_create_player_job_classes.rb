@@ -12,8 +12,6 @@ class CreatePlayerJobClasses < ActiveRecord::Migration[8.0]
     end
     
     add_index :player_job_classes, [:player_id, :job_class_id], unique: true
-    add_index :player_job_classes, :player_id
-    add_index :player_job_classes, :job_class_id
     add_index :player_job_classes, :active
     add_index :player_job_classes, :level
   end
