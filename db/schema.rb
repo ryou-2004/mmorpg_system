@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_29_110702) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_29_111844) do
+  create_table "admin_permissions", force: :cascade do |t|
+    t.integer "admin_user_id", null: false
+    t.string "resource_type", null: false
+    t.integer "resource_id"
+    t.string "action", null: false
+    t.datetime "granted_at", null: false
+    t.integer "granted_by_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_admin_permissions_on_active"
+    t.index ["admin_user_id", "resource_type", "action"], name: "idx_on_admin_user_id_resource_type_action_b6cdfbb790"
+    t.index ["admin_user_id"], name: "index_admin_permissions_on_admin_user_id"
+    t.index ["granted_by_id"], name: "index_admin_permissions_on_granted_by_id"
+    t.index ["resource_type", "resource_id"], name: "index_admin_permissions_on_resource_type_and_resource_id"
+  end
+
   create_table "admin_users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -24,4 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_29_110702) do
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["role"], name: "index_admin_users_on_role"
   end
+
+  add_foreign_key "admin_permissions", "admin_users"
+  add_foreign_key "admin_permissions", "admin_users", column: "granted_by_id"
 end

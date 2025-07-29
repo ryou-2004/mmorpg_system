@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  admin_user: one
+  resource_type: MyString
+  resource_id: 1
+  action: MyString
+  granted_at: 2025-07-29 20:18:44
+  granted_by: one
+
+two:
+  admin_user: two
+  resource_type: MyString
+  resource_id: 1
+  action: MyString
+  granted_at: 2025-07-29 20:18:44
+  granted_by: two
