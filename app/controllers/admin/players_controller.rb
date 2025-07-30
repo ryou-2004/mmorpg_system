@@ -10,20 +10,23 @@ class Admin::PlayersController < ApplicationController
         {
           id: player.id,
           name: player.name,
-          level: player.level,
+          gold: player.gold,
+          active: player.active,
           created_at: player.created_at,
           last_login_at: player.last_login_at,
           user: {
             id: player.user.id,
-            username: player.user.username
+            name: player.user.name,
+            email: player.user.email
           },
           job_classes: player.player_job_classes.map do |pjc|
             {
               id: pjc.job_class.id,
               name: pjc.job_class.name,
               job_type: pjc.job_class.job_type,
-              current_level: pjc.current_level,
-              current_experience: pjc.current_experience
+              level: pjc.level,
+              experience: pjc.experience,
+              unlocked_at: pjc.unlocked_at
             }
           end
         }
