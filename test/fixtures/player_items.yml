@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player: one
+  item: one
+  quantity: 1
+  equipped: false
+  durability: 1
+  max_durability: 1
+  enchantment_level: 1
+  obtained_at: 2025-07-30 23:26:55
+
+two:
+  player: two
+  item: two
+  quantity: 1
+  equipped: false
+  durability: 1
+  max_durability: 1
+  enchantment_level: 1
+  obtained_at: 2025-07-30 23:26:55

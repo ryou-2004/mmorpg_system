@@ -2,6 +2,8 @@ class Player < ApplicationRecord
   belongs_to :user
   has_many :player_job_classes, dependent: :destroy
   has_many :job_classes, through: :player_job_classes
+  has_many :player_items, dependent: :destroy
+  has_many :items, through: :player_items
 
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }
   validates :name, uniqueness: { scope: :user_id }

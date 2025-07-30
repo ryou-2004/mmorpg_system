@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  description: MyText
+  item_type: MyString
+  rarity: MyString
+  max_stack: 1
+  buy_price: 1
+  sell_price: 1
+  level_requirement: 1
+  job_requirement: 
+  effects: 
+  icon_path: MyString
+  active: false
+
+two:
+  name: MyString
+  description: MyText
+  item_type: MyString
+  rarity: MyString
+  max_stack: 1
+  buy_price: 1
+  sell_price: 1
+  level_requirement: 1
+  job_requirement: 
+  effects: 
+  icon_path: MyString
+  active: false
