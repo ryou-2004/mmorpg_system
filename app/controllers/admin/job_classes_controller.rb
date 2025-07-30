@@ -5,7 +5,7 @@ class Admin::JobClassesController < ApplicationController
     job_classes = JobClass.left_joins(:player_job_classes)
                          .select('job_classes.*, COUNT(player_job_classes.id) as players_count')
                          .group('job_classes.id')
-                         .order(:job_type, :id)
+                         .order(:id)
 
     render json: {
       data: job_classes.map do |job_class|
