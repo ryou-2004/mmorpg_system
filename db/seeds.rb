@@ -129,3 +129,76 @@ puts "職業データを作成しました"
 puts "基本職: #{JobClass.basic.count}種類"
 puts "上級職: #{JobClass.advanced.count}種類"
 puts "特殊職: #{JobClass.special.count}種類"
+
+# サンプルユーザーの作成
+sample_users = [
+  {
+    email: 'player1@example.com',
+    name: '田中太郎'
+  },
+  {
+    email: 'player2@example.com',
+    name: '佐藤花子'
+  },
+  {
+    email: 'player3@example.com',
+    name: '鈴木一郎'
+  },
+  {
+    email: 'tester@example.com',
+    name: '山田テスト'
+  },
+  {
+    email: 'john@example.com',
+    name: 'John Smith'
+  }
+]
+
+created_users = []
+sample_users.each do |user_data|
+  user = User.find_or_create_by!(email: user_data[:email]) do |u|
+    u.name = user_data[:name]
+    u.active = true
+  end
+  created_users << user
+end
+
+puts "ユーザーデータを作成しました: #{User.count}人"
+
+# プレイヤーに基本職業を割り当て
+warrior_job = JobClass.find_by!(name: '戦士')
+mage_job = JobClass.find_by!(name: '魔法使い')
+priest_job = JobClass.find_by!(name: '僧侶')
+thief_job = JobClass.find_by!(name: '盗賊')
+
+# プレイヤーと職業の組み合わせを定義
+player_job_data = [
+  { user_email: 'player1@example.com', name: 'アキラ', gold: 5000, jobs: [warrior_job, priest_job] },
+  { user_email: 'player1@example.com', name: 'アキラ２号', gold: 3000, jobs: [mage_job] },
+  { user_email: 'player2@example.com', name: 'ユウキ', gold: 8000, jobs: [warrior_job] },
+  { user_email: 'player3@example.com', name: 'サトシ', gold: 2500, jobs: [thief_job] },
+  { user_email: 'tester@example.com', name: 'テストキャラ', gold: 10000, jobs: [warrior_job, mage_job, priest_job, thief_job] },
+  { user_email: 'john@example.com', name: 'John', gold: 4500, jobs: [warrior_job] },
+  { user_email: 'john@example.com', name: 'Johnny', gold: 3500, jobs: [mage_job, priest_job] }
+]
+
+created_players = []
+player_job_data.each do |data|
+  user = User.find_by!(email: data[:user_email])
+  player = user.players.find_or_create_by!(name: data[:name]) do |p|
+    p.gold = data[:gold]
+    p.active = true
+  end
+  
+  # 職業を割り当て
+  data[:jobs].each do |job|
+    player.unlock_job!(job)
+  end
+  
+  created_players << player
+end
+
+puts "プレイヤーデータと職業の割り当てが完了しました"
+puts "総ユーザー数: #{User.count}"
+puts "総プレイヤー数: #{Player.count}"
+puts "総職業習得数: #{PlayerJobClass.count}"
