@@ -2,8 +2,9 @@ class Admin::UsersController < ApplicationController
   before_action :authenticate_admin_user!
 
   def index
-    users = User.includes(:players)
-                .select(:id, :name, :email, :created_at, :last_login_at, :active)
+    users = User.left_joins(:players)
+                .select('users.*, COUNT(players.id) as player_count')
+                .group('users.id')
                 .order(created_at: :desc)
 
     render json: {
@@ -14,7 +15,7 @@ class Admin::UsersController < ApplicationController
           email: user.email,
           created_at: user.created_at,
           last_login_at: user.last_login_at,
-          player_count: user.players.count,
+          player_count: user.player_count.to_i,
           is_active: user.active
         }
       end
