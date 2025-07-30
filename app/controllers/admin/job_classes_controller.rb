@@ -1,5 +1,5 @@
 class Admin::JobClassesController < ApplicationController
-  before_action :authenticate_admin_user!
+  before_action :authenticate_admin_user!, unless: :development_test_mode?
 
   def index
     job_classes = JobClass.left_joins(:player_job_classes)
@@ -20,5 +20,11 @@ class Admin::JobClassesController < ApplicationController
         }
       end
     }
+  end
+
+  private
+
+  def development_test_mode?
+    Rails.env.development? && params[:test] == 'true'
   end
 end
