@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resource :session, only: [ :show, :create, :destroy ]
     resource :dashboard, only: [ :show ]
-    resources :users, only: [ :index ]
+    resources :users, only: [ :index, :show ]
     resources :players, only: [ :index ]
     resources :job_classes, only: [ :index ]
   end
