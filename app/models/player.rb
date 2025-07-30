@@ -33,9 +33,8 @@ class Player < ApplicationRecord
   end
 
   def unlock_job!(job_class)
-    player_job_classes.find_or_create_by!(
-      job_class: job_class,
-      unlocked_at: Time.current
-    )
+    player_job_classes.find_or_create_by!(job_class: job_class) do |pjc|
+      pjc.unlocked_at = Time.current
+    end
   end
 end
