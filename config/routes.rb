@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         patch :switch_job
         patch :add_experience
       end
+      resources :player_items, only: [ :index, :show ]
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]

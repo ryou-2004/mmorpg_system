@@ -8,7 +8,7 @@ class PlayerItem < ApplicationRecord
     inventory: "inventory",
     warehouse: "warehouse",
     equipped: "equipped"
-  }
+  }, default: "inventory"
 
   enum :status, {
     available: "available",        # 利用可能（デフォルト）

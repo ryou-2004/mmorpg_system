@@ -67,7 +67,7 @@ class Admin::PlayersController < ApplicationController
   end
 
   def show
-    player = Player.includes(:user, :current_job_class, player_job_classes: :job_class)
+    player = Player.includes(:user, :current_job_class, :player_warehouses, :player_items, player_job_classes: :job_class)
                    .find(params[:id])
 
     render json: {
@@ -77,25 +77,15 @@ class Admin::PlayersController < ApplicationController
       active: player.active,
       created_at: player.created_at,
       last_login_at: player.last_login_at,
-      current_job: player.current_job_class ? {
-        job_id: player.current_job_class.job_class.id,
-        job_name: player.current_job_name,
+      current_job_class: player.current_job_class ? {
+        id: player.current_job_class.id,
         level: player.level,
         experience: player.experience,
         skill_points: player.skill_points,
-        exp_to_next_level: player.exp_to_next_level,
-        level_progress: player.level_progress,
-        stats: {
-          hp: player.hp,
-          max_hp: player.max_hp,
-          mp: player.mp,
-          max_mp: player.max_mp,
-          attack: player.attack,
-          defense: player.defense,
-          magic_attack: player.magic_attack,
-          magic_defense: player.magic_defense,
-          agility: player.agility,
-          luck: player.luck
+        job_class: {
+          id: player.current_job_class.job_class.id,
+          name: player.current_job_name,
+          job_type: player.current_job_class.job_class.job_type
         }
       } : nil,
       user: {
@@ -132,7 +122,17 @@ class Admin::PlayersController < ApplicationController
             luck: pjc.luck
           }
         }
-      end
+      end,
+      warehouses: player.player_warehouses.map do |warehouse|
+        {
+          id: warehouse.id,
+          name: warehouse.name,
+          max_slots: warehouse.max_slots,
+          used_slots: player.player_items.where(player_warehouse: warehouse).player_accessible.count
+        }
+      end,
+      inventory_count: player.inventory_items.count,
+      equipped_count: player.equipped_items.count
     }
   end
 
