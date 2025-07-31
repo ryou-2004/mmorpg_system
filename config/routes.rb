@@ -12,17 +12,10 @@ Rails.application.routes.draw do
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
     
-    # 職業ステータス管理
-    resources :job_stats, only: [ :index ] do
-      collection do
-        get :compare
-        get :level_samples
-        get :multi_level_comparison
-      end
-      member do
-        get :growth_chart
-      end
-    end
+    # 職業ステータス管理（RESTful）
+    resources :job_class_stats, only: [ :index, :show ]
+    resources :job_level_samples, only: [ :index, :show ]
+    resources :job_comparisons, only: [ :index, :create ]
   end
 
   namespace :api do
