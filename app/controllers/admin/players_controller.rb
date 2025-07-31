@@ -2,7 +2,7 @@ class Admin::PlayersController < ApplicationController
   before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
 
   def index
-    players = Player.includes(:user, :current_job_class)
+    players = Player.includes(:user, current_job_class: :job_class)
                    .order(created_at: :desc)
 
     render json: {
