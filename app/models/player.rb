@@ -4,7 +4,6 @@ class Player < ApplicationRecord
   has_many :job_classes, through: :player_job_classes
   has_many :player_items, dependent: :destroy
   has_many :items, through: :player_items
-  has_one :player_stat, dependent: :destroy
   belongs_to :current_job_class, class_name: "PlayerJobClass", optional: true
 
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }

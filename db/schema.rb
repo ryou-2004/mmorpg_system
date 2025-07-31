@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_115053) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_121321) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -128,26 +128,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_115053) do
     t.index ["player_id"], name: "index_player_job_classes_on_player_id"
   end
 
-  create_table "player_stats", force: :cascade do |t|
-    t.integer "player_id", null: false
-    t.integer "level", default: 1, null: false
-    t.integer "experience", default: 0, null: false
-    t.integer "hp", default: 100, null: false
-    t.integer "max_hp", default: 100, null: false
-    t.integer "mp", default: 50, null: false
-    t.integer "max_mp", default: 50, null: false
-    t.integer "attack", default: 10, null: false
-    t.integer "defense", default: 10, null: false
-    t.integer "magic_attack", default: 10, null: false
-    t.integer "magic_defense", default: 10, null: false
-    t.integer "agility", default: 10, null: false
-    t.integer "luck", default: 10, null: false
-    t.integer "stat_points", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["player_id"], name: "index_player_stats_on_player_id", unique: true
-  end
-
   create_table "players", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -180,7 +160,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_115053) do
   add_foreign_key "player_items", "players"
   add_foreign_key "player_job_classes", "job_classes"
   add_foreign_key "player_job_classes", "players"
-  add_foreign_key "player_stats", "players"
   add_foreign_key "players", "player_job_classes", column: "current_job_class_id"
   add_foreign_key "players", "users"
 end
