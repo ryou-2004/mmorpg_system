@@ -86,6 +86,26 @@ class Player < ApplicationRecord
     player_warehouses.first
   end
 
+  # === パフォーマンス最適化されたカウントメソッド ===
+  def item_counts_by_location
+    @item_counts_by_location ||= player_items.player_accessible
+                                             .group(:location, :player_warehouse_id)
+                                             .count
+  end
+
+  def inventory_count
+    item_counts_by_location.select { |key, _| key[0] == 'inventory' }.sum(&:last)
+  end
+
+  def equipped_count
+    item_counts_by_location.select { |key, _| key[0] == 'equipped' }.sum(&:last)
+  end
+
+  def warehouse_usage_by_id
+    item_counts_by_location.select { |key, _| key[0] == 'warehouse' }
+                           .transform_keys { |key| key[1] } # warehouse_idをキーにする
+  end
+
   private
 
   def create_default_warehouse

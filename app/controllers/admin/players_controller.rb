@@ -67,8 +67,10 @@ class Admin::PlayersController < ApplicationController
   end
 
   def show
-    player = Player.includes(:user, :current_job_class, :player_warehouses, :player_items, player_job_classes: :job_class)
+    player = Player.includes(:user, :current_job_class, :player_warehouses, player_job_classes: :job_class)
                    .find(params[:id])
+    
+    # パフォーマンス最適化されたカウントメソッドを使用
 
     render json: {
       id: player.id,
@@ -128,11 +130,11 @@ class Admin::PlayersController < ApplicationController
           id: warehouse.id,
           name: warehouse.name,
           max_slots: warehouse.max_slots,
-          used_slots: player.player_items.where(player_warehouse: warehouse).player_accessible.count
+          used_slots: player.warehouse_usage_by_id[warehouse.id] || 0
         }
       end,
-      inventory_count: player.inventory_items.count,
-      equipped_count: player.equipped_items.count
+      inventory_count: player.inventory_count,
+      equipped_count: player.equipped_count
     }
   end
 

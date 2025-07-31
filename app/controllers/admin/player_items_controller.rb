@@ -22,8 +22,7 @@ class Admin::PlayerItemsController < ApplicationController
               @player.player_items.player_accessible
             end
 
-    items = items.includes(:item, :player_warehouse)
-                 .order(:location, :created_at)
+    items = items.order(:location, :created_at)
 
     render json: {
       data: items.map do |player_item|
@@ -74,7 +73,7 @@ class Admin::PlayerItemsController < ApplicationController
   end
 
   def show
-    player_item = @player.player_items.includes(:item, :player_warehouse).find(params[:id])
+    player_item = @player.player_items.find(params[:id])
     
     render json: {
       data: {
@@ -123,7 +122,10 @@ class Admin::PlayerItemsController < ApplicationController
   private
 
   def set_player
-    @player = Player.includes(:player_warehouses, :player_items).find(params[:player_id])
+    @player = Player.includes(
+      :player_warehouses,
+      player_items: [:item, :player_warehouse]
+    ).find(params[:player_id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "プレイヤーが見つかりません" }, status: :not_found
   end

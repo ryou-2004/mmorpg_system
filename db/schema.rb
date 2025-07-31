@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_164122) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_172604) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -113,8 +113,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_164122) do
     t.index ["bazaar_listing_id"], name: "index_player_items_on_bazaar_listing_id"
     t.index ["equipped"], name: "index_player_items_on_equipped"
     t.index ["item_id"], name: "index_player_items_on_item_id"
+    t.index ["location", "player_warehouse_id"], name: "idx_player_items_warehouse_location"
     t.index ["locked"], name: "index_player_items_on_locked"
     t.index ["player_id", "item_id"], name: "index_player_items_on_player_id_and_item_id"
+    t.index ["player_id", "location", "player_warehouse_id"], name: "idx_player_items_location_warehouse"
+    t.index ["player_id", "location", "status"], name: "idx_player_items_location_status"
     t.index ["player_id", "location"], name: "index_player_items_on_player_id_and_location"
     t.index ["player_id", "status"], name: "index_player_items_on_player_id_and_status"
     t.index ["player_id"], name: "index_player_items_on_player_id"
