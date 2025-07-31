@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player: one
+  level: 1
+  experience: 1
+  hp: 1
+  max_hp: 1
+  mp: 1
+  max_mp: 1
+  attack: 1
+  defense: 1
+  magic_attack: 1
+  magic_defense: 1
+  agility: 1
+  luck: 1
+  stat_points: 1
+
+two:
+  player: two
+  level: 1
+  experience: 1
+  hp: 1
+  max_hp: 1
+  mp: 1
+  max_mp: 1
+  attack: 1
+  defense: 1
+  magic_attack: 1
+  magic_defense: 1
+  agility: 1
+  luck: 1
+  stat_points: 1
