@@ -2,7 +2,7 @@ class Admin::PlayersController < ApplicationController
   before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
 
   def index
-    players = Player.includes(:user, :current_job_class, player_job_classes: :job_class)
+    players = Player.includes(:user, :current_job_class)
                    .order(created_at: :desc)
 
     render json: {
@@ -36,31 +36,7 @@ class Admin::PlayersController < ApplicationController
             id: player.user.id,
             name: player.user.name,
             email: player.user.email
-          },
-          job_classes: player.player_job_classes.map do |pjc|
-            {
-              id: pjc.job_class.id,
-              name: pjc.job_class.name,
-              job_type: pjc.job_class.job_type,
-              level: pjc.level,
-              experience: pjc.experience,
-              skill_points: pjc.skill_points,
-              unlocked_at: pjc.unlocked_at,
-              is_current: player.current_job_class_id == pjc.id,
-              stats: {
-                hp: pjc.hp,
-                max_hp: pjc.max_hp,
-                mp: pjc.mp,
-                max_mp: pjc.max_mp,
-                attack: pjc.attack,
-                defense: pjc.defense,
-                magic_attack: pjc.magic_attack,
-                magic_defense: pjc.magic_defense,
-                agility: pjc.agility,
-                luck: pjc.luck
-              }
-            }
-          end
+          }
         }
       end
     }
