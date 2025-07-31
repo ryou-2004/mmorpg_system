@@ -3,7 +3,7 @@ class Admin::JobComparisonsController < ApplicationController
 
   def index
     job_ids = params[:job_ids] || []
-    job_ids = job_ids.split(',') if job_ids.is_a?(String)
+    job_ids = job_ids.split(",") if job_ids.is_a?(String)
     level = (params[:level] || 20).to_i
 
     if job_ids.empty?
@@ -23,7 +23,7 @@ class Admin::JobComparisonsController < ApplicationController
 
   def create
     job_ids = params[:job_ids] || []
-    job_ids = job_ids.split(',') if job_ids.is_a?(String)
+    job_ids = job_ids.split(",") if job_ids.is_a?(String)
     level = (params[:level] || 20).to_i
     comparison_type = params[:comparison_type] || "basic"
 
@@ -57,7 +57,7 @@ class Admin::JobComparisonsController < ApplicationController
   def handle_multi_level_comparison(job_ids)
     levels = params[:levels] || [ 1, 10, 20, 30, 40, 50 ]
     if levels.is_a?(String)
-      levels = levels.split(',').map(&:to_i).select { |l| l > 0 && l <= 100 }
+      levels = levels.split(",").map(&:to_i).select { |l| l > 0 && l <= 100 }
     else
       levels = levels.map(&:to_i).select { |l| l > 0 && l <= 100 }
     end

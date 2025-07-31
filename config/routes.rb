@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
-    
+
     resources :job_class_stats, only: [ :index, :show ]
     resources :job_level_samples, only: [ :index, :show ]
     resources :job_comparisons, only: [ :index, :create ]

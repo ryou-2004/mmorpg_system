@@ -5,7 +5,7 @@ class Admin::JobClassStatsController < ApplicationController
     job_classes = JobClass.active.order(:job_type, :id)
 
     if params[:levels].present?
-      levels = params[:levels].split(',').map(&:to_i).select { |l| l > 0 && l <= 100 }
+      levels = params[:levels].split(",").map(&:to_i).select { |l| l > 0 && l <= 100 }
     else
       levels = [ 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 ]
     end
