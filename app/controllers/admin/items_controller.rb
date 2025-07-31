@@ -3,8 +3,7 @@ class Admin::ItemsController < ApplicationController
   before_action :set_item, only: [ :show, :update, :destroy ]
 
   def index
-    items = Item.includes(:players)
-                .order(:item_type, :rarity, :name)
+    items = Item.order(:item_type, :rarity, :name)
 
     # フィルタリング
     items = items.where(item_type: params[:item_type]) if params[:item_type].present?
@@ -28,7 +27,6 @@ class Admin::ItemsController < ApplicationController
           sale_type: item.sale_type,
           icon_path: item.icon_path,
           active: item.active,
-          players_count: item.players.count,
           created_at: item.created_at
         }
       end
@@ -36,6 +34,9 @@ class Admin::ItemsController < ApplicationController
   end
 
   def show
+    # アイテム統計情報を効率的に取得
+    item_stats = calculate_item_statistics(@item)
+    
     render json: {
       data: {
         id: @item.id,
@@ -52,9 +53,9 @@ class Admin::ItemsController < ApplicationController
         sale_type: @item.sale_type,
         icon_path: @item.icon_path,
         active: @item.active,
-        players_count: @item.players.count,
         created_at: @item.created_at,
-        updated_at: @item.updated_at
+        updated_at: @item.updated_at,
+        statistics: item_stats
       }
     }
   end
@@ -135,5 +136,49 @@ class Admin::ItemsController < ApplicationController
 
   def development_test_mode?
     Rails.env.development? && params[:test] == "true"
+  end
+
+  # アイテム統計情報を計算
+  def calculate_item_statistics(item)
+    player_items = PlayerItem.where(item: item).player_accessible
+
+    # 基本統計
+    total_items = player_items.sum(:quantity)
+    players_with_item = player_items.joins(:player).distinct.count(:player_id)
+    
+    # プレイヤーごとの所持数を取得
+    player_quantities = player_items.joins(:player)
+                                   .group(:player_id)
+                                   .sum(:quantity)
+                                   .values
+
+    # 統計計算
+    average_per_player = if players_with_item > 0
+                          player_quantities.sum.to_f / players_with_item
+                        else
+                          0
+                        end
+
+    # 中央値計算
+    median_per_player = if player_quantities.empty?
+                         0
+                       else
+                         sorted_quantities = player_quantities.sort
+                         mid = sorted_quantities.length / 2
+                         if sorted_quantities.length.odd?
+                           sorted_quantities[mid]
+                         else
+                           (sorted_quantities[mid - 1] + sorted_quantities[mid]) / 2.0
+                         end
+                       end
+
+    {
+      total_items: total_items,
+      players_with_item: players_with_item,
+      average_per_player: average_per_player.round(2),
+      median_per_player: median_per_player,
+      max_per_player: player_quantities.max || 0,
+      min_per_player: player_quantities.min || 0
+    }
   end
 end
