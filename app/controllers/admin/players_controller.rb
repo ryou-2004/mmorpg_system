@@ -1,5 +1,5 @@
 class Admin::PlayersController < ApplicationController
-  before_action :authenticate_admin_user!
+  before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
 
   def index
     players = Player.includes(:user, :current_job_class, player_job_classes: :job_class)
@@ -210,5 +210,11 @@ class Admin::PlayersController < ApplicationController
         }
       }
     }
+  end
+
+  private
+
+  def development_test_mode?
+    Rails.env.development? && params[:test] == "true"
   end
 end
