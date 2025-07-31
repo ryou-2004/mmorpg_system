@@ -5,28 +5,60 @@ basic_jobs = [
     description: '剣と盾を使った近接戦闘のエキスパート。高い体力と防御力を持つ。',
     job_type: 'basic',
     max_level: 50,
-    exp_multiplier: 1.0
+    exp_multiplier: 1.0,
+    hp_multiplier: 1.2,
+    mp_multiplier: 0.8,
+    attack_multiplier: 1.2,
+    defense_multiplier: 1.2,
+    magic_attack_multiplier: 0.8,
+    magic_defense_multiplier: 0.8,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.0
   },
   {
     name: '魔法使い',
     description: '強力な攻撃魔法を操る魔術師。高い魔力を持つが体力は低い。',
     job_type: 'basic',
     max_level: 50,
-    exp_multiplier: 1.2
+    exp_multiplier: 1.2,
+    hp_multiplier: 0.8,
+    mp_multiplier: 1.2,
+    attack_multiplier: 0.8,
+    defense_multiplier: 0.8,
+    magic_attack_multiplier: 1.2,
+    magic_defense_multiplier: 1.2,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.0
   },
   {
     name: '僧侶',
     description: '回復魔法と補助魔法のスペシャリスト。パーティの生命線。',
     job_type: 'basic',
     max_level: 50,
-    exp_multiplier: 1.1
+    exp_multiplier: 1.1,
+    hp_multiplier: 1.0,
+    mp_multiplier: 1.2,
+    attack_multiplier: 0.9,
+    defense_multiplier: 1.0,
+    magic_attack_multiplier: 1.0,
+    magic_defense_multiplier: 1.2,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.0
   },
   {
     name: '盗賊',
     description: '素早い動きと隠密行動が得意。クリティカル攻撃に特化。',
     job_type: 'basic',
     max_level: 50,
-    exp_multiplier: 0.9
+    exp_multiplier: 0.9,
+    hp_multiplier: 1.0,
+    mp_multiplier: 1.0,
+    attack_multiplier: 1.0,
+    defense_multiplier: 0.9,
+    magic_attack_multiplier: 1.0,
+    magic_defense_multiplier: 1.0,
+    agility_multiplier: 1.3,
+    luck_multiplier: 1.3
   }
 ]
 
@@ -36,6 +68,14 @@ basic_jobs.each do |job_data|
     job.job_type = job_data[:job_type]
     job.max_level = job_data[:max_level]
     job.exp_multiplier = job_data[:exp_multiplier]
+    job.hp_multiplier = job_data[:hp_multiplier]
+    job.mp_multiplier = job_data[:mp_multiplier]
+    job.attack_multiplier = job_data[:attack_multiplier]
+    job.defense_multiplier = job_data[:defense_multiplier]
+    job.magic_attack_multiplier = job_data[:magic_attack_multiplier]
+    job.magic_defense_multiplier = job_data[:magic_defense_multiplier]
+    job.agility_multiplier = job_data[:agility_multiplier]
+    job.luck_multiplier = job_data[:luck_multiplier]
   end
 end
 
@@ -46,21 +86,45 @@ advanced_jobs = [
     description: '戦士の上位職。聖なる力を使い、仲間を守る騎士。',
     job_type: 'advanced',
     max_level: 70,
-    exp_multiplier: 1.5
+    exp_multiplier: 1.5,
+    hp_multiplier: 1.2,
+    mp_multiplier: 1.0,
+    attack_multiplier: 1.0,
+    defense_multiplier: 1.2,
+    magic_attack_multiplier: 1.0,
+    magic_defense_multiplier: 1.2,
+    agility_multiplier: 0.8,
+    luck_multiplier: 1.0
   },
   {
     name: '賢者',
     description: '魔法使いと僧侶の技を併せ持つ上級魔術師。',
     job_type: 'advanced',
     max_level: 70,
-    exp_multiplier: 1.8
+    exp_multiplier: 1.8,
+    hp_multiplier: 1.0,
+    mp_multiplier: 1.4,
+    attack_multiplier: 0.9,
+    defense_multiplier: 0.9,
+    magic_attack_multiplier: 1.3,
+    magic_defense_multiplier: 1.3,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.1
   },
   {
     name: 'アサシン',
     description: '盗賊の上位職。致命的な一撃で敵を葬る暗殺者。',
     job_type: 'advanced',
     max_level: 65,
-    exp_multiplier: 1.4
+    exp_multiplier: 1.4,
+    hp_multiplier: 0.9,
+    mp_multiplier: 1.0,
+    attack_multiplier: 1.2,
+    defense_multiplier: 0.8,
+    magic_attack_multiplier: 1.0,
+    magic_defense_multiplier: 0.9,
+    agility_multiplier: 1.4,
+    luck_multiplier: 1.2
   }
 ]
 
@@ -70,6 +134,14 @@ advanced_jobs.each do |job_data|
     job.job_type = job_data[:job_type]
     job.max_level = job_data[:max_level]
     job.exp_multiplier = job_data[:exp_multiplier]
+    job.hp_multiplier = job_data[:hp_multiplier]
+    job.mp_multiplier = job_data[:mp_multiplier]
+    job.attack_multiplier = job_data[:attack_multiplier]
+    job.defense_multiplier = job_data[:defense_multiplier]
+    job.magic_attack_multiplier = job_data[:magic_attack_multiplier]
+    job.magic_defense_multiplier = job_data[:magic_defense_multiplier]
+    job.agility_multiplier = job_data[:agility_multiplier]
+    job.luck_multiplier = job_data[:luck_multiplier]
   end
 end
 
@@ -80,14 +152,30 @@ special_jobs = [
     description: '剣術と魔法を同時に扱う特殊な戦士。バランス型の万能職。',
     job_type: 'special',
     max_level: 80,
-    exp_multiplier: 2.0
+    exp_multiplier: 2.0,
+    hp_multiplier: 1.1,
+    mp_multiplier: 1.1,
+    attack_multiplier: 1.1,
+    defense_multiplier: 1.0,
+    magic_attack_multiplier: 1.1,
+    magic_defense_multiplier: 1.0,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.0
   },
   {
     name: '召喚師',
     description: '精霊や魔獣を召喚して戦う特殊魔術師。',
     job_type: 'special',
     max_level: 85,
-    exp_multiplier: 2.2
+    exp_multiplier: 2.2,
+    hp_multiplier: 0.9,
+    mp_multiplier: 1.3,
+    attack_multiplier: 0.8,
+    defense_multiplier: 0.8,
+    magic_attack_multiplier: 1.3,
+    magic_defense_multiplier: 1.1,
+    agility_multiplier: 1.0,
+    luck_multiplier: 1.1
   }
 ]
 
@@ -97,6 +185,14 @@ special_jobs.each do |job_data|
     job.job_type = job_data[:job_type]
     job.max_level = job_data[:max_level]
     job.exp_multiplier = job_data[:exp_multiplier]
+    job.hp_multiplier = job_data[:hp_multiplier]
+    job.mp_multiplier = job_data[:mp_multiplier]
+    job.attack_multiplier = job_data[:attack_multiplier]
+    job.defense_multiplier = job_data[:defense_multiplier]
+    job.magic_attack_multiplier = job_data[:magic_attack_multiplier]
+    job.magic_defense_multiplier = job_data[:magic_defense_multiplier]
+    job.agility_multiplier = job_data[:agility_multiplier]
+    job.luck_multiplier = job_data[:luck_multiplier]
   end
 end
 

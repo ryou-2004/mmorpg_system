@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_30_170323) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_115053) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -73,6 +73,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_170323) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "base_hp", default: 100, null: false
+    t.integer "base_mp", default: 50, null: false
+    t.integer "base_attack", default: 10, null: false
+    t.integer "base_defense", default: 10, null: false
+    t.integer "base_magic_attack", default: 10, null: false
+    t.integer "base_magic_defense", default: 10, null: false
+    t.integer "base_agility", default: 10, null: false
+    t.integer "base_luck", default: 10, null: false
+    t.decimal "hp_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "mp_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "attack_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "defense_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "magic_attack_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "magic_defense_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "agility_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.decimal "luck_multiplier", precision: 3, scale: 2, default: "1.0", null: false
     t.index ["active"], name: "index_job_classes_on_active"
     t.index ["job_type"], name: "index_job_classes_on_job_type"
     t.index ["name"], name: "index_job_classes_on_name", unique: true
@@ -104,6 +120,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_170323) do
     t.datetime "unlocked_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "skill_points", default: 0, null: false
     t.index ["active"], name: "index_player_job_classes_on_active"
     t.index ["job_class_id"], name: "index_player_job_classes_on_job_class_id"
     t.index ["level"], name: "index_player_job_classes_on_level"
@@ -139,7 +156,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_170323) do
     t.datetime "last_login_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "current_job_class_id"
     t.index ["active"], name: "index_players_on_active"
+    t.index ["current_job_class_id"], name: "index_players_on_current_job_class_id"
     t.index ["user_id", "name"], name: "index_players_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_players_on_user_id"
   end
@@ -162,5 +181,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_170323) do
   add_foreign_key "player_job_classes", "job_classes"
   add_foreign_key "player_job_classes", "players"
   add_foreign_key "player_stats", "players"
+  add_foreign_key "players", "player_job_classes", column: "current_job_class_id"
   add_foreign_key "players", "users"
 end
