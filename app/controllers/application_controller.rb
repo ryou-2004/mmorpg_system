@@ -40,6 +40,6 @@ class ApplicationController < ActionController::API
   end
 
   def development_test_mode?
-    Rails.env.test? || ((Rails.env.development? || Rails.env.test?) && params[:test] == 'true')
+    Rails.env.test? || ((Rails.env.development? || Rails.env.test?) && params[:test] == "true")
   end
 end

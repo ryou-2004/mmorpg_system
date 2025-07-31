@@ -21,7 +21,7 @@ class PlayerStatTest < ActiveSupport::TestCase
   test "should heal correctly" do
     player_stat = player_stats(:player_one_stats)
     player_stat.update!(hp: 50) # Set HP to 50 out of 120
-    
+
     healed = player_stat.heal(30)
     assert_equal 30, healed
     assert_equal 80, player_stat.hp
@@ -30,7 +30,7 @@ class PlayerStatTest < ActiveSupport::TestCase
   test "should not heal beyond max HP" do
     player_stat = player_stats(:player_one_stats)
     player_stat.update!(hp: 100) # Set HP to 100 out of 120
-    
+
     healed = player_stat.heal(50)
     assert_equal 20, healed # Should only heal 20 to reach max
     assert_equal 120, player_stat.hp
@@ -47,7 +47,7 @@ class PlayerStatTest < ActiveSupport::TestCase
     player_stat = player_stats(:player_two_stats)
     # Player is level 3 with 300 exp, needs 450 for level 4
     assert_not player_stat.can_level_up?
-    
+
     player_stat.update!(experience: 450)
     assert player_stat.can_level_up?
   end

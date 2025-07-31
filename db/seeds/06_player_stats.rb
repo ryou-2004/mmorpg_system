@@ -9,7 +9,7 @@ Player.find_each do |player|
 
   # 職業に基づいた初期ステータス設定
   base_stats = case job_name
-               when '戦士'
+  when '戦士'
                  {
                    level: rand(1..3),
                    hp: 120, max_hp: 120,
@@ -18,7 +18,7 @@ Player.find_each do |player|
                    magic_attack: 5, magic_defense: 8,
                    agility: 8, luck: 8
                  }
-               when '魔法使い'
+  when '魔法使い'
                  {
                    level: rand(1..3),
                    hp: 80, max_hp: 80,
@@ -27,7 +27,7 @@ Player.find_each do |player|
                    magic_attack: 18, magic_defense: 15,
                    agility: 10, luck: 12
                  }
-               when '僧侶'
+  when '僧侶'
                  {
                    level: rand(1..3),
                    hp: 100, max_hp: 100,
@@ -36,7 +36,7 @@ Player.find_each do |player|
                    magic_attack: 15, magic_defense: 18,
                    agility: 9, luck: 15
                  }
-               when '盗賊'
+  when '盗賊'
                  {
                    level: rand(1..3),
                    hp: 90, max_hp: 90,
@@ -45,7 +45,7 @@ Player.find_each do |player|
                    magic_attack: 8, magic_defense: 8,
                    agility: 18, luck: 16
                  }
-               when '騎士'
+  when '騎士'
                  {
                    level: rand(2..5),
                    hp: 140, max_hp: 140,
@@ -54,7 +54,7 @@ Player.find_each do |player|
                    magic_attack: 6, magic_defense: 12,
                    agility: 7, luck: 9
                  }
-               when '魔剣士'
+  when '魔剣士'
                  {
                    level: rand(2..5),
                    hp: 110, max_hp: 110,
@@ -63,7 +63,7 @@ Player.find_each do |player|
                    magic_attack: 13, magic_defense: 12,
                    agility: 12, luck: 10
                  }
-               when 'パラディン'
+  when 'パラディン'
                  {
                    level: rand(3..7),
                    hp: 160, max_hp: 160,
@@ -72,7 +72,7 @@ Player.find_each do |player|
                    magic_attack: 8, magic_defense: 20,
                    agility: 6, luck: 12
                  }
-               else
+  else
                  {
                    level: 1,
                    hp: 100, max_hp: 100,
@@ -81,19 +81,19 @@ Player.find_each do |player|
                    magic_attack: 10, magic_defense: 10,
                    agility: 10, luck: 10
                  }
-               end
+  end
 
   # レベルに応じた経験値設定
   exp_for_level = case base_stats[:level]
-                  when 1 then rand(0..99)
-                  when 2 then rand(100..249)
-                  when 3 then rand(250..449)
-                  when 4 then rand(450..699)
-                  when 5 then rand(700..999)
-                  when 6 then rand(1000..1349)
-                  when 7 then rand(1350..1749)
-                  else 0
-                  end
+  when 1 then rand(0..99)
+  when 2 then rand(100..249)
+  when 3 then rand(250..449)
+  when 4 then rand(450..699)
+  when 5 then rand(700..999)
+  when 6 then rand(1000..1349)
+  when 7 then rand(1350..1749)
+  else 0
+  end
 
   # ステータスポイント設定（レベル-1 * 5 + ランダム）
   stat_points = (base_stats[:level] - 1) * 5 + rand(0..10)

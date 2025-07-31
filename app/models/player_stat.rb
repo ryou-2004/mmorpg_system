@@ -41,7 +41,7 @@ class PlayerStat < ApplicationRecord
   def can_level_up?
     next_level = level + 1
     return false if next_level > 100 || !LEVEL_EXP_TABLE[next_level]
-    
+
     experience >= LEVEL_EXP_TABLE[next_level]
   end
 
@@ -49,7 +49,7 @@ class PlayerStat < ApplicationRecord
   def level_up!
     old_level = level
     self.level += 1
-    
+
     # ステータス上昇量を計算
     hp_gain = calculate_stat_gain(:hp)
     mp_gain = calculate_stat_gain(:mp)
@@ -83,25 +83,25 @@ class PlayerStat < ApplicationRecord
   # 次のレベルまでの必要経験値
   def exp_to_next_level
     return 0 if level >= 100
-    
+
     next_level_exp = LEVEL_EXP_TABLE[level + 1]
     return 0 unless next_level_exp
-    
-    [next_level_exp - experience, 0].max
+
+    [ next_level_exp - experience, 0 ].max
   end
 
   # レベルアップ進行率（0.0〜1.0）
   def level_progress
     return 1.0 if level >= 100
-    
+
     current_level_exp = LEVEL_EXP_TABLE[level]
     next_level_exp = LEVEL_EXP_TABLE[level + 1]
     return 1.0 unless next_level_exp
 
     total_exp_needed = next_level_exp - current_level_exp
     current_progress = experience - current_level_exp
-    
-    [current_progress.to_f / total_exp_needed, 1.0].min
+
+    [ current_progress.to_f / total_exp_needed, 1.0 ].min
   end
 
   # ステータスポイント振り分け
@@ -110,7 +110,7 @@ class PlayerStat < ApplicationRecord
 
     allocations.each do |stat, points|
       next if points <= 0
-      
+
       case stat.to_sym
       when :max_hp
         self.max_hp += points * 5 # 1ポイント = HP+5
@@ -129,8 +129,8 @@ class PlayerStat < ApplicationRecord
   # HP回復
   def heal(amount)
     return 0 if hp >= max_hp
-    
-    actual_heal = [amount, max_hp - hp].min
+
+    actual_heal = [ amount, max_hp - hp ].min
     self.hp += actual_heal
     actual_heal
   end
@@ -138,15 +138,15 @@ class PlayerStat < ApplicationRecord
   # MP回復
   def restore_mp(amount)
     return 0 if mp >= max_mp
-    
-    actual_restore = [amount, max_mp - mp].min
+
+    actual_restore = [ amount, max_mp - mp ].min
     self.mp += actual_restore
     actual_restore
   end
 
   # ダメージ処理
   def take_damage(damage)
-    actual_damage = [damage, hp].min
+    actual_damage = [ damage, hp ].min
     self.hp -= actual_damage
     actual_damage
   end
@@ -154,7 +154,7 @@ class PlayerStat < ApplicationRecord
   # MP消費
   def consume_mp(amount)
     return false if mp < amount
-    
+
     self.mp -= amount
     true
   end
@@ -190,13 +190,13 @@ class PlayerStat < ApplicationRecord
   # ステータス上昇量計算（職業による補正を考慮）
   def calculate_stat_gain(stat_type)
     base_gain = case stat_type
-                when :hp then 8
-                when :mp then 4
-                when :attack, :defense then 2
-                when :magic_attack, :magic_defense then 2
-                when :agility, :luck then 1
-                else 1
-                end
+    when :hp then 8
+    when :mp then 4
+    when :attack, :defense then 2
+    when :magic_attack, :magic_defense then 2
+    when :agility, :luck then 1
+    else 1
+    end
 
     # 職業補正を適用（後で実装）
     job_multiplier = calculate_job_multiplier(stat_type)
@@ -210,25 +210,25 @@ class PlayerStat < ApplicationRecord
     return 1.0 unless primary_job
 
     case primary_job.name
-    when '戦士'
+    when "戦士"
       case stat_type
       when :hp, :attack, :defense then 1.2
       when :magic_attack, :magic_defense then 0.8
       else 1.0
       end
-    when '魔法使い'
+    when "魔法使い"
       case stat_type
       when :mp, :magic_attack, :magic_defense then 1.2
       when :attack, :defense then 0.8
       else 1.0
       end
-    when '僧侶'
+    when "僧侶"
       case stat_type
       when :mp, :magic_defense then 1.2
       when :attack then 0.9
       else 1.0
       end
-    when '盗賊'
+    when "盗賊"
       case stat_type
       when :agility, :luck then 1.3
       when :defense then 0.9
@@ -246,14 +246,14 @@ class PlayerStat < ApplicationRecord
 
     equipped_items.each do |player_item|
       item_effects = player_item.item.effects || []
-      
+
       item_effects.each do |effect|
-        next unless effect['type'] == 'stat_boost'
-        
-        stat = effect['stat']&.to_sym
-        value = effect['value'].to_i
-        
-        bonus[stat] += value if [:attack, :defense, :magic_attack, :magic_defense, :agility, :luck, :max_hp, :max_mp].include?(stat)
+        next unless effect["type"] == "stat_boost"
+
+        stat = effect["stat"]&.to_sym
+        value = effect["value"].to_i
+
+        bonus[stat] += value if [ :attack, :defense, :magic_attack, :magic_defense, :agility, :luck, :max_hp, :max_mp ].include?(stat)
       end
     end
 
@@ -262,10 +262,10 @@ class PlayerStat < ApplicationRecord
 
   # バリデーション
   def hp_not_greater_than_max_hp
-    errors.add(:hp, 'cannot be greater than max HP') if hp && max_hp && hp > max_hp
+    errors.add(:hp, "cannot be greater than max HP") if hp && max_hp && hp > max_hp
   end
 
   def mp_not_greater_than_max_mp
-    errors.add(:mp, 'cannot be greater than max MP') if mp && max_mp && mp > max_mp
+    errors.add(:mp, "cannot be greater than max MP") if mp && max_mp && mp > max_mp
   end
 end

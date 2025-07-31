@@ -5,7 +5,7 @@ class Player < ApplicationRecord
   has_many :player_items, dependent: :destroy
   has_many :items, through: :player_items
   has_one :player_stat, dependent: :destroy
-  belongs_to :current_job_class, class_name: 'PlayerJobClass', optional: true
+  belongs_to :current_job_class, class_name: "PlayerJobClass", optional: true
 
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }
   validates :name, uniqueness: { scope: :user_id }
@@ -53,7 +53,7 @@ class Player < ApplicationRecord
   def switch_job!(job_class)
     target_player_job_class = player_job_classes.find_by(job_class: job_class)
     raise "Job class not unlocked: #{job_class.name}" unless target_player_job_class
-    
+
     update!(current_job_class: target_player_job_class)
     current_job_class
   end

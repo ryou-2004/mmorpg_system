@@ -1,6 +1,6 @@
 class Admin::ItemsController < ApplicationController
   before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
-  before_action :set_item, only: [:show, :update, :destroy]
+  before_action :set_item, only: [ :show, :update, :destroy ]
 
   def index
     items = Item.includes(:players)
@@ -65,7 +65,7 @@ class Admin::ItemsController < ApplicationController
     if @item.save
       render json: {
         data: item_json(@item),
-        message: 'アイテムが作成されました'
+        message: "アイテムが作成されました"
       }, status: :created
     else
       render json: {
@@ -78,7 +78,7 @@ class Admin::ItemsController < ApplicationController
     if @item.update(item_params)
       render json: {
         data: item_json(@item),
-        message: 'アイテムが更新されました'
+        message: "アイテムが更新されました"
       }
     else
       render json: {
@@ -90,7 +90,7 @@ class Admin::ItemsController < ApplicationController
   def destroy
     @item.destroy
     render json: {
-      message: 'アイテムが削除されました'
+      message: "アイテムが削除されました"
     }
   end
 
@@ -99,7 +99,7 @@ class Admin::ItemsController < ApplicationController
   def set_item
     @item = Item.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'アイテムが見つかりません' }, status: :not_found
+    render json: { error: "アイテムが見つかりません" }, status: :not_found
   end
 
   def item_params
@@ -134,6 +134,6 @@ class Admin::ItemsController < ApplicationController
   end
 
   def development_test_mode?
-    Rails.env.development? && params[:test] == 'true'
+    Rails.env.development? && params[:test] == "true"
   end
 end

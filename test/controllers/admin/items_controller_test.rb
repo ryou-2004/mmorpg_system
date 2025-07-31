@@ -16,7 +16,7 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create item" do
-    assert_difference('Item.count') do
+    assert_difference("Item.count") do
       post admin_items_url, params: {
         item: {
           name: "Test Sword",
@@ -48,7 +48,7 @@ class Admin::ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should destroy item" do
-    assert_difference('Item.count', -1) do
+    assert_difference("Item.count", -1) do
       delete admin_item_url(@item), params: { test: true }
     end
     assert_response :success

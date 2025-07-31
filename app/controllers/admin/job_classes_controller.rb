@@ -3,8 +3,8 @@ class Admin::JobClassesController < ApplicationController
 
   def index
     job_classes = JobClass.left_joins(:player_job_classes)
-                         .select('job_classes.*, COUNT(player_job_classes.id) as players_count')
-                         .group('job_classes.id')
+                         .select("job_classes.*, COUNT(player_job_classes.id) as players_count")
+                         .group("job_classes.id")
                          .order(:id)
 
     render json: {
@@ -25,6 +25,6 @@ class Admin::JobClassesController < ApplicationController
   private
 
   def development_test_mode?
-    Rails.env.development? && params[:test] == 'true'
+    Rails.env.development? && params[:test] == "true"
   end
 end

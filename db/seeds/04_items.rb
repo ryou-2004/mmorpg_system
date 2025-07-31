@@ -13,7 +13,7 @@ weapons = [
     buy_price: 500,
     sell_price: 125,
     level_requirement: 1,
-    job_requirement: ["戦士", "パラディン", "魔剣士"],
+    job_requirement: [ "戦士", "パラディン", "魔剣士" ],
     effects: [
       { type: "stat_boost", stat: "attack", value: 10 }
     ],
@@ -29,7 +29,7 @@ weapons = [
     buy_price: 800,
     sell_price: 200,
     level_requirement: 5,
-    job_requirement: ["魔法使い", "賢者", "召喚師"],
+    job_requirement: [ "魔法使い", "賢者", "召喚師" ],
     effects: [
       { type: "stat_boost", stat: "magic_attack", value: 12 }
     ],
@@ -45,7 +45,7 @@ weapons = [
     buy_price: 400,
     sell_price: 100,
     level_requirement: 1,
-    job_requirement: ["盗賊", "アサシン"],
+    job_requirement: [ "盗賊", "アサシン" ],
     effects: [
       { type: "stat_boost", stat: "attack", value: 8 },
       { type: "stat_boost", stat: "agility", value: 3 }
@@ -62,7 +62,7 @@ weapons = [
     buy_price: 2000,
     sell_price: 500,
     level_requirement: 10,
-    job_requirement: ["僧侶", "パラディン"],
+    job_requirement: [ "僧侶", "パラディン" ],
     effects: [
       { type: "stat_boost", stat: "attack", value: 15 },
       { type: "mp_regeneration", value: 2 }
@@ -79,7 +79,7 @@ weapons = [
     buy_price: 50000,
     sell_price: 12500,
     level_requirement: 25,
-    job_requirement: ["戦士", "パラディン", "魔剣士"],
+    job_requirement: [ "戦士", "パラディン", "魔剣士" ],
     effects: [
       { type: "stat_boost", stat: "attack", value: 30 },
       { type: "damage_bonus", target: "dragon", multiplier: 2.0 }
@@ -116,7 +116,7 @@ armors = [
     buy_price: 1200,
     sell_price: 300,
     level_requirement: 8,
-    job_requirement: ["戦士", "パラディン"],
+    job_requirement: [ "戦士", "パラディン" ],
     effects: [
       { type: "stat_boost", stat: "defense", value: 15 },
       { type: "stat_boost", stat: "agility", value: -2 }
@@ -133,7 +133,7 @@ armors = [
     buy_price: 1800,
     sell_price: 450,
     level_requirement: 12,
-    job_requirement: ["魔法使い", "賢者", "召喚師"],
+    job_requirement: [ "魔法使い", "賢者", "召喚師" ],
     effects: [
       { type: "stat_boost", stat: "magic_defense", value: 10 },
       { type: "stat_boost", stat: "max_mp", value: 20 }

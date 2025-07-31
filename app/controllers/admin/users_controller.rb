@@ -3,8 +3,8 @@ class Admin::UsersController < ApplicationController
 
   def index
     users = User.left_joins(:players)
-                .select('users.*, COUNT(players.id) as player_count')
-                .group('users.id')
+                .select("users.*, COUNT(players.id) as player_count")
+                .group("users.id")
                 .order(created_at: :desc)
 
     render json: {
@@ -57,6 +57,6 @@ class Admin::UsersController < ApplicationController
       }
     }
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'ユーザーが見つかりません' }, status: :not_found
+    render json: { error: "ユーザーが見つかりません" }, status: :not_found
   end
 end

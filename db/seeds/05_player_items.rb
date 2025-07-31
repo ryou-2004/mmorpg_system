@@ -16,7 +16,7 @@ power_ring = Item.find_by(name: "力の指輪")
 Player.find_each do |player|
   # プレイヤーの最初の職業を取得
   first_job = player.job_classes.first
-  
+
   case first_job&.name
   when "戦士"
     # 戦士には近接武器と防具
@@ -26,14 +26,14 @@ Player.find_each do |player|
       pi.durability = 100
       pi.max_durability = 100
     end
-    
+
     PlayerItem.find_or_create_by(player: player, item: leather_armor) do |pi|
       pi.quantity = 1
       pi.equipped = true
       pi.durability = 95
       pi.max_durability = 100
     end
-    
+
   when "魔法使い"
     # 魔法使いには杖
     PlayerItem.find_or_create_by(player: player, item: magic_staff) do |pi|
@@ -42,7 +42,7 @@ Player.find_each do |player|
       pi.durability = 100
       pi.max_durability = 100
     end
-    
+
   when "盗賊"
     # 盗賊には短剣
     PlayerItem.find_or_create_by(player: player, item: dagger) do |pi|
@@ -51,7 +51,7 @@ Player.find_each do |player|
       pi.durability = 100
       pi.max_durability = 100
     end
-    
+
   when "僧侶"
     # 僧侶には基本装備のみ（聖なる槌は高レベル用）
     PlayerItem.find_or_create_by(player: player, item: leather_armor) do |pi|
@@ -61,27 +61,27 @@ Player.find_each do |player|
       pi.max_durability = 100
     end
   end
-  
+
   # 全プレイヤー共通アイテム
-  
+
   # 体力回復薬（5-15個ランダム）
   PlayerItem.find_or_create_by(player: player, item: health_potion) do |pi|
     pi.quantity = rand(5..15)
     pi.equipped = false
   end
-  
+
   # MP回復薬（3-8個ランダム）
   PlayerItem.find_or_create_by(player: player, item: mana_potion) do |pi|
     pi.quantity = rand(3..8)
     pi.equipped = false
   end
-  
+
   # 鉄鉱石（素材アイテム）
   PlayerItem.find_or_create_by(player: player, item: iron_ore) do |pi|
     pi.quantity = rand(10..50)
     pi.equipped = false
   end
-  
+
   # 一部のプレイヤーにレアアイテム（30%の確率）
   if rand < 0.3 && power_ring
     PlayerItem.find_or_create_by(player: player, item: power_ring) do |pi|

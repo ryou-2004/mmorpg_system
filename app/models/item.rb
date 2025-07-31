@@ -3,27 +3,27 @@ class Item < ApplicationRecord
   has_many :players, through: :player_items
 
   enum :item_type, {
-    weapon: 'weapon',
-    armor: 'armor',
-    accessory: 'accessory',
-    consumable: 'consumable',
-    material: 'material',
-    quest: 'quest'
+    weapon: "weapon",
+    armor: "armor",
+    accessory: "accessory",
+    consumable: "consumable",
+    material: "material",
+    quest: "quest"
   }
 
   enum :rarity, {
-    common: 'common',       # コモン (白)
-    uncommon: 'uncommon',   # アンコモン (緑)
-    rare: 'rare',           # レア (青)
-    epic: 'epic',           # エピック (紫)
-    legendary: 'legendary'  # レジェンダリー (橙)
+    common: "common",       # コモン (白)
+    uncommon: "uncommon",   # アンコモン (緑)
+    rare: "rare",           # レア (青)
+    epic: "epic",           # エピック (紫)
+    legendary: "legendary"  # レジェンダリー (橙)
   }
 
   enum :sale_type, {
-    shop: 'shop',           # ショップで売却可能
-    bazaar: 'bazaar',       # バザー（プレイヤー間取引）で売却可能
-    both: 'both',           # ショップとバザー両方で売却可能
-    unsellable: 'unsellable' # 売却不可（クエストアイテムなど）
+    shop: "shop",           # ショップで売却可能
+    bazaar: "bazaar",       # バザー（プレイヤー間取引）で売却可能
+    both: "both",           # ショップとバザー両方で売却可能
+    unsellable: "unsellable" # 売却不可（クエストアイテムなど）
   }
 
   validates :name, presence: true, length: { maximum: 100 }
@@ -47,16 +47,16 @@ class Item < ApplicationRecord
   end
 
   def consumable?
-    item_type == 'consumable'
+    item_type == "consumable"
   end
 
   def rarity_color
     case rarity
-    when 'common' then '#ffffff'
-    when 'uncommon' then '#1eff00'
-    when 'rare' then '#0070dd'
-    when 'epic' then '#a335ee'
-    when 'legendary' then '#ff8000'
+    when "common" then "#ffffff"
+    when "uncommon" then "#1eff00"
+    when "rare" then "#0070dd"
+    when "epic" then "#a335ee"
+    when "legendary" then "#ff8000"
     end
   end
 
@@ -74,10 +74,10 @@ class Item < ApplicationRecord
 
   def sale_type_description
     case sale_type
-    when 'shop' then 'ショップ売却可'
-    when 'bazaar' then 'バザー売却可'
-    when 'both' then 'ショップ・バザー売却可'
-    when 'unsellable' then '売却不可'
+    when "shop" then "ショップ売却可"
+    when "bazaar" then "バザー売却可"
+    when "both" then "ショップ・バザー売却可"
+    when "unsellable" then "売却不可"
     end
   end
 end

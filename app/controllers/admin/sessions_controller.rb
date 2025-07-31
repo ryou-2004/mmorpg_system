@@ -1,5 +1,4 @@
 class Admin::SessionsController < ApplicationController
-
   def show
     authenticate_admin_user!
     render json: {
