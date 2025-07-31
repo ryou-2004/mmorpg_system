@@ -1,8 +1,6 @@
 class Admin::JobComparisonsController < ApplicationController
   before_action :authenticate_admin_user!, unless: :development_test_mode?
 
-  # GET /admin/job_comparisons
-  # 職業比較（クエリパラメータで職業IDとレベルを指定）
   def index
     job_ids = params[:job_ids] || []
     job_ids = job_ids.split(',') if job_ids.is_a?(String)
@@ -23,13 +21,11 @@ class Admin::JobComparisonsController < ApplicationController
     }
   end
 
-  # POST /admin/job_comparisons
-  # 職業比較（POSTボディで詳細な比較設定を受け取る）
   def create
     job_ids = params[:job_ids] || []
     job_ids = job_ids.split(',') if job_ids.is_a?(String)
     level = (params[:level] || 20).to_i
-    comparison_type = params[:comparison_type] || "basic" # basic, detailed, multi_level
+    comparison_type = params[:comparison_type] || "basic"
 
     if job_ids.empty?
       render json: { error: "比較する職業を選択してください" }, status: :unprocessable_entity

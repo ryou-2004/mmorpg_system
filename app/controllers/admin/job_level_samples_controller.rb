@@ -1,11 +1,9 @@
 class Admin::JobLevelSamplesController < ApplicationController
   before_action :authenticate_admin_user!, unless: :development_test_mode?
 
-  # GET /admin/job_level_samples
-  # 全職業のレベル別ステータス一覧表示
   def index
     level = (params[:level] || 20).to_i
-    level = [ [ level, 1 ].max, 100 ].min # 1-100の範囲に制限
+    level = [ [ level, 1 ].max, 100 ].min
 
     job_classes = JobClass.active.order(:job_type, :id)
 
@@ -13,7 +11,6 @@ class Admin::JobLevelSamplesController < ApplicationController
       build_job_stats_data(job_class, level)
     end
 
-    # 各ステータスでのランキング情報も追加
     rankings = build_rankings(stats_data)
 
     render json: {
@@ -23,11 +20,9 @@ class Admin::JobLevelSamplesController < ApplicationController
     }
   end
 
-  # GET /admin/job_level_samples/:level
-  # 特定レベルでの全職業ステータス表示
   def show
     level = params[:id].to_i
-    level = [ [ level, 1 ].max, 100 ].min # 1-100の範囲に制限
+    level = [ [ level, 1 ].max, 100 ].min
 
     job_classes = JobClass.active.order(:job_type, :id)
 
@@ -35,7 +30,6 @@ class Admin::JobLevelSamplesController < ApplicationController
       build_job_stats_data(job_class, level)
     end
 
-    # 各ステータスでのランキング情報も追加
     rankings = build_rankings(stats_data)
 
     render json: {

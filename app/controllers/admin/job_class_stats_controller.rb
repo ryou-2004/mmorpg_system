@@ -1,16 +1,12 @@
 class Admin::JobClassStatsController < ApplicationController
   before_action :authenticate_admin_user!, unless: :development_test_mode?
 
-  # GET /admin/job_class_stats
-  # 全職業のレベル別ステータス一覧
   def index
     job_classes = JobClass.active.order(:job_type, :id)
 
-    # レベル範囲設定（クエリパラメータで指定可能）
     if params[:levels].present?
       levels = params[:levels].split(',').map(&:to_i).select { |l| l > 0 && l <= 100 }
     else
-      # デフォルト: 基本的なマイルストーンレベル
       levels = [ 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 ]
     end
 
@@ -32,11 +28,9 @@ class Admin::JobClassStatsController < ApplicationController
     }
   end
 
-  # GET /admin/job_class_stats/:id
-  # 特定職業の成長チャート
   def show
     job_class = JobClass.find(params[:id])
-    max_level = [ job_class.max_level, 50 ].min # 最大50レベルまで表示
+    max_level = [ job_class.max_level, 50 ].min
 
     levels = (1..max_level).step(max_level > 25 ? 2 : 1).to_a
     levels << max_level unless levels.include?(max_level)
