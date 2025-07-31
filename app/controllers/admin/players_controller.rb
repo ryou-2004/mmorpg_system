@@ -43,7 +43,7 @@ class Admin::PlayersController < ApplicationController
   end
 
   def show
-    player = Player.includes(:user, current_job_class: :job_class, :player_warehouses, player_job_classes: :job_class)
+    player = Player.includes(:user, :player_warehouses, current_job_class: :job_class, player_job_classes: :job_class)
                    .find(params[:id])
     
     # パフォーマンス最適化されたカウントメソッドを使用
