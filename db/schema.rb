@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_121321) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_164122) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -105,10 +105,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_121321) do
     t.datetime "obtained_at", default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "location", default: "inventory", null: false
+    t.string "status", default: "available", null: false
+    t.boolean "locked", default: false, null: false
+    t.integer "player_warehouse_id"
+    t.integer "bazaar_listing_id"
+    t.index ["bazaar_listing_id"], name: "index_player_items_on_bazaar_listing_id"
     t.index ["equipped"], name: "index_player_items_on_equipped"
     t.index ["item_id"], name: "index_player_items_on_item_id"
+    t.index ["locked"], name: "index_player_items_on_locked"
     t.index ["player_id", "item_id"], name: "index_player_items_on_player_id_and_item_id"
+    t.index ["player_id", "location"], name: "index_player_items_on_player_id_and_location"
+    t.index ["player_id", "status"], name: "index_player_items_on_player_id_and_status"
     t.index ["player_id"], name: "index_player_items_on_player_id"
+    t.index ["player_warehouse_id"], name: "index_player_items_on_player_warehouse_id"
   end
 
   create_table "player_job_classes", force: :cascade do |t|
@@ -126,6 +136,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_121321) do
     t.index ["level"], name: "index_player_job_classes_on_level"
     t.index ["player_id", "job_class_id"], name: "index_player_job_classes_on_player_id_and_job_class_id", unique: true
     t.index ["player_id"], name: "index_player_job_classes_on_player_id"
+  end
+
+  create_table "player_warehouses", force: :cascade do |t|
+    t.integer "player_id", null: false
+    t.string "name"
+    t.integer "max_slots"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_player_warehouses_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -157,9 +176,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_121321) do
   add_foreign_key "admin_permissions", "admin_users"
   add_foreign_key "admin_permissions", "admin_users", column: "granted_by_id"
   add_foreign_key "player_items", "items"
+  add_foreign_key "player_items", "player_warehouses"
   add_foreign_key "player_items", "players"
   add_foreign_key "player_job_classes", "job_classes"
   add_foreign_key "player_job_classes", "players"
+  add_foreign_key "player_warehouses", "players"
   add_foreign_key "players", "player_job_classes", column: "current_job_class_id"
   add_foreign_key "players", "users"
 end

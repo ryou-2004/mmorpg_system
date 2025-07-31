@@ -139,10 +139,10 @@ class Admin::PlayersController < ApplicationController
   def switch_job
     player = Player.find(params[:id])
     job_class = JobClass.find(params[:job_class_id])
-    
+
     begin
       player.switch_job!(job_class)
-      
+
       render json: {
         success: true,
         message: "職業を#{job_class.name}に変更しました",
@@ -176,7 +176,7 @@ class Admin::PlayersController < ApplicationController
   def add_experience
     player = Player.find(params[:id])
     exp_amount = params[:experience].to_i
-    
+
     if exp_amount <= 0
       render json: {
         success: false,
@@ -186,7 +186,7 @@ class Admin::PlayersController < ApplicationController
     end
 
     level_ups = player.gain_experience(exp_amount)
-    
+
     render json: {
       success: true,
       message: level_ups ? "#{exp_amount}の経験値を獲得し、#{level_ups}レベル上がりました！" : "#{exp_amount}の経験値を獲得しました",

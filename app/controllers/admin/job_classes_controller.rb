@@ -44,13 +44,13 @@ class Admin::JobClassesController < ApplicationController
 
   def show
     job_class = JobClass.find(params[:id])
-    
+
     # 職業に関連するプレイヤーの統計データを取得
     player_job_classes = job_class.player_job_classes.includes(:player)
-    
+
     # レベル分布を計算
     level_distribution = player_job_classes.group(:level).count
-    
+
     # トップレベルプレイヤー
     top_players = player_job_classes.order(level: :desc, experience: :desc)
                                    .limit(10)
@@ -114,7 +114,7 @@ class Admin::JobClassesController < ApplicationController
 
   def update
     job_class = JobClass.find(params[:id])
-    
+
     if job_class.update(job_class_params)
       render json: {
         success: true,
@@ -145,10 +145,10 @@ class Admin::JobClassesController < ApplicationController
         }
       }
     else
-      render json: { 
-        success: false, 
-        message: "更新に失敗しました", 
-        errors: job_class.errors.full_messages 
+      render json: {
+        success: false,
+        message: "更新に失敗しました",
+        errors: job_class.errors.full_messages
       }, status: :unprocessable_entity
     end
   end

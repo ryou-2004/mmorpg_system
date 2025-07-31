@@ -1,5 +1,5 @@
 class Api::V1::PlayersController < ApplicationController
-  before_action :find_player, only: [:show, :switch_job, :add_experience]
+  before_action :find_player, only: [ :show, :switch_job, :add_experience ]
 
   def show
     render json: {
@@ -62,10 +62,10 @@ class Api::V1::PlayersController < ApplicationController
 
   def switch_job
     job_class = JobClass.find(params[:job_class_id])
-    
+
     begin
       @player.switch_job!(job_class)
-      
+
       render json: {
         success: true,
         message: "職業を#{job_class.name}に変更しました",
@@ -101,7 +101,7 @@ class Api::V1::PlayersController < ApplicationController
 
   def add_experience
     exp_amount = params[:experience].to_i
-    
+
     if exp_amount <= 0
       render json: {
         success: false,
@@ -111,7 +111,7 @@ class Api::V1::PlayersController < ApplicationController
     end
 
     level_ups = @player.gain_experience(exp_amount)
-    
+
     render json: {
       success: true,
       message: level_ups ? "#{exp_amount}の経験値を獲得し、#{level_ups}レベル上がりました！" : "#{exp_amount}の経験値を獲得しました",

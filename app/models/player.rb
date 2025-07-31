@@ -4,6 +4,7 @@ class Player < ApplicationRecord
   has_many :job_classes, through: :player_job_classes
   has_many :player_items, dependent: :destroy
   has_many :items, through: :player_items
+  has_many :player_warehouses, dependent: :destroy
   belongs_to :current_job_class, class_name: "PlayerJobClass", optional: true
 
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }
@@ -13,6 +14,8 @@ class Player < ApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+
+  after_create :create_default_warehouse
 
   def deactivate!
     update!(active: false)
@@ -63,5 +66,29 @@ class Player < ApplicationRecord
 
   def job_unlocked?(job_class)
     player_job_classes.exists?(job_class: job_class)
+  end
+
+  # === インベントリ・倉庫関連メソッド ===
+  def inventory_items
+    player_items.inventory_items.player_accessible
+  end
+
+  def warehouse_items(warehouse = nil)
+    items = player_items.warehouse_items.player_accessible
+    warehouse ? items.where(player_warehouse: warehouse) : items
+  end
+
+  def equipped_items
+    player_items.equipped_items.player_accessible
+  end
+
+  def main_warehouse
+    player_warehouses.first
+  end
+
+  private
+
+  def create_default_warehouse
+    player_warehouses.create!(name: "メイン倉庫", max_slots: 100)
   end
 end
