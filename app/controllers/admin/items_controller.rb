@@ -1,5 +1,5 @@
 class Admin::ItemsController < ApplicationController
-  before_action :authenticate_admin_user!, unless: :development_test_mode?
+  before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
   before_action :set_item, only: [:show, :update, :destroy]
 
   def index

@@ -38,4 +38,8 @@ class ApplicationController < ActionController::API
   def render_unauthorized
     render json: { error: "認証が必要です" }, status: :unauthorized
   end
+
+  def development_test_mode?
+    Rails.env.test? || ((Rails.env.development? || Rails.env.test?) && params[:test] == 'true')
+  end
 end

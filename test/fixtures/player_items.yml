@@ -1,21 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  player: one
-  item: one
+player_one_sword:
+  player: player_one
+  item: iron_sword
   quantity: 1
-  equipped: false
-  durability: 1
-  max_durability: 1
-  enchantment_level: 1
-  obtained_at: 2025-07-30 23:26:55
+  equipped: true
+  durability: 100
+  max_durability: 100
+  enchantment_level: 0
+  obtained_at: <%= 1.day.ago %>
 
-two:
-  player: two
-  item: two
-  quantity: 1
+player_two_potion:
+  player: player_two
+  item: health_potion
+  quantity: 5
   equipped: false
-  durability: 1
-  max_durability: 1
-  enchantment_level: 1
-  obtained_at: 2025-07-30 23:26:55
+  durability: 
+  max_durability: 
+  enchantment_level: 0
+  obtained_at: <%= 2.hours.ago %>

@@ -1,29 +1,31 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
-  item_type: MyString
-  rarity: MyString
+iron_sword:
+  name: アイアンソード
+  description: 鉄製の基本的な剣
+  item_type: weapon
+  rarity: common
   max_stack: 1
-  buy_price: 1
-  sell_price: 1
+  buy_price: 100
+  sell_price: 50
   level_requirement: 1
-  job_requirement: 
-  effects: 
-  icon_path: MyString
-  active: false
+  job_requirement: []
+  effects: [{"type": "stat_boost", "stat": "attack", "value": 10}]
+  icon_path: icons/iron_sword.png
+  active: true
+  sale_type: shop
 
-two:
-  name: MyString
-  description: MyText
-  item_type: MyString
-  rarity: MyString
-  max_stack: 1
-  buy_price: 1
-  sell_price: 1
+health_potion:
+  name: ヘルスポーション
+  description: HPを回復する薬
+  item_type: consumable
+  rarity: common
+  max_stack: 99
+  buy_price: 50
+  sell_price: 25
   level_requirement: 1
-  job_requirement: 
-  effects: 
-  icon_path: MyString
-  active: false
+  job_requirement: []
+  effects: [{"type": "heal", "value": 50}]
+  icon_path: icons/health_potion.png
+  active: true
+  sale_type: shop
