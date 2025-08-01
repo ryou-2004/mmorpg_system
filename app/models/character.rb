@@ -1,4 +1,4 @@
-class Player < ApplicationRecord
+class Character < ApplicationRecord
   belongs_to :user
   has_many :player_job_classes, dependent: :destroy
   has_many :job_classes, through: :player_job_classes
