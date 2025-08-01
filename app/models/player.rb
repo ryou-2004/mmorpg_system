@@ -94,15 +94,15 @@ class Player < ApplicationRecord
   end
 
   def inventory_count
-    item_counts_by_location.select { |key, _| key[0] == 'inventory' }.sum(&:last)
+    item_counts_by_location.select { |key, _| key[0] == "inventory" }.sum(&:last)
   end
 
   def equipped_count
-    item_counts_by_location.select { |key, _| key[0] == 'equipped' }.sum(&:last)
+    item_counts_by_location.select { |key, _| key[0] == "equipped" }.sum(&:last)
   end
 
   def warehouse_usage_by_id
-    item_counts_by_location.select { |key, _| key[0] == 'warehouse' }
+    item_counts_by_location.select { |key, _| key[0] == "warehouse" }
                            .transform_keys { |key| key[1] } # warehouse_idをキーにする
   end
 

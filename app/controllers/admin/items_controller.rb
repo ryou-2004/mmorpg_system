@@ -36,7 +36,7 @@ class Admin::ItemsController < ApplicationController
   def show
     # アイテム統計情報を効率的に取得
     item_stats = calculate_item_statistics(@item)
-    
+
     render json: {
       data: {
         id: @item.id,
@@ -145,7 +145,7 @@ class Admin::ItemsController < ApplicationController
     # 基本統計
     total_items = player_items.sum(:quantity)
     players_with_item = player_items.joins(:player).distinct.count(:player_id)
-    
+
     # プレイヤーごとの所持数を取得
     player_quantities = player_items.joins(:player)
                                    .group(:player_id)
@@ -155,14 +155,14 @@ class Admin::ItemsController < ApplicationController
     # 統計計算
     average_per_player = if players_with_item > 0
                           player_quantities.sum.to_f / players_with_item
-                        else
+    else
                           0
-                        end
+    end
 
     # 中央値計算
     median_per_player = if player_quantities.empty?
                          0
-                       else
+    else
                          sorted_quantities = player_quantities.sort
                          mid = sorted_quantities.length / 2
                          if sorted_quantities.length.odd?
@@ -170,7 +170,7 @@ class Admin::ItemsController < ApplicationController
                          else
                            (sorted_quantities[mid - 1] + sorted_quantities[mid]) / 2.0
                          end
-                       end
+    end
 
     {
       total_items: total_items,

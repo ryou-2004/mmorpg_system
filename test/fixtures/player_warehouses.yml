@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  player: one
-  name: MyString
-  max_slots: 1
+  player: player_one
+  name: メイン倉庫
+  max_slots: 100
 
 two:
-  player: two
-  name: MyString
-  max_slots: 1
+  player: player_two
+  name: メイン倉庫
+  max_slots: 100

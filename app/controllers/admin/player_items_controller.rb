@@ -3,24 +3,24 @@ class Admin::PlayerItemsController < ApplicationController
   before_action :set_player
 
   def index
-    location = params[:location] || 'inventory'
+    location = params[:location] || "inventory"
     warehouse_id = params[:warehouse_id]
-    
+
     items = case location
-            when 'inventory'
+    when "inventory"
               @player.inventory_items
-            when 'warehouse'
+    when "warehouse"
               if warehouse_id.present?
                 warehouse = @player.player_warehouses.find(warehouse_id)
                 @player.warehouse_items(warehouse)
               else
                 @player.warehouse_items
               end
-            when 'equipped'
+    when "equipped"
               @player.equipped_items
-            else
+    else
               @player.player_items.player_accessible
-            end
+    end
 
     items = items.order(:location, :created_at)
 
@@ -74,7 +74,7 @@ class Admin::PlayerItemsController < ApplicationController
 
   def show
     player_item = @player.player_items.find(params[:id])
-    
+
     render json: {
       data: {
         id: player_item.id,
@@ -124,7 +124,7 @@ class Admin::PlayerItemsController < ApplicationController
   def set_player
     @player = Player.includes(
       :player_warehouses,
-      player_items: [:item, :player_warehouse]
+      player_items: [ :item, :player_warehouse ]
     ).find(params[:player_id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "プレイヤーが見つかりません" }, status: :not_found
