@@ -1,11 +1,11 @@
-# プレイヤーに基本職業を割り当て
+# キャラクターに基本職業を割り当て
 warrior_job = JobClass.find_by!(name: '戦士')
 mage_job = JobClass.find_by!(name: '魔法使い')
 priest_job = JobClass.find_by!(name: '僧侶')
 thief_job = JobClass.find_by!(name: '盗賊')
 
-# プレイヤーと職業の組み合わせを定義
-player_job_data = [
+# キャラクターと職業の組み合わせを定義
+character_job_data = [
   # 田中太郎のキャラクター
   { user_email: 'player1@example.com', name: 'アキラ', gold: 5000, jobs: [ warrior_job, priest_job ] },
   { user_email: 'player1@example.com', name: 'アキラ２号', gold: 3000, jobs: [ mage_job ] },
@@ -30,8 +30,8 @@ player_job_data = [
   { user_email: 'john@example.com', name: 'J-man', gold: 6000, jobs: [ thief_job, warrior_job ] }
 ]
 
-created_players = []
-player_job_data.each do |data|
+created_characters = []
+character_job_data.each do |data|
   user = User.find_by!(email: data[:user_email])
 
   # そのユーザーのキャラクターの中で同じ名前がないかチェック
@@ -46,7 +46,7 @@ player_job_data.each do |data|
     character.unlock_job!(job)
   end
 
-  created_players << character
+  created_characters << character
 end
 
 puts "キャラクターデータと職業の割り当てが完了しました"

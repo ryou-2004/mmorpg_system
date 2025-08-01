@@ -175,10 +175,10 @@ class Admin::ItemsController < ApplicationController
     {
       total_items: total_items,
       characters_with_item: characters_with_item,
-      average_per_player: average_per_character.round(2),
-      median_per_player: median_per_character,
-      max_per_player: character_quantities.max || 0,
-      min_per_player: character_quantities.min || 0
+      average_per_character: average_per_character.round(2),
+      median_per_character: median_per_character,
+      max_per_character: character_quantities.max || 0,
+      min_per_character: character_quantities.min || 0
     }
   end
 end
