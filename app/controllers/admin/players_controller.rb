@@ -11,6 +11,7 @@ class Admin::PlayersController < ApplicationController
           id: player.id,
           name: player.name,
           gold: player.gold,
+          active: player.active,
           current_job_name: player.current_job_class ? player.current_job_name : "未設定",
           current_job_level: player.current_job_class ? player.level : 0
         }
