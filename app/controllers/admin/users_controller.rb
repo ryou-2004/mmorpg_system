@@ -23,7 +23,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
-    user = User.includes(characters: { character_job_classes: :job_class })
+    user = User.includes(characters: { character_job_classes: :job_class, current_character_job_class: :job_class })
                .find(params[:id])
 
     render json: {
@@ -42,6 +42,13 @@ class Admin::UsersController < ApplicationController
             active: character.active,
             created_at: character.created_at,
             last_login_at: character.last_login_at,
+            current_job: character.current_character_job_class ? {
+              id: character.current_character_job_class.job_class.id,
+              name: character.current_character_job_class.job_class.name,
+              job_type: character.current_character_job_class.job_class.job_type,
+              level: character.current_character_job_class.level,
+              experience: character.current_character_job_class.experience
+            } : nil,
             job_classes: character.character_job_classes.map do |cjc|
               {
                 id: cjc.job_class.id,
