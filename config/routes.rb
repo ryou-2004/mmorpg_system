@@ -3,12 +3,12 @@ Rails.application.routes.draw do
     resource :session, only: [ :show, :create, :destroy ]
     resource :dashboard, only: [ :show ]
     resources :users, only: [ :index, :show ]
-    resources :players, only: [ :index, :show ] do
+    resources :characters, only: [ :index, :show ] do
       member do
         patch :switch_job
         patch :add_experience
       end
-      resources :player_items, only: [ :index, :show ]
+      resources :character_items, only: [ :index, :show ]
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :players, only: [ :show ] do
+      resources :characters, only: [ :show ] do
         member do
           patch :switch_job
           patch :add_experience

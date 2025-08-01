@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Admin::PlayerItemsControllerTest < ActionDispatch::IntegrationTest
+class Admin::CharacterItemsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

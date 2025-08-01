@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PlayerWarehouseTest < ActiveSupport::TestCase
+class CharacterWarehouseTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

@@ -2,8 +2,8 @@ class Admin::JobClassesController < ApplicationController
   before_action :authenticate_admin_user!, unless: :development_test_mode?
 
   def index
-    job_classes = JobClass.left_joins(:player_job_classes)
-                         .select("job_classes.*, COUNT(player_job_classes.id) as players_count")
+    job_classes = JobClass.left_joins(:character_job_classes)
+                         .select("job_classes.*, COUNT(character_job_classes.id) as characters_count")
                          .group("job_classes.id")
                          .order(:id)
 
@@ -36,7 +36,7 @@ class Admin::JobClassesController < ApplicationController
             luck: job_class.luck_multiplier
           },
           created_at: job_class.created_at,
-          players_count: job_class.players_count
+          characters_count: job_class.characters_count
         }
       end
     }
@@ -45,14 +45,14 @@ class Admin::JobClassesController < ApplicationController
   def show
     job_class = JobClass.find(params[:id])
 
-    # 職業に関連するプレイヤーの統計データを取得
-    player_job_classes = job_class.player_job_classes.includes(:player)
+    # 職業に関連するキャラクターの統計データを取得
+    character_job_classes = job_class.character_job_classes.includes(:character)
 
     # レベル分布を計算
-    level_distribution = player_job_classes.group(:level).count
+    level_distribution = character_job_classes.group(:level).count
 
-    # トップレベルプレイヤー
-    top_players = player_job_classes.order(level: :desc, experience: :desc)
+    # トップレベルキャラクター
+    top_characters = character_job_classes.order(level: :desc, experience: :desc)
                                    .limit(10)
                                    .map do |pjc|
       {
@@ -103,12 +103,12 @@ class Admin::JobClassesController < ApplicationController
         luck: job_class.luck_multiplier
       },
       stats: {
-        total_players: player_job_classes.count,
-        average_level: player_job_classes.average(:level)&.round(2) || 0,
-        max_level_reached: player_job_classes.maximum(:level) || 1,
+        total_characters: character_job_classes.count,
+        average_level: character_job_classes.average(:level)&.round(2) || 0,
+        max_level_reached: character_job_classes.maximum(:level) || 1,
         level_distribution: level_distribution
       },
-      top_players: top_players
+      top_characters: top_characters
     }
   end
 

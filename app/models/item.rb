@@ -1,6 +1,6 @@
 class Item < ApplicationRecord
-  has_many :player_items, dependent: :destroy
-  has_many :players, through: :player_items
+  has_many :character_items, dependent: :destroy
+  has_many :players, through: :character_items
 
   enum :item_type, {
     weapon: "weapon",
@@ -21,7 +21,7 @@ class Item < ApplicationRecord
 
   enum :sale_type, {
     shop: "shop",           # ショップで売却可能
-    bazaar: "bazaar",       # バザー（プレイヤー間取引）で売却可能
+    bazaar: "bazaar",       # バザー（キャラクター間取引）で売却可能
     both: "both",           # ショップとバザー両方で売却可能
     unsellable: "unsellable" # 売却不可（クエストアイテムなど）
   }

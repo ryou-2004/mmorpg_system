@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_many :players, dependent: :destroy
+  has_many :characters, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :name, presence: true, length: { minimum: 2, maximum: 50 }

@@ -82,8 +82,8 @@ class Api::V1::JobClassesController < ApplicationController
       return
     end
 
-    # 仮のPlayerJobClassインスタンスを作成してステータス計算
-    temp_pjc = PlayerJobClass.new(
+    # 仮のCharacterJobClassインスタンスを作成してステータス計算
+    temp_pjc = CharacterJobClass.new(
       job_class: job_class,
       level: level,
       experience: 0,

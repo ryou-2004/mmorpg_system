@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-player_one:
+character_one:
   user: user_one
   name: テストプレイヤー1
   gold: 1000
   active: true
   last_login_at: <%= 1.hour.ago %>
 
-player_two:
+character_two:
   user: user_two
   name: テストプレイヤー2
   gold: 2500

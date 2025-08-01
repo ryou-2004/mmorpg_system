@@ -7,10 +7,12 @@ class Character < ApplicationRecord
   has_many :character_warehouses, dependent: :destroy
   belongs_to :current_character_job_class, class_name: "CharacterJobClass", optional: true
 
+  attr_accessor :skip_job_validation
+
   validates :name, presence: true, length: { minimum: 2, maximum: 20 }
   validates :name, uniqueness: { scope: :user_id }
   validates :gold, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :current_character_job_class, presence: true
+  validates :current_character_job_class, presence: true, unless: :skip_job_validation
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
@@ -40,9 +42,16 @@ class Character < ApplicationRecord
   end
 
   def unlock_job!(job_class)
-    character_job_classes.find_or_create_by!(job_class: job_class) do |cjc|
+    character_job_class = character_job_classes.find_or_create_by!(job_class: job_class) do |cjc|
       cjc.unlocked_at = Time.current
     end
+    
+    # If this is the first job, set it as current
+    if current_character_job_class.nil?
+      update!(current_character_job_class: character_job_class)
+    end
+    
+    character_job_class
   end
 
   # 現在の職業への委譲メソッド

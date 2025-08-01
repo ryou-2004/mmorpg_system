@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PlayerJobClassTest < ActiveSupport::TestCase
+class CharacterJobClassTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

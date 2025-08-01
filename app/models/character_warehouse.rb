@@ -1,6 +1,6 @@
-class PlayerWarehouse < ApplicationRecord
-  belongs_to :player
-  has_many :player_items, dependent: :destroy
+class CharacterWarehouse < ApplicationRecord
+  belongs_to :character
+  has_many :character_items, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :max_slots, presence: true, numericality: { greater_than: 0 }
@@ -8,7 +8,7 @@ class PlayerWarehouse < ApplicationRecord
   after_initialize :set_default_name, if: :new_record?
 
   def available_slots
-    max_slots - player_items.player_accessible.count
+    max_slots - character_items.character_accessible.count
   end
 
   def full?
@@ -18,7 +18,7 @@ class PlayerWarehouse < ApplicationRecord
   private
 
   def set_default_name
-    warehouse_count = player&.player_warehouses&.count || 0
+    warehouse_count = character&.character_warehouses&.count || 0
     self.name ||= case warehouse_count
     when 0 then "メイン倉庫"
     when 1 then "サブ倉庫"

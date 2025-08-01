@@ -1,7 +1,7 @@
-class PlayerItem < ApplicationRecord
-  belongs_to :player
+class CharacterItem < ApplicationRecord
+  belongs_to :character
   belongs_to :item
-  belongs_to :player_warehouse, optional: true
+  belongs_to :character_warehouse, optional: true
   belongs_to :bazaar_listing, optional: true
 
   enum :location, {
@@ -22,7 +22,7 @@ class PlayerItem < ApplicationRecord
   validates :locked, inclusion: { in: [ true, false ] }
 
   # === 状態判定メソッド ===
-  def player_accessible?
+  def character_accessible?
     available?
   end
 
@@ -50,7 +50,7 @@ class PlayerItem < ApplicationRecord
     bazaar_listed? || mail_attached?
   end
 
-  # === プレイヤー保護ロック機能 ===
+  # === キャラクター保護ロック機能 ===
   def toggle_lock!
     return false unless available?
     update!(locked: !locked?)
@@ -83,8 +83,8 @@ class PlayerItem < ApplicationRecord
   end
 
   # === スコープ ===
-  scope :player_accessible, -> { where(status: "available") }
-  scope :actionable_items, -> { player_accessible.where(locked: false) }
+  scope :character_accessible, -> { where(status: "available") }
+  scope :actionable_items, -> { character_accessible.where(locked: false) }
   scope :locked_items, -> { where(locked: true) }
   scope :admin_locked_items, -> { where(status: "admin_locked") }
   scope :inventory_items, -> { where(location: "inventory") }
@@ -97,19 +97,19 @@ class PlayerItem < ApplicationRecord
     location == "equipped"
   end
 
-  def can_stack_with?(other_player_item)
-    return false unless item == other_player_item.item
+  def can_stack_with?(other_character_item)
+    return false unless item == other_character_item.item
     return false unless item.stackable?
-    return false if equipped? || other_player_item.equipped?
-    return false unless available? && other_player_item.available?
+    return false if equipped? || other_character_item.equipped?
+    return false unless available? && other_character_item.available?
 
-    enchantment_level == other_player_item.enchantment_level
+    enchantment_level == other_character_item.enchantment_level
   end
 
   def total_quantity_available
     return quantity unless item.stackable?
 
-    player.player_items
+    character.character_items
           .where(item: item, enchantment_level: enchantment_level)
           .where.not(location: "equipped")
           .actionable_items

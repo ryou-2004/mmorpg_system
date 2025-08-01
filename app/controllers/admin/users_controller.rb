@@ -2,8 +2,8 @@ class Admin::UsersController < ApplicationController
   before_action :authenticate_admin_user!
 
   def index
-    users = User.left_joins(:players)
-                .select("users.*, COUNT(players.id) as player_count")
+    users = User.left_joins(:characters)
+                .select("users.*, COUNT(characters.id) as character_count")
                 .group("users.id")
                 .order(created_at: :desc)
 
@@ -15,7 +15,7 @@ class Admin::UsersController < ApplicationController
           email: user.email,
           created_at: user.created_at,
           last_login_at: user.last_login_at,
-          player_count: user.player_count.to_i,
+          character_count: user.character_count.to_i,
           is_active: user.active
         }
       end
@@ -23,7 +23,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
-    user = User.includes(players: { player_job_classes: :job_class })
+    user = User.includes(characters: { character_job_classes: :job_class })
                .find(params[:id])
 
     render json: {
@@ -34,22 +34,22 @@ class Admin::UsersController < ApplicationController
         active: user.active,
         created_at: user.created_at,
         last_login_at: user.last_login_at,
-        players: user.players.map do |player|
+        characters: user.characters.map do |character|
           {
-            id: player.id,
-            name: player.name,
-            gold: player.gold,
-            active: player.active,
-            created_at: player.created_at,
-            last_login_at: player.last_login_at,
-            job_classes: player.player_job_classes.map do |pjc|
+            id: character.id,
+            name: character.name,
+            gold: character.gold,
+            active: character.active,
+            created_at: character.created_at,
+            last_login_at: character.last_login_at,
+            job_classes: character.character_job_classes.map do |cjc|
               {
-                id: pjc.job_class.id,
-                name: pjc.job_class.name,
-                job_type: pjc.job_class.job_type,
-                level: pjc.level,
-                experience: pjc.experience,
-                unlocked_at: pjc.unlocked_at
+                id: cjc.job_class.id,
+                name: cjc.job_class.name,
+                job_type: cjc.job_class.job_type,
+                level: cjc.level,
+                experience: cjc.experience,
+                unlocked_at: cjc.unlocked_at
               }
             end
           }

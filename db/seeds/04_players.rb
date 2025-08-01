@@ -34,21 +34,22 @@ created_players = []
 player_job_data.each do |data|
   user = User.find_by!(email: data[:user_email])
 
-  # そのユーザーのプレイヤーの中で同じ名前がないかチェック
-  player = user.players.find_or_create_by!(name: data[:name]) do |p|
-    p.gold = data[:gold]
-    p.active = true
+  # そのユーザーのキャラクターの中で同じ名前がないかチェック
+  character = user.characters.find_or_create_by!(name: data[:name]) do |c|
+    c.gold = data[:gold]
+    c.active = true
+    c.skip_job_validation = true
   end
 
   # 職業を割り当て
   data[:jobs].each do |job|
-    player.unlock_job!(job)
+    character.unlock_job!(job)
   end
 
-  created_players << player
+  created_players << character
 end
 
-puts "プレイヤーデータと職業の割り当てが完了しました"
+puts "キャラクターデータと職業の割り当てが完了しました"
 puts "総ユーザー数: #{User.count}"
-puts "総プレイヤー数: #{Player.count}"
-puts "総職業習得数: #{PlayerJobClass.count}"
+puts "総キャラクター数: #{Character.count}"
+puts "総職業習得数: #{CharacterJobClass.count}"

@@ -11,8 +11,8 @@ class Admin::DashboardsController < ApplicationController
         active_permissions: AdminPermission.active.count,
         total_users: User.count,
         active_users: User.active.count,
-        total_players: Player.count,
-        active_players: Player.active.count,
+        total_characters: Character.count,
+        active_characters: Character.active.count,
         total_job_classes: JobClass.count,
         active_job_classes: JobClass.active.count,
         basic_jobs: JobClass.basic.count,
@@ -36,8 +36,8 @@ class Admin::DashboardsController < ApplicationController
       job_classes: JobClass.active.select(:id, :name, :job_type, :max_level),
       recent_activity: {
         new_users_today: User.where("created_at >= ?", Date.current).count,
-        new_players_today: Player.where("created_at >= ?", Date.current).count,
-        active_players_today: Player.where("last_login_at >= ?", Date.current).count
+        new_characters_today: Character.where("created_at >= ?", Date.current).count,
+        active_characters_today: Character.where("last_login_at >= ?", Date.current).count
       }
     }
 

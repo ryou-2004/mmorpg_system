@@ -140,21 +140,21 @@ class Admin::ItemsController < ApplicationController
 
   # アイテム統計情報を計算
   def calculate_item_statistics(item)
-    player_items = PlayerItem.where(item: item).player_accessible
+    character_items = CharacterItem.where(item: item).player_accessible
 
     # 基本統計
-    total_items = player_items.sum(:quantity)
-    players_with_item = player_items.joins(:player).distinct.count(:player_id)
+    total_items = character_items.sum(:quantity)
+    characters_with_item = character_items.joins(:character).distinct.count(:character_id)
 
-    # プレイヤーごとの所持数を取得
-    player_quantities = player_items.joins(:player)
-                                   .group(:player_id)
+    # キャラクターごとの所持数を取得
+    player_quantities = character_items.joins(:character)
+                                   .group(:character_id)
                                    .sum(:quantity)
                                    .values
 
     # 統計計算
-    average_per_player = if players_with_item > 0
-                          player_quantities.sum.to_f / players_with_item
+    average_per_player = if characters_with_item > 0
+                          player_quantities.sum.to_f / characters_with_item
     else
                           0
     end
@@ -174,7 +174,7 @@ class Admin::ItemsController < ApplicationController
 
     {
       total_items: total_items,
-      players_with_item: players_with_item,
+      characters_with_item: characters_with_item,
       average_per_player: average_per_player.round(2),
       median_per_player: median_per_player,
       max_per_player: player_quantities.max || 0,

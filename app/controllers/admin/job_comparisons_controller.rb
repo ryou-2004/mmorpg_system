@@ -88,7 +88,7 @@ class Admin::JobComparisonsController < ApplicationController
   end
 
   def build_comparison_data(job_class, level)
-    temp_pjc = PlayerJobClass.new(
+    temp_pjc = CharacterJobClass.new(
       job_class: job_class,
       level: level,
       experience: 0,
@@ -126,7 +126,7 @@ class Admin::JobComparisonsController < ApplicationController
   end
 
   def build_level_stats(job_class, level)
-    temp_pjc = PlayerJobClass.new(
+    temp_pjc = CharacterJobClass.new(
       job_class: job_class,
       level: level,
       experience: 0,

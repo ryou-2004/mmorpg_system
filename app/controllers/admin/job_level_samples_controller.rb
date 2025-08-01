@@ -42,7 +42,7 @@ class Admin::JobLevelSamplesController < ApplicationController
   private
 
   def build_job_stats_data(job_class, level)
-    temp_pjc = PlayerJobClass.new(
+    temp_pjc = CharacterJobClass.new(
       job_class: job_class,
       level: level,
       experience: 0,
