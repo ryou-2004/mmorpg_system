@@ -34,51 +34,89 @@ Dragon Quest風のMMORPG職業システムをRails API + Next.js管理画面 + U
 └── MMORPG_SYSTEM_DESIGN.md # 全体設計書
 ```
 
-## 現在の実装状況 (2025-07-31)
+## 現在の実装状況 (2025-08-01)
 
 ### ✅ 実装済み機能
 
 #### データベース設計
 - **基本認証システム**: Users, AdminUsers
-- **職業毎レベルシステム**: PlayerJobClass model with delegate pattern
-- **動的ステータス計算**: JobClass基本値 + レベル成長 × 職業補正値
-- **現在職業管理**: Player.current_job_class_id
-- **データマイグレーション**: 既存PlayerStatからPlayerJobClassへの移行完了
+- **キャラクター職業システム**: CharacterJobClass model with delegate pattern
+- **動的ステータス計算**: JobClass基本値 + レベル成長 × 職業補正値  
+- **現在職業管理**: Character.current_character_job_class_id
+- **データマイグレーション**: Player → Character 名称統一完了
 
 #### API エンドポイント (RESTful化完了)
+- `GET /admin/users` - ユーザー一覧・詳細
+- `GET /admin/characters` - キャラクター一覧・詳細
+- `GET /admin/job_classes` - 職業一覧・詳細・編集
+- `GET /admin/items` - アイテム一覧・詳細・編集
+- `GET /admin/characters/:id/character_job_classes/:id` - キャラクター職業詳細
 - `GET /admin/job_class_stats` - 全職業レベル別統計
-- `GET /admin/job_class_stats/:id` - 個別職業成長チャート  
 - `GET /admin/job_level_samples` - レベル別職業比較・ランキング
 - `GET /admin/job_comparisons` - 職業間比較・マルチレベル対応
-- 基本CRUD: Users, Players, JobClasses管理
 
-#### Next.js管理画面
-- 認証システム (JWT Token)
-- ユーザー管理・プレイヤー管理・職業管理
-- **職業統計システム**: 
-  - `/job-stats` - 職業統計メイン画面
-  - `/job-stats/level-samples` - レベル別統計・ランキング
-  - `/job-stats/compare` - 職業比較ツール
-- TailwindCSS レスポンシブデザイン
-- AdminLayout統一レイアウト
+#### Next.js管理画面 (完全実装済み)
+- **認証システム**: JWT Token ベース
+- **ユーザー管理**: 一覧・詳細（現在の職業表示、キャラクター管理）
+- **キャラクター管理**: 一覧・詳細・職業切り替え・倉庫管理
+- **職業管理**: 一覧・詳細・編集（フローティングボタン）
+- **アイテム管理**: 一覧・詳細・500エラー修正済み
+- **キャラクター職業詳細**: 個人成長履歴・レベル進捗バー・統計表示
+- **職業マスター詳細**: 同職業ランキング・統計情報・基本値/成長率表示
+- **職業統計システム**: レベル別統計・職業比較ツール
+- **TailwindCSS**: レスポンシブデザイン・統一UI/UX
+- **表形式レイアウト**: 一覧画面の統一デザイン
+- **クリッカブルカード**: 詳細ページへの直接遷移
 
-### 🔥 次期実装予定 (Phase 1)
+### 🔥 実装予定項目 (優先度順)
 
-#### アイテムシステム基盤
-```ruby
-# 予定モデル
-class Item < ApplicationRecord
-  enum item_type: { weapon: 'weapon', armor: 'armor', consumable: 'consumable' }
-  enum rarity: { common: 'common', rare: 'rare', epic: 'epic', legendary: 'legendary' }
-  # fields: name, description, effects:json, buy_price, sell_price, etc.
-end
+#### Phase 1: 基盤システム完成 (高優先度)
+1. **残りモデル更新** (CharacterItem, Warehouse)
+   - Player → Character 名称統一の最終仕上げ
+   - データベース整合性確保
 
-class PlayerItem < ApplicationRecord
-  belongs_to :player
-  belongs_to :item
-  # fields: quantity, equipped, durability, enchantment_level, etc.
-end
-```
+2. **アイテム管理システム実装**
+   - アイテム作成・編集・削除機能
+   - アイテム種別・レアリティ管理
+   - アイテム効果システム設計
+
+3. **キャラクター装備システム実装**
+   - 装備スロット管理
+   - 装備品効果計算
+   - 装備変更API実装
+
+#### Phase 2: ゲームシステム拡張 (中優先度)
+4. **テストファイル・fixture更新**
+   - RSpec テストスイート整備
+   - テストデータ整合性確保
+
+5. **レベルアップロジック実装**
+   - 経験値計算・レベルアップ処理
+   - スキルポイント付与システム
+   - レベルアップ時の自動ステータス更新
+
+6. **スキルシステム基盤実装**
+   - Skill, CharacterSkill モデル作成
+   - Strategy Pattern による Effect システム
+   - スキル設定ファイル (YAML) 読み込み
+
+7. **倉庫システム詳細実装**
+   - 倉庫容量管理・アイテム移動
+   - 倉庫種別対応・アクセス権限
+
+8. **API認証システム強化**
+   - JWT Token 有効期限管理
+   - 管理者権限レベル設定
+
+#### Phase 3: パフォーマンス・戦闘システム (低優先度)
+9. **データベースパフォーマンス最適化**
+   - インデックス設定最適化
+   - N+1問題解決・クエリ最適化
+
+10. **戦闘システム基盤実装**
+    - ActionCable セットアップ
+    - BattleRoom 実装・戦闘API実装
+    - セミリアルタイム戦闘ロジック
 
 ## 実装アーキテクチャ
 
@@ -142,29 +180,24 @@ JobStatsController (旧)
 5. 日本語コミットメッセージでコミット
 6. プッシュ
 
-## 実装ロードマップ
+## 実装完了項目 (2025-08-01時点)
 
-### Phase 1: アイテムシステム基盤 🔥 (最優先)
-- Item モデル・マイグレーション作成
-- PlayerItem モデル・マイグレーション作成
-- アイテム Seed データ作成 (武器10種、防具15種、消耗品8種)
-- Items API実装 (admin/api)
-- アイテム管理画面実装 (Next.js)
+### 🎉 今セッションで完了した機能
+1. **Player → Character 名称統一**: 全システムでの一貫した名称使用
+2. **ユーザー詳細画面修正**: 現在の職業表示・キャラクターカードのクリッカブル化
+3. **キャラクター管理画面**: 表形式レイアウト・名前リンク削除
+4. **アイテム詳細ページ修正**: scope名変更による500エラー解決
+5. **倉庫ページ修正**: 変数名不整合によるReferenceError解決
+6. **キャラクター詳細修正**: 職業名表示・API構造対応
+7. **職業マスター管理**: 詳細・編集ページ実装・フローティングボタン
+8. **キャラクター職業詳細**: 個人成長履歴・レベル進捗・統計表示
+9. **同職業ランキング移動**: キャラクター個人 → 職業マスター詳細へ移設
 
-### Phase 2: ステータスシステム 📊
-- PlayerStat モデル見直し (現在はPlayerJobClassに統合済み)
-- レベルアップロジック実装
-- 装備品効果計算システム
-
-### Phase 3: スキルシステム ⚔️
-- Skill, PlayerSkill モデル作成
-- Effect システム実装 (Strategy Pattern)
-- スキル設定読み込み (YAML)
-
-### Phase 4: 戦闘システム基盤 ⚔️
-- ActionCable セットアップ
-- BattleRoom 実装
-- 戦闘API実装
+### 💡 設計改善点
+- **UI/UX統一**: 全画面で一貫したTailwindCSSデザイン
+- **ナビゲーション改善**: クリッカブルカード・直感的な操作性
+- **情報整理**: 個人データと全体統計の適切な分離
+- **エラー解決**: 命名規則統一によるバグ修正
 
 ## 開発環境・確認事項
 
@@ -193,11 +226,11 @@ http://localhost:3000/admin/job_level_samples?level=30&test=true
 ```
 
 ## 次回セッション時の確認事項
-1. **Todoリストの継続状況**: 現在21項目完了
-2. **実装中の機能詳細**: アイテムシステム着手予定
-3. **発生している課題・エラー**: 特になし (2025-07-31時点)
-4. **ユーザーからの新しい要求**: 次のフェーズ指示待ち
-5. **設計書整合性**: MMORPG_SYSTEM_DESIGN.mdとの同期確認
+1. **Todoリストの継続状況**: 現在29項目完了・10項目待機中
+2. **最優先実装項目**: 残りモデル更新 (CharacterItem, Warehouse)
+3. **発生している課題・エラー**: 特になし (2025-08-01時点)
+4. **次期フェーズ**: アイテム管理システム・装備システム実装
+5. **管理画面完成度**: 基本機能100%実装済み
 
 ## 重要なファイル
 - `MMORPG_SYSTEM_DESIGN.md`: 全体設計書・ロードマップ
@@ -206,4 +239,4 @@ http://localhost:3000/admin/job_level_samples?level=30&test=true
 - `app/controllers/admin/job_*_controller.rb`: RESTful API実装例
 
 ---
-*最終更新: 2025-07-31 - 職業統計システムRESTful化・MMORPG設計書統合完了*
+*最終更新: 2025-08-01 - Player→Character名称統一・キャラクター職業詳細ページ実装・管理画面UI/UX統一完了*
