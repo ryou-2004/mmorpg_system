@@ -1,5 +1,4 @@
-class Admin::JobComparisonsController < ApplicationController
-  before_action :authenticate_admin_user!, unless: :development_test_mode?
+class Admin::JobComparisonsController < Admin::BaseController
 
   def index
     job_ids = params[:job_ids] || []
@@ -149,7 +148,4 @@ class Admin::JobComparisonsController < ApplicationController
     }
   end
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end

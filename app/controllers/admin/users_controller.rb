@@ -1,5 +1,4 @@
-class Admin::UsersController < ApplicationController
-  before_action :authenticate_admin_user!
+class Admin::UsersController < Admin::BaseController
 
   def index
     users = User.left_joins(:characters)

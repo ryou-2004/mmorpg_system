@@ -1,5 +1,4 @@
-class Admin::JobLevelSamplesController < ApplicationController
-  before_action :authenticate_admin_user!, unless: :development_test_mode?
+class Admin::JobLevelSamplesController < Admin::BaseController
 
   def index
     level = (params[:level] || 20).to_i
@@ -92,7 +91,4 @@ class Admin::JobLevelSamplesController < ApplicationController
     rankings
   end
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end

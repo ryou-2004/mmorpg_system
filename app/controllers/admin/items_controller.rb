@@ -1,5 +1,4 @@
-class Admin::ItemsController < ApplicationController
-  before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
+class Admin::ItemsController < Admin::BaseController
   before_action :set_item, only: [ :show, :update, :destroy ]
 
   def index
@@ -134,9 +133,6 @@ class Admin::ItemsController < ApplicationController
     }
   end
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 
   # アイテム統計情報を計算
   def calculate_item_statistics(item)

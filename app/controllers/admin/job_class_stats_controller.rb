@@ -1,5 +1,4 @@
-class Admin::JobClassStatsController < ApplicationController
-  before_action :authenticate_admin_user!, unless: :development_test_mode?
+class Admin::JobClassStatsController < Admin::BaseController
 
   def index
     job_classes = JobClass.active.order(:job_type, :id)
@@ -124,7 +123,4 @@ class Admin::JobClassStatsController < ApplicationController
     ((last_stat - first_stat).to_f / level_diff).round(2)
   end
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end

@@ -1,5 +1,4 @@
-class Admin::CharacterItemsController < ApplicationController
-  before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
+class Admin::CharacterItemsController < Admin::BaseController
   before_action :set_character
 
   def index
@@ -130,7 +129,4 @@ class Admin::CharacterItemsController < ApplicationController
     render json: { error: "キャラクターが見つかりません" }, status: :not_found
   end
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end

@@ -1,5 +1,4 @@
-class Admin::CharacterJobClassesController < ApplicationController
-  before_action :authenticate_admin_user!, unless: :development_test_mode?
+class Admin::CharacterJobClassesController < Admin::BaseController
 
   def show
     character_job_class = CharacterJobClass.includes(:character, :job_class)
@@ -61,7 +60,4 @@ class Admin::CharacterJobClassesController < ApplicationController
 
   private
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end

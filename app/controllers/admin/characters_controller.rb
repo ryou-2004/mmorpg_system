@@ -1,5 +1,4 @@
-class Admin::CharactersController < ApplicationController
-  before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
+class Admin::CharactersController < Admin::BaseController
 
   def index
     characters = Character.includes(current_character_job_class: :job_class)
@@ -169,7 +168,4 @@ class Admin::CharactersController < ApplicationController
 
   private
 
-  def development_test_mode?
-    Rails.env.development? && params[:test] == "true"
-  end
 end
