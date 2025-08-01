@@ -56,7 +56,7 @@ class Admin::JobClassesController < ApplicationController
                                    .limit(10)
                                    .map do |pjc|
       {
-        player_name: pjc.player.name,
+        character_name: pjc.character.name,
         level: pjc.level,
         experience: pjc.experience,
         skill_points: pjc.skill_points,
