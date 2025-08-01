@@ -1,5 +1,5 @@
-class PlayerJobClass < ApplicationRecord
-  belongs_to :player
+class CharacterJobClass < ApplicationRecord
+  belongs_to :character
   belongs_to :job_class
 
   validates :level, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
@@ -8,7 +8,7 @@ class PlayerJobClass < ApplicationRecord
   validates :skill_points, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   validate :level_within_job_class_limits
-  validate :unique_player_job_class
+  validate :unique_character_job_class
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
@@ -61,7 +61,7 @@ class PlayerJobClass < ApplicationRecord
     # スキルポイント獲得
     self.skill_points += 5
 
-    Rails.logger.info "Player #{player.name} leveled up #{job_class.name} from #{old_level} to #{level}!"
+    Rails.logger.info "Character #{character.name} leveled up #{job_class.name} from #{old_level} to #{level}!"
   end
 
   # 次のレベルまでの必要経験値
@@ -196,14 +196,14 @@ class PlayerJobClass < ApplicationRecord
     end
   end
 
-  def unique_player_job_class
-    return unless player && job_class
+  def unique_character_job_class
+    return unless character && job_class
 
-    existing = PlayerJobClass.where(player: player, job_class: job_class)
-                            .where.not(id: id)
+    existing = CharacterJobClass.where(character: character, job_class: job_class)
+                               .where.not(id: id)
 
     if existing.exists?
-      errors.add(:job_class, "は既にこのプレイヤーに設定されています")
+      errors.add(:job_class, "は既にこのキャラクターに設定されています")
     end
   end
 end
