@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         patch :add_experience
       end
       resources :character_items, only: [ :index, :show ]
+      resources :character_job_classes, only: [ :show ]
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
