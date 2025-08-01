@@ -140,30 +140,30 @@ class Admin::ItemsController < ApplicationController
 
   # アイテム統計情報を計算
   def calculate_item_statistics(item)
-    character_items = CharacterItem.where(item: item).player_accessible
+    character_items = CharacterItem.where(item: item).character_accessible
 
     # 基本統計
     total_items = character_items.sum(:quantity)
     characters_with_item = character_items.joins(:character).distinct.count(:character_id)
 
     # キャラクターごとの所持数を取得
-    player_quantities = character_items.joins(:character)
+    character_quantities = character_items.joins(:character)
                                    .group(:character_id)
                                    .sum(:quantity)
                                    .values
 
     # 統計計算
-    average_per_player = if characters_with_item > 0
-                          player_quantities.sum.to_f / characters_with_item
+    average_per_character = if characters_with_item > 0
+                          character_quantities.sum.to_f / characters_with_item
     else
                           0
     end
 
     # 中央値計算
-    median_per_player = if player_quantities.empty?
+    median_per_character = if character_quantities.empty?
                          0
     else
-                         sorted_quantities = player_quantities.sort
+                         sorted_quantities = character_quantities.sort
                          mid = sorted_quantities.length / 2
                          if sorted_quantities.length.odd?
                            sorted_quantities[mid]
@@ -175,10 +175,10 @@ class Admin::ItemsController < ApplicationController
     {
       total_items: total_items,
       characters_with_item: characters_with_item,
-      average_per_player: average_per_player.round(2),
-      median_per_player: median_per_player,
-      max_per_player: player_quantities.max || 0,
-      min_per_player: player_quantities.min || 0
+      average_per_player: average_per_character.round(2),
+      median_per_player: median_per_character,
+      max_per_player: character_quantities.max || 0,
+      min_per_player: character_quantities.min || 0
     }
   end
 end
