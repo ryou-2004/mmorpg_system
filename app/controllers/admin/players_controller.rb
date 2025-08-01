@@ -2,7 +2,7 @@ class Admin::PlayersController < ApplicationController
   before_action :authenticate_admin_user!, unless: -> { Rails.env.test? || development_test_mode? }
 
   def index
-    players = Player.includes(:user, current_job_class: :job_class)
+    players = Player.includes(current_job_class: :job_class)
                    .order(created_at: :desc)
 
     render json: {
@@ -11,32 +11,8 @@ class Admin::PlayersController < ApplicationController
           id: player.id,
           name: player.name,
           gold: player.gold,
-          active: player.active,
-          created_at: player.created_at,
-          last_login_at: player.last_login_at,
-          current_job: player.current_job_class ? {
-            job_name: player.current_job_name,
-            level: player.level,
-            experience: player.experience,
-            skill_points: player.skill_points,
-            stats: {
-              hp: player.hp,
-              max_hp: player.max_hp,
-              mp: player.mp,
-              max_mp: player.max_mp,
-              attack: player.attack,
-              defense: player.defense,
-              magic_attack: player.magic_attack,
-              magic_defense: player.magic_defense,
-              agility: player.agility,
-              luck: player.luck
-            }
-          } : nil,
-          user: {
-            id: player.user.id,
-            name: player.user.name,
-            email: player.user.email
-          }
+          current_job_name: player.current_job_class ? player.current_job_name : "未設定",
+          current_job_level: player.current_job_class ? player.level : 0
         }
       end
     }
