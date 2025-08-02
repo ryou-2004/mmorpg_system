@@ -36,7 +36,8 @@ class Admin::CharacterEquipmentController < Admin::BaseController
         current_job: current_job_class ? {
           id: current_job_class.job_class.id,
           name: current_job_class.job_class.name,
-          level: current_job_class.level
+          level: current_job_class.level,
+          can_equip_left_hand: current_job_class.job_class.can_equip_left_hand
         } : nil
       },
       equipment_slots: CharacterItem::EQUIPMENT_SLOTS,
