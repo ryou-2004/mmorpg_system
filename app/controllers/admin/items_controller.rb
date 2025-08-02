@@ -26,6 +26,7 @@ class Admin::ItemsController < Admin::BaseController
           sale_type: item.sale_type,
           icon_path: item.icon_path,
           active: item.active,
+          equipment_slot: item.equipment_slot,
           created_at: item.created_at
         }
       end
@@ -52,6 +53,7 @@ class Admin::ItemsController < Admin::BaseController
         sale_type: @item.sale_type,
         icon_path: @item.icon_path,
         active: @item.active,
+        equipment_slot: @item.equipment_slot,
         created_at: @item.created_at,
         updated_at: @item.updated_at,
         statistics: item_stats
@@ -106,7 +108,7 @@ class Admin::ItemsController < Admin::BaseController
     params.require(:item).permit(
       :name, :description, :item_type, :rarity, :max_stack,
       :buy_price, :sell_price, :level_requirement, :sale_type,
-      :icon_path, :active,
+      :icon_path, :active, :equipment_slot,
       job_requirement: [],
       effects: []
     )
@@ -128,6 +130,7 @@ class Admin::ItemsController < Admin::BaseController
       sale_type: item.sale_type,
       icon_path: item.icon_path,
       active: item.active,
+      equipment_slot: item.equipment_slot,
       created_at: item.created_at,
       updated_at: item.updated_at
     }

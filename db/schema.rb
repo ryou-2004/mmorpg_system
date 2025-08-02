@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_131314) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_02_172022) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -132,6 +132,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_131314) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "sale_type", default: "shop"
+    t.string "equipment_slot"
     t.index ["active"], name: "index_items_on_active"
     t.index ["item_type"], name: "index_items_on_item_type"
     t.index ["rarity"], name: "index_items_on_rarity"

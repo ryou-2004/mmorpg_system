@@ -26,6 +26,9 @@ class Item < ApplicationRecord
     unsellable: "unsellable" # 売却不可（クエストアイテムなど）
   }
 
+  # 装備スロット定数
+  EQUIPMENT_SLOTS = %w[右手 左手 頭 胴 腰 腕 足 指輪 首飾り].freeze
+
   validates :name, presence: true, length: { maximum: 100 }
   validates :item_type, presence: true
   validates :rarity, presence: true
@@ -33,6 +36,11 @@ class Item < ApplicationRecord
   validates :buy_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :sell_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :level_requirement, presence: true, numericality: { greater_than: 0 }
+  validates :equipment_slot, inclusion: { 
+    in: EQUIPMENT_SLOTS, 
+    allow_nil: true,
+    message: "は有効な装備スロットではありません" 
+  }
 
   scope :active, -> { where(active: true) }
   scope :by_type, ->(type) { where(item_type: type) }

@@ -199,14 +199,15 @@ class CharacterJobClass < ApplicationRecord
       next unless item_effects.is_a?(Array)
       
       item_effects.each do |effect|
-        next unless effect.is_a?(Hash) && effect["stats"].is_a?(Hash)
+        next unless effect.is_a?(Hash) && effect["type"] == "stat_boost"
         
         stat_key = stat_type.to_s
         # max_hp, max_mp は hp, mp として扱う
         stat_key = stat_key.gsub(/^max_/, '')
         
-        bonus = effect["stats"][stat_key]
-        total_bonus += bonus.to_i if bonus
+        if effect["stat"] == stat_key
+          total_bonus += effect["value"].to_i
+        end
       end
     end
     
