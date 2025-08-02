@@ -8,17 +8,13 @@ class Admin::EquipmentOverviewController < Admin::BaseController
     ).where(active: true)
     
     # フィルタリング
-    if params[:user_name].present?
-      characters = characters.joins(:user).where("users.name ILIKE ?", "%#{params[:user_name]}%")
-    end
-    
     if params[:character_name].present?
       characters = characters.where("characters.name ILIKE ?", "%#{params[:character_name]}%")
     end
     
-    if params[:job_class].present?
+    if params[:job_class_id].present?
       characters = characters.joins(current_character_job_class: :job_class)
-                           .where(job_classes: { name: params[:job_class] })
+                           .where(job_classes: { id: params[:job_class_id] })
     end
     
     if params[:missing_equipment].present?
@@ -52,11 +48,8 @@ class Admin::EquipmentOverviewController < Admin::BaseController
         {
           id: character.id,
           name: character.name,
-          user: {
-            id: character.user.id,
-            name: character.user.name
-          },
           current_job: character.current_character_job_class ? {
+            id: character.current_character_job_class.job_class.id,
             name: character.current_character_job_class.job_class.name,
             level: character.current_character_job_class.level
           } : nil,
@@ -68,10 +61,10 @@ class Admin::EquipmentOverviewController < Admin::BaseController
       meta: {
         total_characters: characters.count,
         equipment_slots: CharacterItem::EQUIPMENT_SLOTS,
+        available_job_classes: JobClass.active.select(:id, :name).order(:name).map { |jc| { id: jc.id, name: jc.name } },
         filters: {
-          user_name: params[:user_name],
           character_name: params[:character_name],
-          job_class: params[:job_class],
+          job_class_id: params[:job_class_id],
           missing_equipment: params[:missing_equipment]
         }
       }
