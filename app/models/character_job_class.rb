@@ -13,13 +13,40 @@ class CharacterJobClass < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
-  # レベルアップに必要な経験値テーブル
-  LEVEL_EXP_TABLE = {
-    1 => 0, 2 => 100, 3 => 250, 4 => 450, 5 => 700,
-    6 => 1000, 7 => 1350, 8 => 1750, 9 => 2200, 10 => 2700,
-    11 => 3250, 12 => 3850, 13 => 4500, 14 => 5200, 15 => 5950,
-    16 => 6750, 17 => 7600, 18 => 8500, 19 => 9450, 20 => 10450
-  }.freeze
+  # レベルアップに必要な経験値テーブル（レベル1-100）
+  LEVEL_EXP_TABLE = generate_exp_table.freeze
+  
+  # 経験値テーブル生成（Dragon Quest風の成長カーブ）
+  def self.generate_exp_table
+    table = { 1 => 0 }
+    
+    (2..100).each do |level|
+      case level
+      when 2..10   # 初期レベル: 緩やかな成長
+        base_exp = (level - 1) * 80
+        growth = ((level - 1) ** 1.5 * 20).to_i
+      when 11..30  # 中級レベル: 標準的な成長
+        base_exp = 720 + (level - 10) * 150
+        growth = ((level - 10) ** 1.8 * 30).to_i
+      when 31..50  # 上級レベル: やや急激な成長
+        base_exp = 3720 + (level - 30) * 250
+        growth = ((level - 30) ** 2.0 * 50).to_i
+      when 51..70  # 高級レベル: 急激な成長
+        base_exp = 8720 + (level - 50) * 400
+        growth = ((level - 50) ** 2.2 * 80).to_i
+      when 71..90  # 最高級レベル: 非常に急激な成長
+        base_exp = 16720 + (level - 70) * 600
+        growth = ((level - 70) ** 2.4 * 120).to_i
+      when 91..100 # 極限レベル: 極めて緩やかな成長（エンドコンテンツ）
+        base_exp = 28720 + (level - 90) * 1000
+        growth = ((level - 90) ** 1.5 * 200).to_i
+      end
+      
+      table[level] = base_exp + growth
+    end
+    
+    table
+  end
 
   def deactivate!
     update!(active: false)

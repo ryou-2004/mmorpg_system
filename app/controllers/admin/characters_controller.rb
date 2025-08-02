@@ -36,10 +36,14 @@ class Admin::CharactersController < Admin::BaseController
         level: character.level,
         experience: character.experience,
         skill_points: character.skill_points,
+        exp_to_next_level: character.current_character_job_class.exp_to_next_level,
+        level_progress: character.current_character_job_class.level_progress,
+        max_level_reached: character.current_character_job_class.max_level?,
         job_class: {
           id: character.current_character_job_class.job_class.id,
           name: character.current_job_name,
-          job_type: character.current_character_job_class.job_class.job_type
+          job_type: character.current_character_job_class.job_class.job_type,
+          max_level: character.current_character_job_class.job_class.max_level
         }
       } : nil,
       user: {
