@@ -90,6 +90,55 @@ class Character < ApplicationRecord
   def equipped_items
     character_items.equipped_items.character_accessible
   end
+  
+  # 装備スロット別アイテム取得
+  def equipment_in_slot(slot)
+    character_items.equipped_in_slot(slot).character_accessible.first
+  end
+  
+  # アイテム装備
+  def equip_item!(character_item, slot)
+    return false unless character_item.can_equip_to_slot?(slot)
+    return false unless character_item.character == self
+    
+    transaction do
+      # 既存の装備を解除
+      current_equipment = equipment_in_slot(slot)
+      if current_equipment
+        current_equipment.update!(
+          location: "inventory",
+          equipment_slot: nil
+        )
+      end
+      
+      # 新しいアイテムを装備
+      character_item.update!(
+        location: "equipped",
+        equipment_slot: slot
+      )
+    end
+    
+    true
+  rescue => e
+    Rails.logger.error "Failed to equip item: #{e.message}"
+    false
+  end
+  
+  # アイテム解除
+  def unequip_item!(character_item)
+    return false unless character_item.equipped?
+    return false unless character_item.character == self
+    
+    character_item.update!(
+      location: "inventory",
+      equipment_slot: nil
+    )
+    
+    true
+  rescue => e
+    Rails.logger.error "Failed to unequip item: #{e.message}"
+    false
+  end
 
   def main_warehouse
     character_warehouses.first

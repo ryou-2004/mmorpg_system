@@ -10,6 +10,10 @@ Rails.application.routes.draw do
       end
       resources :character_items, only: [ :index, :show ]
       resources :character_job_classes, only: [ :show ]
+      resource :equipment, only: [ :index ], controller: 'character_equipment' do
+        post :equip
+        post :unequip
+      end
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]

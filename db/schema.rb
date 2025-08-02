@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_01_135947) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_02_095929) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -58,7 +58,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_135947) do
     t.boolean "locked", default: false, null: false
     t.integer "character_warehouse_id"
     t.integer "bazaar_listing_id"
+    t.string "equipment_slot"
     t.index ["bazaar_listing_id"], name: "index_character_items_on_bazaar_listing_id"
+    t.index ["character_id", "equipment_slot"], name: "index_character_items_on_character_equipment_slot", unique: true, where: "location = 'equipped' AND equipment_slot IS NOT NULL"
     t.index ["character_id", "item_id"], name: "index_character_items_on_character_id_and_item_id"
     t.index ["character_id", "location", "character_warehouse_id"], name: "idx_player_items_location_warehouse"
     t.index ["character_id", "location", "status"], name: "idx_player_items_location_status"
@@ -66,6 +68,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_135947) do
     t.index ["character_id", "status"], name: "index_character_items_on_character_id_and_status"
     t.index ["character_id"], name: "index_character_items_on_character_id"
     t.index ["character_warehouse_id"], name: "index_character_items_on_character_warehouse_id"
+    t.index ["equipment_slot"], name: "index_character_items_on_equipment_slot"
     t.index ["equipped"], name: "index_character_items_on_equipped"
     t.index ["item_id"], name: "index_character_items_on_item_id"
     t.index ["location", "character_warehouse_id"], name: "idx_player_items_warehouse_location"

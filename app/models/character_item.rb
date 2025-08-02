@@ -20,6 +20,18 @@ class CharacterItem < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :enchantment_level, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :locked, inclusion: { in: [ true, false ] }
+  
+  # 装備スロット定義
+  EQUIPMENT_SLOTS = {
+    "weapon" => "武器",
+    "armor" => "防具", 
+    "accessory_1" => "アクセサリー1",
+    "accessory_2" => "アクセサリー2"
+  }.freeze
+  
+  validates :equipment_slot, inclusion: { in: EQUIPMENT_SLOTS.keys }, allow_nil: true
+  validates :equipment_slot, presence: true, if: :equipped?
+  validates :equipment_slot, uniqueness: { scope: :character_id }, if: :equipped?
 
   # === 状態判定メソッド ===
   def character_accessible?
@@ -32,6 +44,23 @@ class CharacterItem < ApplicationRecord
 
   def can_equip?
     available? && !locked? && item.equipment? && (inventory? || warehouse?)
+  end
+  
+  def can_equip_to_slot?(slot)
+    return false unless can_equip?
+    return false unless EQUIPMENT_SLOTS.key?(slot)
+    
+    # アイテムタイプと装備スロットの対応チェック
+    case slot
+    when "weapon"
+      item.weapon?
+    when "armor" 
+      item.armor?
+    when "accessory_1", "accessory_2"
+      item.accessory?
+    else
+      false
+    end
   end
 
   def can_use?
@@ -91,6 +120,8 @@ class CharacterItem < ApplicationRecord
   scope :warehouse_items, -> { where(location: "warehouse") }
   scope :equipped_items, -> { where(location: "equipped") }
   scope :by_item_type, ->(type) { joins(:item).where(items: { item_type: type }) }
+  scope :by_equipment_slot, ->(slot) { where(equipment_slot: slot) }
+  scope :equipped_in_slot, ->(slot) { equipped_items.by_equipment_slot(slot) }
 
   # === 既存メソッド（互換性のため保持） ===
   def equipped?

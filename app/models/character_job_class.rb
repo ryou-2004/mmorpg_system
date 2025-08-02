@@ -135,7 +135,7 @@ class CharacterJobClass < ApplicationRecord
 
   private
 
-  # ステータス計算（base値 + レベル成長 × 職業補正）
+  # ステータス計算（base値 + レベル成長 × 職業補正 + 装備ボーナス）
   def calculate_stat(stat_type)
     base_value = case stat_type
     when :hp then job_class.base_hp
@@ -153,8 +153,11 @@ class CharacterJobClass < ApplicationRecord
 
     # レベル成長分を計算
     level_growth = calculate_level_growth(stat_type)
+    
+    # 装備ボーナスを計算
+    equipment_bonus = calculate_equipment_bonus(stat_type)
 
-    base_value + level_growth
+    base_value + level_growth + equipment_bonus
   end
 
   # レベル成長分計算
@@ -184,6 +187,30 @@ class CharacterJobClass < ApplicationRecord
     end
 
     ((level - 1) * growth_per_level * multiplier).to_i
+  end
+  
+  # 装備ボーナス計算
+  def calculate_equipment_bonus(stat_type)
+    equipped_items = character.character_items.equipped_items.includes(:item)
+    total_bonus = 0
+    
+    equipped_items.each do |character_item|
+      item_effects = character_item.item.effects
+      next unless item_effects.is_a?(Array)
+      
+      item_effects.each do |effect|
+        next unless effect.is_a?(Hash) && effect["stats"].is_a?(Hash)
+        
+        stat_key = stat_type.to_s
+        # max_hp, max_mp は hp, mp として扱う
+        stat_key = stat_key.gsub(/^max_/, '')
+        
+        bonus = effect["stats"][stat_key]
+        total_bonus += bonus.to_i if bonus
+      end
+    end
+    
+    total_bonus
   end
 
   # バリデーション
