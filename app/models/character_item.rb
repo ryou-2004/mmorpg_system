@@ -23,10 +23,15 @@ class CharacterItem < ApplicationRecord
   
   # 装備スロット定義
   EQUIPMENT_SLOTS = {
-    "weapon" => "武器",
-    "armor" => "防具", 
-    "accessory_1" => "アクセサリー1",
-    "accessory_2" => "アクセサリー2"
+    "右手" => "右手",
+    "左手" => "左手",
+    "頭" => "頭",
+    "胴" => "胴",
+    "腰" => "腰", 
+    "腕" => "腕",
+    "足" => "足",
+    "指輪" => "指輪",
+    "首飾り" => "首飾り"
   }.freeze
   
   validates :equipment_slot, inclusion: { in: EQUIPMENT_SLOTS.keys }, allow_nil: true
@@ -50,14 +55,14 @@ class CharacterItem < ApplicationRecord
     return false unless can_equip?
     return false unless EQUIPMENT_SLOTS.key?(slot)
     
-    # アイテムタイプと装備スロットの対応チェック
-    case slot
+    # アイテムタイプと装備スロットの対応チェック（シンプル版）
+    case item.item_type
     when "weapon"
-      item.weapon?
-    when "armor" 
-      item.armor?
-    when "accessory_1", "accessory_2"
-      item.accessory?
+      %w[右手 左手].include?(slot)
+    when "armor"
+      %w[頭 胴 腰 腕 足].include?(slot)
+    when "accessory"
+      %w[指輪 首飾り].include?(slot)
     else
       false
     end
