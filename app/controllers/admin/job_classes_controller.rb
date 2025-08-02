@@ -34,6 +34,7 @@ class Admin::JobClassesController < Admin::BaseController
             agility: job_class.agility_multiplier,
             luck: job_class.luck_multiplier
           },
+          can_equip_left_hand: job_class.can_equip_left_hand,
           created_at: job_class.created_at,
           characters_count: job_class.characters_count
         }
@@ -101,6 +102,7 @@ class Admin::JobClassesController < Admin::BaseController
         agility: job_class.agility_multiplier,
         luck: job_class.luck_multiplier
       },
+      can_equip_left_hand: job_class.can_equip_left_hand,
       stats: {
         total_characters: character_job_classes.count,
         average_level: character_job_classes.average(:level)&.round(2) || 0,
@@ -140,7 +142,8 @@ class Admin::JobClassesController < Admin::BaseController
             magic_defense: job_class.magic_defense_multiplier,
             agility: job_class.agility_multiplier,
             luck: job_class.luck_multiplier
-          }
+          },
+          can_equip_left_hand: job_class.can_equip_left_hand
         }
       }
     else
@@ -160,7 +163,8 @@ class Admin::JobClassesController < Admin::BaseController
       :base_hp, :base_mp, :base_attack, :base_defense,
       :base_magic_attack, :base_magic_defense, :base_agility, :base_luck,
       :hp_multiplier, :mp_multiplier, :attack_multiplier, :defense_multiplier,
-      :magic_attack_multiplier, :magic_defense_multiplier, :agility_multiplier, :luck_multiplier
+      :magic_attack_multiplier, :magic_defense_multiplier, :agility_multiplier, :luck_multiplier,
+      :can_equip_left_hand
     )
   end
 

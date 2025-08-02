@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_095929) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_02_131314) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -163,7 +163,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_095929) do
     t.decimal "magic_defense_multiplier", precision: 3, scale: 2, default: "1.0", null: false
     t.decimal "agility_multiplier", precision: 3, scale: 2, default: "1.0", null: false
     t.decimal "luck_multiplier", precision: 3, scale: 2, default: "1.0", null: false
+    t.boolean "can_equip_left_hand", default: false, null: false
     t.index ["active"], name: "index_job_classes_on_active"
+    t.index ["can_equip_left_hand"], name: "index_job_classes_on_can_equip_left_hand"
     t.index ["job_type"], name: "index_job_classes_on_job_type"
     t.index ["name"], name: "index_job_classes_on_name", unique: true
   end

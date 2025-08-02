@@ -55,10 +55,15 @@ class CharacterItem < ApplicationRecord
     return false unless can_equip?
     return false unless EQUIPMENT_SLOTS.key?(slot)
     
-    # アイテムタイプと装備スロットの対応チェック（シンプル版）
+    # アイテムタイプと装備スロットの対応チェック
     case item.item_type
     when "weapon"
-      %w[右手 左手].include?(slot)
+      if slot == "左手"
+        # 左手装備は職業の設定に依存
+        character.current_character_job_class&.job_class&.can_equip_left_hand || false
+      else
+        %w[右手 左手].include?(slot)
+      end
     when "armor"
       %w[頭 胴 腰 腕 足].include?(slot)
     when "accessory"
