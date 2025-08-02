@@ -98,10 +98,39 @@ class Admin::CharacterEquipmentController < Admin::BaseController
     end
     
     if @character.equip_item!(character_item, slot)
+      # 最新の装備状態とステータスを取得
+      equipped_items = @character.equipped_items.includes(:item)
+      equipment_by_slot = {}
+      CharacterItem::EQUIPMENT_SLOTS.keys.each do |slot_key|
+        equipment_by_slot[slot_key] = equipped_items.find { |ci| ci.equipment_slot == slot_key }
+      end
+
+      current_job_class = @character.current_character_job_class
+      total_stats = if current_job_class
+        {
+          hp: current_job_class.hp,
+          max_hp: current_job_class.max_hp,
+          mp: current_job_class.mp,
+          max_mp: current_job_class.max_mp,
+          attack: current_job_class.attack,
+          defense: current_job_class.defense,
+          magic_attack: current_job_class.magic_attack,
+          magic_defense: current_job_class.magic_defense,
+          agility: current_job_class.agility,
+          luck: current_job_class.luck
+        }
+      else
+        {}
+      end
+
       render json: { 
         success: true, 
         message: "#{character_item.item.name}を装備しました",
-        equipped_item: format_character_item(character_item.reload)
+        equipped_item: format_character_item(character_item.reload),
+        total_stats: total_stats,
+        equipped_items: equipment_by_slot.transform_values do |character_item|
+          character_item ? format_character_item(character_item) : nil
+        end
       }
     else
       render json: { error: "装備に失敗しました" }, status: :unprocessable_entity
@@ -112,9 +141,38 @@ class Admin::CharacterEquipmentController < Admin::BaseController
     character_item = @character.character_items.equipped_items.find(params[:character_item_id])
     
     if @character.unequip_item!(character_item)
+      # 最新の装備状態とステータスを取得
+      equipped_items = @character.equipped_items.includes(:item)
+      equipment_by_slot = {}
+      CharacterItem::EQUIPMENT_SLOTS.keys.each do |slot_key|
+        equipment_by_slot[slot_key] = equipped_items.find { |ci| ci.equipment_slot == slot_key }
+      end
+
+      current_job_class = @character.current_character_job_class
+      total_stats = if current_job_class
+        {
+          hp: current_job_class.hp,
+          max_hp: current_job_class.max_hp,
+          mp: current_job_class.mp,
+          max_mp: current_job_class.max_mp,
+          attack: current_job_class.attack,
+          defense: current_job_class.defense,
+          magic_attack: current_job_class.magic_attack,
+          magic_defense: current_job_class.magic_defense,
+          agility: current_job_class.agility,
+          luck: current_job_class.luck
+        }
+      else
+        {}
+      end
+
       render json: { 
         success: true, 
-        message: "#{character_item.item.name}を解除しました"
+        message: "#{character_item.item.name}を解除しました",
+        total_stats: total_stats,
+        equipped_items: equipment_by_slot.transform_values do |character_item|
+          character_item ? format_character_item(character_item) : nil
+        end
       }
     else
       render json: { error: "装備解除に失敗しました" }, status: :unprocessable_entity
