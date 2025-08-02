@@ -15,6 +15,10 @@ class CharacterWarehouse < ApplicationRecord
     available_slots <= 0
   end
 
+  def has_available_slots?
+    available_slots > 0
+  end
+
   private
 
   def set_default_name

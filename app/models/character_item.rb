@@ -153,4 +153,120 @@ class CharacterItem < ApplicationRecord
 
     (durability.to_f / max_durability * 100).round
   end
+
+  # === アイテム移動・使用メソッド ===
+  def move_to_inventory!
+    raise "アイテムを移動できません" unless can_move?
+    raise "既にインベントリにあります" if inventory?
+    
+    transaction do
+      update!(
+        location: "inventory",
+        character_warehouse: nil,
+        equipment_slot: nil
+      )
+    end
+  end
+
+  def move_to_warehouse!(warehouse)
+    raise "アイテムを移動できません" unless can_move?
+    raise "倉庫が見つかりません" unless warehouse
+    raise "キャラクターの倉庫ではありません" unless warehouse.character == character
+    raise "倉庫の容量が不足しています" unless warehouse.has_available_slots?
+    
+    transaction do
+      update!(
+        location: "warehouse",
+        character_warehouse: warehouse,
+        equipment_slot: nil
+      )
+    end
+  end
+
+  def equip_to_slot!(slot)
+    raise "装備できません" unless can_equip_to_slot?(slot)
+    
+    # 既存の装備を外す
+    existing_equipment = character.character_items.equipped_in_slot(slot).first
+    existing_equipment&.unequip!
+    
+    transaction do
+      update!(
+        location: "equipped",
+        equipment_slot: slot
+      )
+    end
+  end
+
+  def unequip!
+    raise "装備を外せません" unless equipped?
+    
+    transaction do
+      update!(
+        location: "inventory",
+        equipment_slot: nil
+      )
+    end
+  end
+
+  def use_item!
+    raise "アイテムを使用できません" unless can_use?
+    raise "消耗品ではありません" unless item.consumable?
+    
+    effects = apply_item_effects!
+    
+    transaction do
+      if quantity > 1
+        update!(quantity: quantity - 1)
+      else
+        destroy!
+      end
+    end
+    
+    {
+      message: "#{item.name}を使用しました",
+      effects: effects
+    }
+  end
+
+  private
+
+  def apply_item_effects!
+    effects_applied = []
+    return effects_applied unless item.effects.is_a?(Array)
+    
+    item.effects.each do |effect|
+      next unless effect.is_a?(Hash)
+      
+      case effect["type"]
+      when "heal"
+        apply_heal_effect(effect)
+        effects_applied << "HP回復: #{effect['amount']}"
+      when "mp_heal"
+        apply_mp_heal_effect(effect)
+        effects_applied << "MP回復: #{effect['amount']}"
+      when "status"
+        apply_status_effect(effect)
+        effects_applied << "ステータス効果: #{effect['name']}"
+      end
+    end
+    
+    effects_applied
+  end
+
+  def apply_heal_effect(effect)
+    # 実際のHP回復処理はキャラクターの現在ステータスと連携
+    # ここでは効果のみ記録
+    Rails.logger.info "HP回復効果: #{effect['amount']}"
+  end
+
+  def apply_mp_heal_effect(effect)
+    # 実際のMP回復処理はキャラクターの現在ステータスと連携
+    Rails.logger.info "MP回復効果: #{effect['amount']}"
+  end
+
+  def apply_status_effect(effect)
+    # ステータス効果の処理
+    Rails.logger.info "ステータス効果: #{effect['name']}"
+  end
 end

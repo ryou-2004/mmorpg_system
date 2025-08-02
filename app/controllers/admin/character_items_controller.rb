@@ -118,6 +118,112 @@ class Admin::CharacterItemsController < Admin::BaseController
     }
   end
 
+  def move_to_inventory
+    character_item = @character.character_items.find(params[:id])
+    
+    unless character_item.can_move?
+      render json: {
+        success: false,
+        message: "このアイテムは移動できません"
+      }, status: :unprocessable_entity
+      return
+    end
+
+    begin
+      character_item.move_to_inventory!
+      render json: {
+        success: true,
+        message: "アイテムをインベントリに移動しました",
+        item: {
+          id: character_item.id,
+          name: character_item.item.name,
+          location: character_item.location
+        }
+      }
+    rescue StandardError => e
+      render json: {
+        success: false,
+        message: e.message
+      }, status: :unprocessable_entity
+    end
+  end
+
+  def move_to_warehouse
+    character_item = @character.character_items.find(params[:id])
+    warehouse_id = params[:warehouse_id]
+    
+    unless character_item.can_move?
+      render json: {
+        success: false,
+        message: "このアイテムは移動できません"
+      }, status: :unprocessable_entity
+      return
+    end
+
+    if warehouse_id.blank?
+      render json: {
+        success: false,
+        message: "移動先の倉庫を指定してください"
+      }, status: :unprocessable_entity
+      return
+    end
+
+    warehouse = @character.character_warehouses.find(warehouse_id)
+    
+    begin
+      character_item.move_to_warehouse!(warehouse)
+      render json: {
+        success: true,
+        message: "アイテムを#{warehouse.name}に移動しました",
+        item: {
+          id: character_item.id,
+          name: character_item.item.name,
+          location: character_item.location,
+          warehouse: {
+            id: warehouse.id,
+            name: warehouse.name
+          }
+        }
+      }
+    rescue StandardError => e
+      render json: {
+        success: false,
+        message: e.message
+      }, status: :unprocessable_entity
+    end
+  end
+
+  def use_item
+    character_item = @character.character_items.find(params[:id])
+    
+    unless character_item.can_use?
+      render json: {
+        success: false,
+        message: "このアイテムは使用できません"
+      }, status: :unprocessable_entity
+      return
+    end
+
+    begin
+      result = character_item.use_item!
+      render json: {
+        success: true,
+        message: result[:message],
+        effects: result[:effects],
+        item: {
+          id: character_item.id,
+          name: character_item.item.name,
+          quantity: character_item.quantity
+        }
+      }
+    rescue StandardError => e
+      render json: {
+        success: false,
+        message: e.message
+      }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_character

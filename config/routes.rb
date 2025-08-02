@@ -8,9 +8,16 @@ Rails.application.routes.draw do
         patch :switch_job
         patch :add_experience
       end
-      resources :character_items, only: [ :index, :show ]
+      resources :character_items, only: [ :index, :show ] do
+        member do
+          patch :move_to_inventory
+          patch :move_to_warehouse
+          patch :use_item
+        end
+      end
       resources :character_job_classes, only: [ :show ]
-      resource :equipment, only: [ :index ], controller: 'character_equipment' do
+      resource :equipment, only: [], controller: 'character_equipment' do
+        get :index
         post :equip
         post :unequip
       end

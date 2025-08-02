@@ -50,6 +50,18 @@ class Item < ApplicationRecord
     item_type == "consumable"
   end
 
+  def weapon?
+    item_type == "weapon"
+  end
+
+  def armor?
+    item_type == "armor"
+  end
+
+  def accessory?
+    item_type == "accessory"
+  end
+
   def rarity_color
     case rarity
     when "common" then "#ffffff"
