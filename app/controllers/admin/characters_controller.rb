@@ -38,6 +38,7 @@ class Admin::CharactersController < Admin::BaseController
         skill_points: character.skill_points,
         exp_to_next_level: character.current_character_job_class.exp_to_next_level,
         level_progress: character.current_character_job_class.level_progress,
+        current_level_experience: character.current_character_job_class.current_level_experience,
         max_level_reached: character.current_character_job_class.max_level?,
         job_class: {
           id: character.current_character_job_class.job_class.id,
@@ -154,6 +155,7 @@ class Admin::CharactersController < Admin::BaseController
         skill_points: character.skill_points,
         exp_to_next_level: character.exp_to_next_level,
         level_progress: character.level_progress,
+        current_level_experience: character.current_character_job_class.current_level_experience,
         stats: {
           hp: character.hp,
           max_hp: character.max_hp,

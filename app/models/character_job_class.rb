@@ -115,6 +115,14 @@ class CharacterJobClass < ApplicationRecord
     [ current_progress.to_f / total_exp_needed, 1.0 ].min
   end
 
+  # 現在のレベルでの進捗経験値
+  def current_level_experience
+    return 0 if level >= 100
+
+    current_level_exp = LEVEL_EXP_TABLE[level]
+    [ experience - current_level_exp, 0 ].max
+  end
+
   def max_level?
     level >= 100
   end
