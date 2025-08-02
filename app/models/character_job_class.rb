@@ -13,9 +13,6 @@ class CharacterJobClass < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
 
-  # レベルアップに必要な経験値テーブル（レベル1-100）
-  LEVEL_EXP_TABLE = generate_exp_table.freeze
-  
   # 経験値テーブル生成（Dragon Quest風の成長カーブ）
   def self.generate_exp_table
     table = { 1 => 0 }
@@ -47,6 +44,9 @@ class CharacterJobClass < ApplicationRecord
     
     table
   end
+
+  # レベルアップに必要な経験値テーブル（レベル1-100）
+  LEVEL_EXP_TABLE = generate_exp_table.freeze
 
   def deactivate!
     update!(active: false)
