@@ -27,7 +27,7 @@ class Admin::CharactersController < Admin::BaseController
     render json: {
       id: character.id,
       name: character.name,
-      gold: character.gold,
+      gold: character.gold || 0,
       active: character.active,
       created_at: character.created_at,
       last_login_at: character.last_login_at,

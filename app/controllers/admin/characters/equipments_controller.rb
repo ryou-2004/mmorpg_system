@@ -1,4 +1,4 @@
-class Admin::EquipmentOverviewController < Admin::BaseController
+class Admin::Characters::EquipmentsController < Admin::BaseController
 
   def index
     characters = Character.includes(

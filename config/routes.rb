@@ -3,6 +3,11 @@ Rails.application.routes.draw do
     resource :session, only: [ :show, :create, :destroy ]
     resource :dashboard, only: [ :show ]
     resources :users, only: [ :index, :show ]
+    
+    namespace :characters do
+      resources :equipments, only: [ :index ]
+    end
+    
     resources :characters, only: [ :index, :show ] do
       member do
         patch :switch_job
@@ -24,8 +29,6 @@ Rails.application.routes.draw do
     end
     resources :job_classes, only: [ :index, :show, :update ]
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
-    
-    resources :equipment_overview, only: [ :index ], controller: 'equipment_overview'
 
     resources :job_class_stats, only: [ :index, :show ]
     resources :job_level_samples, only: [ :index, :show ]
