@@ -14,9 +14,12 @@ class Armor < Item
     message: "は有効な防具スロットである必要があります" 
   }
 
-  scope :light_armor, -> { where(armor_category: %w[head body waist]) }
-  scope :medium_armor, -> { where(armor_category: %w[arm leg]) }
-  scope :heavy_armor, -> { where(armor_category: %w[shield]) }
+  scope :shields, -> { where(armor_category: 'shield') }
+  scope :head_armor, -> { where(armor_category: 'head') }
+  scope :body_armor, -> { where(armor_category: 'body') }
+  scope :waist_armor, -> { where(armor_category: 'waist') }
+  scope :arm_armor, -> { where(armor_category: 'arm') }
+  scope :leg_armor, -> { where(armor_category: 'leg') }
 
   def armor_category_name
     case armor_category
@@ -34,17 +37,6 @@ class Armor < Item
     armor_category == 'shield'
   end
 
-  def covers_torso?
-    %w[body waist].include?(armor_category)
-  end
-
-  def covers_limbs?
-    %w[arm leg].include?(armor_category)
-  end
-
-  def covers_head?
-    armor_category == 'head'
-  end
 
   def defense_slot
     case armor_category
