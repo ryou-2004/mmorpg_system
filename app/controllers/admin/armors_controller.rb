@@ -72,6 +72,15 @@ class Admin::ArmorsController < ApplicationController
     }
   end
 
+  def create
+    @armor = Armor.new(armor_params)
+    if @armor.save
+      render json: { armor: armor_json(@armor) }, status: :created
+    else
+      render json: { errors: @armor.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def update
     if @armor.update(armor_params)
       render json: { armor: armor_json(@armor) }

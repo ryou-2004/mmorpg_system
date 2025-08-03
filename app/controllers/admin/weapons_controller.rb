@@ -82,6 +82,15 @@ class Admin::WeaponsController < ApplicationController
     }
   end
 
+  def create
+    @weapon = Weapon.new(weapon_params)
+    if @weapon.save
+      render json: { weapon: weapon_json(@weapon) }, status: :created
+    else
+      render json: { errors: @weapon.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def update
     if @weapon.update(weapon_params)
       render json: { weapon: weapon_json(@weapon) }
