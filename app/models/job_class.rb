@@ -38,4 +38,58 @@ class JobClass < ApplicationRecord
     base_exp = level * 100
     (base_exp * exp_multiplier).to_i
   end
+
+  # ステータス成長率定数
+  STAT_GROWTH_RATES = {
+    hp: 8,
+    mp: 4,
+    attack: 2,
+    defense: 2,
+    magic_attack: 2,
+    magic_defense: 2,
+    agility: 1,
+    luck: 1
+  }.freeze
+
+  # レベル別の基本ステータスを計算
+  def calculate_base_stat(stat_type, level)
+    base_value = send("base_#{stat_type}")
+    growth_rate = STAT_GROWTH_RATES[stat_type] || 1
+    multiplier = send("#{stat_type}_multiplier")
+    
+    base_value + ((level - 1) * growth_rate * multiplier).to_i
+  end
+
+  # 各ステータスのショートカットメソッド
+  def hp_at_level(level)
+    calculate_base_stat(:hp, level)
+  end
+
+  def mp_at_level(level)
+    calculate_base_stat(:mp, level)
+  end
+
+  def attack_at_level(level)
+    calculate_base_stat(:attack, level)
+  end
+
+  def defense_at_level(level)
+    calculate_base_stat(:defense, level)
+  end
+
+  def magic_attack_at_level(level)
+    calculate_base_stat(:magic_attack, level)
+  end
+
+  def magic_defense_at_level(level)
+    calculate_base_stat(:magic_defense, level)
+  end
+
+  def agility_at_level(level)
+    calculate_base_stat(:agility, level)
+  end
+
+  def luck_at_level(level)
+    calculate_base_stat(:luck, level)
+  end
 end

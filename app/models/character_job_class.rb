@@ -170,29 +170,18 @@ class CharacterJobClass < ApplicationRecord
 
   private
 
-  # ステータス計算（base値 + レベル成長 × 職業補正 + 装備ボーナス）
+  # ステータス計算（JobClassの基本計算 + 装備ボーナス）
   def calculate_stat(stat_type)
-    base_value = case stat_type
-    when :hp then job_class.base_hp
-    when :max_hp then job_class.base_hp
-    when :mp then job_class.base_mp
-    when :max_mp then job_class.base_mp
-    when :attack then job_class.base_attack
-    when :defense then job_class.base_defense
-    when :magic_attack then job_class.base_magic_attack
-    when :magic_defense then job_class.base_magic_defense
-    when :agility then job_class.base_agility
-    when :luck then job_class.base_luck
-    else 10
-    end
-
-    # レベル成長分を計算
-    level_growth = calculate_level_growth(stat_type)
+    # max_hp, max_mp は hp, mp として扱う
+    base_stat_type = stat_type.to_s.gsub(/^max_/, '').to_sym
+    
+    # JobClassから基本ステータスを取得
+    base_stat = job_class.calculate_base_stat(base_stat_type, level)
     
     # 装備ボーナスを計算
     equipment_bonus = calculate_equipment_bonus(stat_type)
 
-    base_value + level_growth + equipment_bonus
+    base_stat + equipment_bonus
   end
 
   # レベル成長分計算
@@ -226,6 +215,9 @@ class CharacterJobClass < ApplicationRecord
   
   # 装備ボーナス計算
   def calculate_equipment_bonus(stat_type)
+    # characterが存在しない場合（統計表示など）は0を返す
+    return 0 if character.nil?
+    
     equipped_items = character.character_items.equipped_items.includes(:item)
     total_bonus = 0
     

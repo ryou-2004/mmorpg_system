@@ -88,26 +88,18 @@ class Admin::JobClassStatsController < Admin::BaseController
   end
 
   def build_level_stats(job_class, level)
-    temp_pjc = CharacterJobClass.new(
-      job_class: job_class,
-      level: level,
-      experience: 0,
-      skill_points: 0,
-      unlocked_at: Time.current
-    )
-
     {
       level: level,
-      hp: temp_pjc.hp,
-      max_hp: temp_pjc.max_hp,
-      mp: temp_pjc.mp,
-      max_mp: temp_pjc.max_mp,
-      attack: temp_pjc.attack,
-      defense: temp_pjc.defense,
-      magic_attack: temp_pjc.magic_attack,
-      magic_defense: temp_pjc.magic_defense,
-      agility: temp_pjc.agility,
-      luck: temp_pjc.luck
+      hp: job_class.hp_at_level(level),
+      max_hp: job_class.hp_at_level(level),
+      mp: job_class.mp_at_level(level),
+      max_mp: job_class.mp_at_level(level),
+      attack: job_class.attack_at_level(level),
+      defense: job_class.defense_at_level(level),
+      magic_attack: job_class.magic_attack_at_level(level),
+      magic_defense: job_class.magic_defense_at_level(level),
+      agility: job_class.agility_at_level(level),
+      luck: job_class.luck_at_level(level)
     }
   end
 
