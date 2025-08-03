@@ -9,10 +9,6 @@ class Armor < Item
   }, validate: true
 
   validates :armor_category, presence: true
-  validates :equipment_slot, inclusion: { 
-    in: %w[頭 胴 腰 腕 足 左手], 
-    message: "は有効な防具スロットである必要があります" 
-  }
 
   scope :shields, -> { where(armor_category: 'shield') }
   scope :head_armor, -> { where(armor_category: 'head') }
@@ -23,11 +19,11 @@ class Armor < Item
 
   def armor_category_name
     case armor_category
-    when 'head' then '頭防具'
-    when 'body' then '胴防具'
-    when 'waist' then '腰防具'
-    when 'arm' then '腕防具'
-    when 'leg' then '足防具'
+    when 'head' then '頭'
+    when 'body' then '胴'
+    when 'waist' then '腰'
+    when 'arm' then '腕'
+    when 'leg' then '足'
     when 'shield' then '盾'
     else armor_category
     end
@@ -38,7 +34,7 @@ class Armor < Item
   end
 
 
-  def defense_slot
+  def equipment_slot
     case armor_category
     when 'head' then '頭'
     when 'body' then '胴'
@@ -46,7 +42,7 @@ class Armor < Item
     when 'arm' then '腕'
     when 'leg' then '足'
     when 'shield' then '左手'
-    else equipment_slot
+    else armor_category
     end
   end
 end

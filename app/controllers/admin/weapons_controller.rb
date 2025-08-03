@@ -104,7 +104,7 @@ class Admin::WeaponsController < ApplicationController
   def weapon_params
     params.require(:weapon).permit(
       :name, :description, :weapon_category, :rarity, :max_stack,
-      :buy_price, :sell_price, :level_requirement, :equipment_slot,
+      :buy_price, :sell_price, :level_requirement,
       :sale_type, :icon_path, :active,
       job_requirement: [], effects: []
     )

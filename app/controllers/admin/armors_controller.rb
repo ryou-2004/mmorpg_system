@@ -31,7 +31,6 @@ class Admin::ArmorsController < ApplicationController
           level_requirement: armor.level_requirement,
           buy_price: armor.buy_price,
           sell_price: armor.sell_price,
-          equipment_slot: armor.equipment_slot,
           is_shield: armor.is_shield?,
           active: armor.active,
           character_count: armor.character_items.count,
@@ -63,7 +62,6 @@ class Admin::ArmorsController < ApplicationController
         job_requirement: @armor.job_requirement,
         effects: @armor.effects,
         icon_path: @armor.icon_path,
-        equipment_slot: @armor.equipment_slot,
         sale_type: @armor.sale_type,
         is_shield: @armor.is_shield?,
         active: @armor.active,
@@ -96,7 +94,7 @@ class Admin::ArmorsController < ApplicationController
   def armor_params
     params.require(:armor).permit(
       :name, :description, :armor_category, :rarity, :max_stack,
-      :buy_price, :sell_price, :level_requirement, :equipment_slot,
+      :buy_price, :sell_price, :level_requirement,
       :sale_type, :icon_path, :active,
       job_requirement: [], effects: []
     )
@@ -117,7 +115,6 @@ class Admin::ArmorsController < ApplicationController
       job_requirement: armor.job_requirement,
       effects: armor.effects,
       icon_path: armor.icon_path,
-      equipment_slot: armor.equipment_slot,
       sale_type: armor.sale_type,
       is_shield: armor.is_shield?,
       active: armor.active,

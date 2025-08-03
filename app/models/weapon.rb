@@ -14,10 +14,6 @@ class Weapon < Item
   }, validate: true
 
   validates :weapon_category, presence: true
-  validates :equipment_slot, inclusion: { 
-    in: %w[右手 左手], 
-    message: "は右手または左手である必要があります" 
-  }
 
   scope :one_handed, -> { where(weapon_category: %w[one_hand_sword dagger club staff whip boomerang]) }
   scope :two_handed, -> { where(weapon_category: %w[two_hand_sword axe spear hammer bow]) }
@@ -84,5 +80,9 @@ class Weapon < Item
     when 'boomerang' then 'ブーメラン'
     else weapon_category
     end
+  end
+
+  def equipment_slot
+    can_use_left_hand? ? '左手' : '右手'
   end
 end
