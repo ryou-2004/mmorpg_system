@@ -11,7 +11,7 @@ class Weapon < Item
     whip: "whip",                       # ムチ
     bow: "bow",                         # 弓
     boomerang: "boomerang"              # ブーメラン
-  }
+  }, validate: true
 
   validates :weapon_category, presence: true
   validates :equipment_slot, inclusion: { 

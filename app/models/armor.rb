@@ -6,7 +6,7 @@ class Armor < Item
     arm: "arm",         # 腕
     leg: "leg",         # 足
     shield: "shield"    # 盾
-  }
+  }, validate: true
 
   validates :armor_category, presence: true
   validates :equipment_slot, inclusion: { 

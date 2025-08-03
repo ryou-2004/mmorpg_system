@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :weapons, only: [:index, :show, :update, :destroy]
+    resources :armors, only: [:index, :show, :update, :destroy]
     resource :session, only: [ :show, :create, :destroy ]
     resource :dashboard, only: [ :show ]
     resources :users, only: [ :index, :show ]

@@ -4,7 +4,7 @@ class Accessory < Item
     necklace: "necklace",   # 首飾り
     brooch: "brooch",       # ブローチ
     earring: "earring"      # イヤリング
-  }
+  }, validate: true
 
   validates :accessory_category, presence: true
   validates :equipment_slot, inclusion: { 
