@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_02_172022) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -133,10 +133,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_02_172022) do
     t.datetime "updated_at", null: false
     t.string "sale_type", default: "shop"
     t.string "equipment_slot"
+    t.string "type"
+    t.string "weapon_category"
+    t.string "armor_category"
+    t.string "accessory_category"
+    t.index ["accessory_category"], name: "index_items_on_accessory_category"
     t.index ["active"], name: "index_items_on_active"
+    t.index ["armor_category"], name: "index_items_on_armor_category"
     t.index ["item_type"], name: "index_items_on_item_type"
     t.index ["rarity"], name: "index_items_on_rarity"
     t.index ["sale_type"], name: "index_items_on_sale_type"
+    t.index ["type"], name: "index_items_on_type"
+    t.index ["weapon_category"], name: "index_items_on_weapon_category"
   end
 
   create_table "job_classes", force: :cascade do |t|

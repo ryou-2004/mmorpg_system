@@ -42,6 +42,14 @@ class Item < ApplicationRecord
     message: "は有効な装備スロットではありません" 
   }
 
+  # STI関連のバリデーション
+  validates :weapon_category, presence: true, if: :weapon?
+  validates :weapon_category, absence: true, unless: :weapon?
+  validates :armor_category, presence: true, if: :armor?
+  validates :armor_category, absence: true, unless: :armor?
+  validates :accessory_category, presence: true, if: :accessory?
+  validates :accessory_category, absence: true, unless: :accessory?
+
   scope :active, -> { where(active: true) }
   scope :by_type, ->(type) { where(item_type: type) }
   scope :by_rarity, ->(rarity) { where(rarity: rarity) }
@@ -68,6 +76,14 @@ class Item < ApplicationRecord
 
   def accessory?
     item_type == "accessory"
+  end
+
+  def material?
+    item_type == "material"
+  end
+
+  def quest_item?
+    item_type == "quest"
   end
 
   def rarity_color
@@ -99,5 +115,19 @@ class Item < ApplicationRecord
     when "both" then "ショップ・バザー売却可"
     when "unsellable" then "売却不可"
     end
+  end
+
+  # STI用のtype更新メソッド
+  def update_sti_type!
+    new_type = case item_type
+               when 'weapon' then 'Weapon'
+               when 'armor' then 'Armor'
+               when 'accessory' then 'Accessory'
+               when 'consumable' then 'Consumable'
+               when 'material' then 'Material'
+               when 'quest' then 'QuestItem'
+               else 'Item'
+               end
+    update_column(:type, new_type) if type != new_type
   end
 end
