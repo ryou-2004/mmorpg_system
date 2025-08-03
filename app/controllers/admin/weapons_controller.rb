@@ -64,6 +64,7 @@ class Admin::WeaponsController < ApplicationController
         level_requirement: @weapon.level_requirement,
         job_requirement: @weapon.job_requirement,
         effects: @weapon.effects,
+        formatted_effects: @weapon.formatted_effects,
         icon_path: @weapon.icon_path,
         equipment_slot: @weapon.equipment_slot,
         sale_type: @weapon.sale_type,

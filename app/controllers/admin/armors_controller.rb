@@ -61,6 +61,7 @@ class Admin::ArmorsController < ApplicationController
         level_requirement: @armor.level_requirement,
         job_requirement: @armor.job_requirement,
         effects: @armor.effects,
+        formatted_effects: @armor.formatted_effects,
         icon_path: @armor.icon_path,
         sale_type: @armor.sale_type,
         is_shield: @armor.is_shield?,
