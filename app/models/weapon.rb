@@ -66,23 +66,14 @@ class Weapon < Item
   end
 
   def weapon_category_name
-    case weapon_category
-    when 'one_hand_sword' then '片手剣'
-    when 'two_hand_sword' then '両手剣'
-    when 'dagger' then '短剣'
-    when 'club' then '棍'
-    when 'axe' then '斧'
-    when 'spear' then '槍'
-    when 'hammer' then 'ハンマー'
-    when 'staff' then '杖'
-    when 'whip' then 'ムチ'
-    when 'bow' then '弓'
-    when 'boomerang' then 'ブーメラン'
-    else weapon_category
-    end
+    I18n.t("weapons.categories.#{weapon_category}", default: weapon_category)
+  end
+
+  def attack_type_name
+    I18n.t("weapons.attack_types.#{attack_type}", default: attack_type)
   end
 
   def equipment_slot
-    can_use_left_hand? ? '左手' : '右手'
+    can_use_left_hand? ? I18n.t('equipment_slots.left_hand') : I18n.t('equipment_slots.right_hand')
   end
 end

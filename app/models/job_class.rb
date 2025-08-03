@@ -34,6 +34,10 @@ class JobClass < ApplicationRecord
     job_type == "special"
   end
 
+  def job_type_name
+    I18n.t("job_classes.types.#{job_type}", default: job_type)
+  end
+
   def calculate_required_exp(level)
     base_exp = level * 100
     (base_exp * exp_multiplier).to_i

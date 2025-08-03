@@ -74,18 +74,18 @@ class Admin::CharacterEquipmentController < Admin::BaseController
     slot = params[:slot]
     
     unless CharacterItem::EQUIPMENT_SLOTS.key?(slot)
-      return render json: { error: "無効な装備スロットです" }, status: :bad_request
+      return render json: { error: I18n.t('messages.errors.invalid_slot') }, status: :bad_request
     end
     
     unless character_item.can_equip_to_slot?(slot)
-      return render json: { error: "このアイテムはその装備スロットに装備できません" }, status: :bad_request
+      return render json: { error: I18n.t('messages.errors.cannot_equip_item') }, status: :bad_request
     end
     
     # 職業制限チェック
     current_job = @character.current_character_job_class&.job_class
     if current_job && character_item.item.job_requirement.present?
       unless character_item.item.job_requirement.include?(current_job.name)
-        return render json: { error: "現在の職業では装備できません" }, status: :bad_request
+        return render json: { error: I18n.t('messages.errors.job_restriction') }, status: :bad_request
       end
     end
     
@@ -93,7 +93,7 @@ class Admin::CharacterEquipmentController < Admin::BaseController
     current_level = @character.current_character_job_class&.level || 1
     if character_item.item.level_requirement > current_level
       return render json: { 
-        error: "レベルが足りません (必要: Lv.#{character_item.item.level_requirement})" 
+        error: I18n.t('messages.errors.level_requirement')
       }, status: :bad_request
     end
     
@@ -125,7 +125,7 @@ class Admin::CharacterEquipmentController < Admin::BaseController
 
       render json: { 
         success: true, 
-        message: "#{character_item.item.name}を装備しました",
+        message: I18n.t('messages.success.item_equipped', item_name: character_item.item.name),
         equipped_item: format_character_item(character_item.reload),
         total_stats: total_stats,
         equipped_items: equipment_by_slot.transform_values do |character_item|
@@ -133,7 +133,7 @@ class Admin::CharacterEquipmentController < Admin::BaseController
         end
       }
     else
-      render json: { error: "装備に失敗しました" }, status: :unprocessable_entity
+      render json: { error: I18n.t('messages.errors.equip_failed') }, status: :unprocessable_entity
     end
   end
 
@@ -168,14 +168,14 @@ class Admin::CharacterEquipmentController < Admin::BaseController
 
       render json: { 
         success: true, 
-        message: "#{character_item.item.name}を解除しました",
+        message: I18n.t('messages.success.item_unequipped', item_name: character_item.item.name),
         total_stats: total_stats,
         equipped_items: equipment_by_slot.transform_values do |character_item|
           character_item ? format_character_item(character_item) : nil
         end
       }
     else
-      render json: { error: "装備解除に失敗しました" }, status: :unprocessable_entity
+      render json: { error: I18n.t('messages.errors.unequip_failed') }, status: :unprocessable_entity
     end
   end
 
@@ -187,7 +187,7 @@ class Admin::CharacterEquipmentController < Admin::BaseController
       character_items: :item
     ).find(params[:character_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "キャラクターが見つかりません" }, status: :not_found
+    render json: { error: I18n.t('messages.errors.character_not_found') }, status: :not_found
   end
 
   def available_equipment_items

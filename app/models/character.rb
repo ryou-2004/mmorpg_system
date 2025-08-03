@@ -167,6 +167,6 @@ class Character < ApplicationRecord
   private
 
   def create_default_warehouse
-    character_warehouses.create!(name: "メイン倉庫", max_slots: 100)
+    character_warehouses.create!(name: I18n.t('warehouses.main'), max_slots: 100)
   end
 end

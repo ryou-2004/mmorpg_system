@@ -96,6 +96,10 @@ class Item < ApplicationRecord
     end
   end
 
+  def rarity_name
+    I18n.t("items.rarities.#{rarity}", default: rarity)
+  end
+
   def can_sell_to_shop?
     shop? || both?
   end
@@ -109,12 +113,7 @@ class Item < ApplicationRecord
   end
 
   def sale_type_description
-    case sale_type
-    when "shop" then "ショップ売却可"
-    when "bazaar" then "バザー売却可"
-    when "both" then "ショップ・バザー売却可"
-    when "unsellable" then "売却不可"
-    end
+    I18n.t("items.sale_types.#{sale_type}", default: sale_type)
   end
 
   # 効果の日本語説明を生成
@@ -124,26 +123,26 @@ class Item < ApplicationRecord
     effects.map do |effect|
       description = case effect['type']
       when 'stat_boost'
-        stat_name = stat_name_ja(effect['stat'])
+        stat_name = I18n.t("items.stats.#{effect['stat']}", default: effect['stat'])
         value = effect['value'].to_i > 0 ? "+#{effect['value']}" : effect['value'].to_s
-        "#{stat_name} #{value}"
+        I18n.t('items.effects.stat_boost', stat: stat_name, value: value)
       when 'damage_bonus'
-        target = effect['target'] || '敵'
-        "#{target}に対するダメージ #{effect['multiplier']}倍"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
+        I18n.t('items.effects.damage_bonus', target: target, multiplier: effect['multiplier'])
       when 'damage_reduction'
-        target = effect['target'] || '敵'
-        "#{target}からのダメージ #{effect['multiplier']}倍に軽減"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
+        I18n.t('items.effects.damage_reduction', target: target, multiplier: effect['multiplier'])
       when 'resistance'
-        target = effect['target'] || '全属性'
-        "#{target}耐性 +#{effect['value']}%"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
+        I18n.t('items.effects.resistance', target: target, value: effect['value'])
       when 'heal'
-        "HP回復 +#{effect['value']}"
+        I18n.t('items.effects.heal', value: effect['value'])
       when 'mp_heal'
-        "MP回復 +#{effect['value']}"
+        I18n.t('items.effects.mp_heal', value: effect['value'])
       when 'exp_boost'
-        "経験値 #{effect['multiplier']}倍 (#{effect['duration']}秒)"
+        I18n.t('items.effects.exp_boost', multiplier: effect['multiplier'], duration: effect['duration'])
       when 'mp_regeneration'
-        "MP自動回復 +#{effect['value']}/秒"
+        I18n.t('items.effects.mp_regeneration', value: effect['value'])
       else
         effect.to_json # フォールバック
       end
@@ -153,22 +152,6 @@ class Item < ApplicationRecord
         description: description,
         raw: effect
       }
-    end
-  end
-  
-  private
-  
-  def stat_name_ja(stat)
-    case stat
-    when 'hp' then 'HP'
-    when 'mp' then 'MP'
-    when 'attack' then '攻撃力'
-    when 'defense' then '防御力'
-    when 'magic_attack' then '魔法攻撃力'
-    when 'magic_defense' then '魔法防御力'
-    when 'agility' then '素早さ'
-    when 'luck' then '運'
-    else stat
     end
   end
 

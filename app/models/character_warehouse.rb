@@ -24,10 +24,10 @@ class CharacterWarehouse < ApplicationRecord
   def set_default_name
     warehouse_count = character&.character_warehouses&.count || 0
     self.name ||= case warehouse_count
-    when 0 then "メイン倉庫"
-    when 1 then "サブ倉庫"
-    when 2 then "素材倉庫"
-    else "倉庫#{warehouse_count + 1}"
+    when 0 then I18n.t('warehouses.main')
+    when 1 then I18n.t('warehouses.sub')
+    when 2 then I18n.t('warehouses.material')
+    else I18n.t('warehouses.numbered', number: warehouse_count + 1)
     end
   end
 end

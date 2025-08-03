@@ -102,7 +102,7 @@ class Admin::WeaponsController < ApplicationController
 
   def destroy
     @weapon.destroy
-    render json: { message: "武器が削除されました" }
+    render json: { message: I18n.t('messages.success.deleted', model: I18n.t('activerecord.models.weapon')) }
   end
 
   private

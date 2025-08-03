@@ -63,6 +63,6 @@ class Admin::UsersController < Admin::BaseController
       }
     }
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "ユーザーが見つかりません" }, status: :not_found
+    render json: { error: I18n.t('messages.errors.not_found', model: I18n.t('activerecord.models.user')) }, status: :not_found
   end
 end

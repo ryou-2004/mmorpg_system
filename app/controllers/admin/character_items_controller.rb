@@ -232,7 +232,7 @@ class Admin::CharacterItemsController < Admin::BaseController
       character_items: [ :item, :character_warehouse ]
     ).find(params[:character_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "キャラクターが見つかりません" }, status: :not_found
+    render json: { error: I18n.t('messages.errors.character_not_found') }, status: :not_found
   end
 
 end

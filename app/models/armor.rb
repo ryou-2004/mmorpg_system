@@ -18,15 +18,7 @@ class Armor < Item
   scope :leg_armor, -> { where(armor_category: 'leg') }
 
   def armor_category_name
-    case armor_category
-    when 'head' then '頭'
-    when 'body' then '胴'
-    when 'waist' then '腰'
-    when 'arm' then '腕'
-    when 'leg' then '足'
-    when 'shield' then '盾'
-    else armor_category
-    end
+    I18n.t("armors.categories.#{armor_category}", default: armor_category)
   end
 
   def is_shield?
@@ -36,12 +28,12 @@ class Armor < Item
 
   def equipment_slot
     case armor_category
-    when 'head' then '頭'
-    when 'body' then '胴'
-    when 'waist' then '腰'
-    when 'arm' then '腕'
-    when 'leg' then '足'
-    when 'shield' then '左手'
+    when 'head' then I18n.t('equipment_slots.head')
+    when 'body' then I18n.t('equipment_slots.body')
+    when 'waist' then I18n.t('equipment_slots.waist')
+    when 'arm' then I18n.t('equipment_slots.arm')
+    when 'leg' then I18n.t('equipment_slots.leg')
+    when 'shield' then I18n.t('equipment_slots.left_hand')
     else armor_category
     end
   end

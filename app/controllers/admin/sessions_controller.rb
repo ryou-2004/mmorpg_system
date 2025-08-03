@@ -29,12 +29,12 @@ class Admin::SessionsController < ApplicationController
         }
       }, status: :created
     else
-      render json: { error: "メールアドレスまたはパスワードが正しくありません" }, status: :unauthorized
+      render json: { error: I18n.t('messages.errors.invalid_credentials') }, status: :unauthorized
     end
   end
 
   def destroy
-    render json: { message: "ログアウトしました" }
+    render json: { message: I18n.t('messages.success.logged_out') }
   end
 
   private

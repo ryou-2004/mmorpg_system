@@ -6,7 +6,7 @@ class Admin::JobComparisonsController < Admin::BaseController
     level = (params[:level] || 20).to_i
 
     if job_ids.empty?
-      render json: { error: "比較する職業を選択してください" }, status: :unprocessable_entity
+      render json: { error: I18n.t('messages.errors.select_job_classes_to_compare') }, status: :unprocessable_entity
       return
     end
 
@@ -27,7 +27,7 @@ class Admin::JobComparisonsController < Admin::BaseController
     comparison_type = params[:comparison_type] || "basic"
 
     if job_ids.empty?
-      render json: { error: "比較する職業を選択してください" }, status: :unprocessable_entity
+      render json: { error: I18n.t('messages.errors.select_job_classes_to_compare') }, status: :unprocessable_entity
       return
     end
 

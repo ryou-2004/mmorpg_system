@@ -92,7 +92,7 @@ class Admin::ArmorsController < ApplicationController
 
   def destroy
     @armor.destroy
-    render json: { message: "防具が削除されました" }
+    render json: { message: I18n.t('messages.success.deleted', model: I18n.t('activerecord.models.armor')) }
   end
 
   private

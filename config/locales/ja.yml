@@ -1,0 +1,262 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+      admin_user: 管理者
+      character: キャラクター
+      job_class: 職業
+      character_job_class: キャラクター職業
+      character_item: キャラクターアイテム
+      item: アイテム
+      weapon: 武器
+      armor: 防具
+      accessory: アクセサリー
+      consumable: 消耗品
+      material: 素材
+      quest_item: クエストアイテム
+    attributes:
+      user:
+        username: ユーザー名
+        email: メールアドレス
+        password: パスワード
+      character:
+        name: キャラクター名
+        gold: ゴールド
+        active: 有効
+      job_class:
+        name: 職業名
+        description: 説明
+        job_type: 職業タイプ
+        max_level: 最大レベル
+        experience_multiplier: 経験値倍率
+        base_hp: 基本HP
+        base_mp: 基本MP
+        base_attack: 基本攻撃力
+        base_defense: 基本防御力
+        base_magic_attack: 基本魔法攻撃力
+        base_magic_defense: 基本魔法防御力
+        base_agility: 基本素早さ
+        base_luck: 基本運
+        can_equip_left_hand: 左手装備可能
+      character_job_class:
+        level: レベル
+        experience: 経験値
+        skill_points: スキルポイント
+      item:
+        name: 名前
+        description: 説明
+        item_type: アイテムタイプ
+        rarity: レアリティ
+        level_requirement: 必要レベル
+        max_stack: 最大スタック
+        buy_price: 購入価格
+        sell_price: 売却価格
+        sale_type: 販売タイプ
+        icon_path: アイコンパス
+        active: 有効
+        equipment_slot: 装備スロット
+        job_requirement: 職業制限
+        effects: 効果
+  
+  items:
+    stats:
+      hp: HP
+      mp: MP
+      attack: 攻撃力
+      defense: 防御力
+      magic_attack: 魔法攻撃力
+      magic_defense: 魔法防御力
+      agility: 素早さ
+      luck: 運
+    
+    effects:
+      stat_boost: "%{stat} %{value}"
+      damage_bonus: "%{target}に対するダメージ %{multiplier}倍"
+      damage_reduction: "%{target}からのダメージ %{multiplier}倍に軽減"
+      resistance: "%{target}耐性 +%{value}%"
+      heal: "HP回復 +%{value}"
+      mp_heal: "MP回復 +%{value}"
+      exp_boost: "経験値 %{multiplier}倍 (%{duration}秒)"
+      mp_regeneration: "MP自動回復 +%{value}/秒"
+      
+    effect_targets:
+      all: 全て
+      physical: 物理
+      magical: 魔法
+      fire: 火
+      ice: 氷
+      thunder: 雷
+      water: 水
+      earth: 土
+      wind: 風
+      holy: 聖
+      dark: 闇
+      dragon: ドラゴン
+      undead: アンデッド
+      demon: 悪魔
+      beast: 獣
+      human: 人間
+      plant: 植物
+      insect: 昆虫
+      machine: 機械
+      
+    rarities:
+      common: コモン
+      uncommon: アンコモン
+      rare: レア
+      epic: エピック
+      legendary: レジェンダリー
+      
+    sale_types:
+      shop: ショップ売却可
+      bazaar: バザー売却可
+      both: ショップ・バザー売却可
+      unsellable: 売却不可
+      
+  weapons:
+    categories:
+      one_hand_sword: 片手剣
+      two_hand_sword: 両手剣
+      dagger: 短剣
+      club: 棍
+      axe: 斧
+      spear: 槍
+      hammer: ハンマー
+      staff: 杖
+      whip: ムチ
+      bow: 弓
+      boomerang: ブーメラン
+      
+    attack_types:
+      slash: 斬撃
+      thrust: 刺突
+      blunt: 打撃
+      magical: 魔法
+      
+  armors:
+    categories:
+      head: 頭
+      body: 胴
+      waist: 腰
+      arm: 腕
+      leg: 足
+      shield: 盾
+      
+  job_classes:
+    types:
+      basic: 基本職
+      advanced: 上級職
+      special: 特殊職
+      
+  equipment_slots:
+    right_hand: 右手
+    left_hand: 左手
+    head: 頭
+    body: 胴
+    waist: 腰
+    arm: 腕
+    leg: 足
+    ring: 指輪
+    necklace: 首飾り
+    
+  warehouses:
+    main: メイン倉庫
+    sub: サブ倉庫
+    material: 素材倉庫
+    numbered: 倉庫%{number}
+    
+  messages:
+    success:
+      created: "%{model}が作成されました"
+      updated: "%{model}が更新されました"
+      deleted: "%{model}が削除されました"
+      equipped: "装備しました"
+      unequipped: "装備を外しました"
+      experience_added: "経験値を追加しました"
+      experience_adjusted: "経験値を調整しました"
+      item_equipped: "%{item_name}を装備しました"
+      item_unequipped: "%{item_name}を解除しました"
+      logged_out: "ログアウトしました"
+      job_changed: "職業を%{job_name}に変更しました"
+      experience_gained: "%{exp_amount}の経験値を獲得しました"
+      experience_gained_with_level: "%{exp_amount}の経験値を獲得し、%{level_ups}レベル上がりました！"
+      item_moved_to_inventory: "アイテムをインベントリに移動しました"
+      item_moved_to_warehouse: "アイテムを%{warehouse_name}に移動しました"
+      item_used: "%{item_name}を使用しました"
+      job_class_updated: "職業データが更新されました"
+    errors:
+      not_found: "%{model}が見つかりません"
+      create_failed: "%{model}の作成に失敗しました"
+      update_failed: "%{model}の更新に失敗しました"
+      delete_failed: "%{model}の削除に失敗しました"
+      access_denied: "アクセスが拒否されました"
+      invalid_params: "パラメータが不正です"
+      equip_failed: "装備に失敗しました"
+      unequip_failed: "装備解除に失敗しました"
+      character_not_found: "キャラクターが見つかりません"
+      job_class_not_found: "職業が見つかりません"
+      level_invalid: "レベルが無効です"
+      experience_must_be_positive: "経験値は正の値である必要があります"
+      experience_adjustment_failed: "経験値の調整に失敗しました"
+      invalid_slot: "無効な装備スロットです"
+      cannot_equip_item: "そのアイテムは装備できません"
+      job_restriction: "職業制限により装備できません"
+      level_requirement: "レベル制限により装備できません"
+      authentication_required: "認証が必要です"
+      invalid_credentials: "メールアドレスまたはパスワードが正しくありません"
+      select_job_classes_to_compare: "比較する職業を選択してください"
+      logged_out: "ログアウトしました"
+      cannot_move_item: "アイテムを移動できません"
+      already_in_inventory: "既にインベントリにあります"
+      warehouse_not_found: "倉庫が見つかりません"
+      not_character_warehouse: "キャラクターの倉庫ではありません"
+      warehouse_capacity_full: "倉庫の容量が不足しています"
+      cannot_equip: "装備できません"
+      cannot_unequip: "装備を外せません"
+      cannot_use_item: "アイテムを使用できません"
+      not_consumable: "消耗品ではありません"
+      invalid_equipment_slot: "は有効な装備スロットではありません"
+      consumable_cannot_equip: "消耗品は装備できません"
+      material_cannot_equip: "素材は装備できません"
+      quest_item_cannot_equip: "クエストアイテムは装備できません"
+      quest_item_must_be_unsellable: "クエストアイテムは売却不可である必要があります"
+      accessory_must_be_ring_or_necklace: "は指輪または首飾りである必要があります"
+      level_exceeds_max: "は職業の最大レベル%{max_level}を超えることはできません"
+      job_class_already_assigned: "は既にこのキャラクターに設定されています"
+      experience_must_be_positive_message: "経験値は1以上で入力してください"
+      level_range_message: "レベルは1から%{max_level}の間で指定してください"
+      cannot_move_this_item: "このアイテムは移動できません"
+      specify_warehouse: "移動先の倉庫を指定してください"
+      cannot_use_this_item: "このアイテムは使用できません"
+      update_failed_message: "更新に失敗しました"
+    labels:
+      id: ID
+      name: 名前
+      description: 説明
+      level: レベル
+      experience: 経験値
+      gold: ゴールド
+      active: 有効
+      inactive: 無効
+      created_at: 作成日時
+      updated_at: 更新日時
+      actions: 操作
+      edit: 編集
+      delete: 削除
+      details: 詳細
+      back: 戻る
+      save: 保存
+      cancel: キャンセル
+      create: 作成
+      update: 更新
+      confirm: 確認
+      yes: はい
+      no: いいえ
+      required: 必須
+      optional: 任意
+      character_count: キャラクター数
+      equipment_status: 装備状態
+      equipped: 装備中
+      not_equipped: 未装備
+      can_equip: 装備可能
+      cannot_equip: 装備不可
