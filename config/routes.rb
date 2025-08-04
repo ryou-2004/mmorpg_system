@@ -29,7 +29,13 @@ Rails.application.routes.draw do
         post :unequip
       end
     end
-    resources :job_classes, only: [ :index, :show, :update ]
+    resources :job_classes, only: [ :index, :show, :update ] do
+      member do
+        get :skill_lines
+        get :skill_statistics
+        get 'skill_lines/:skill_line_id', to: 'job_classes#skill_line', as: :skill_line
+      end
+    end
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
 
     resources :job_class_stats, only: [ :index, :show ]

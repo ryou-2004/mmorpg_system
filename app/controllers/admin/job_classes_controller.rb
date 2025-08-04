@@ -155,6 +155,122 @@ class Admin::JobClassesController < Admin::BaseController
     end
   end
 
+  # スキルライン関連メソッド
+  def skill_lines
+    job_class = JobClass.find(params[:id])
+    skill_lines = job_class.skill_lines.includes(:skill_nodes, :job_class_skill_lines)
+
+    skill_lines = skill_lines.where(skill_line_type: params[:skill_line_type]) if params[:skill_line_type].present?
+    skill_lines = skill_lines.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+
+    render json: {
+      job_class: {
+        id: job_class.id,
+        name: job_class.name,
+        job_type: job_class.job_type
+      },
+      skill_lines: skill_lines.map do |skill_line|
+        jcsl = skill_line.job_class_skill_lines.find { |j| j.job_class_id == job_class.id }
+        
+        {
+          id: skill_line.id,
+          name: skill_line.name,
+          description: skill_line.description,
+          skill_line_type: skill_line.skill_line_type,
+          skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
+          unlock_level: jcsl&.unlock_level || 1,
+          nodes_count: skill_line.skill_nodes.active.count,
+          active: skill_line.active,
+          created_at: skill_line.created_at,
+          updated_at: skill_line.updated_at
+        }
+      end,
+      meta: {
+        total_count: skill_lines.count
+      }
+    }
+  end
+
+  def skill_line
+    job_class = JobClass.find(params[:id])
+    skill_line = job_class.skill_lines.find(params[:skill_line_id])
+    jcsl = skill_line.job_class_skill_lines.find_by(job_class: job_class)
+
+    render json: {
+      job_class: {
+        id: job_class.id,
+        name: job_class.name,
+        job_type: job_class.job_type
+      },
+      skill_line: {
+        id: skill_line.id,
+        name: skill_line.name,
+        description: skill_line.description,
+        skill_line_type: skill_line.skill_line_type,
+        skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
+        unlock_level: jcsl&.unlock_level || 1,
+        active: skill_line.active,
+        skill_nodes: skill_line.skill_nodes.active.order(:position_y, :position_x).map do |node|
+          {
+            id: node.id,
+            name: node.name,
+            description: node.description,
+            node_type: node.node_type,
+            node_type_name: I18n.t("skill_nodes.types.#{node.node_type}", default: node.node_type),
+            points_required: node.points_required,
+            effects: node.effects_data,
+            position_x: node.position_x,
+            position_y: node.position_y,
+            active: node.active
+          }
+        end,
+        character_investments: calculate_skill_line_investments(job_class, skill_line),
+        created_at: skill_line.created_at,
+        updated_at: skill_line.updated_at
+      }
+    }
+  end
+
+  def skill_statistics
+    job_class = JobClass.find(params[:id])
+    
+    # スキルライン別投資統計
+    skill_line_stats = job_class.skill_lines.includes(:character_skills).map do |skill_line|
+      character_skills = skill_line.character_skills.where(job_class: job_class)
+      
+      {
+        id: skill_line.id,
+        name: skill_line.name,
+        skill_line_type: skill_line.skill_line_type,
+        total_investments: character_skills.sum(:points_invested),
+        character_count: character_skills.where('points_invested > 0').count,
+        average_investment: character_skills.where('points_invested > 0').average(:points_invested)&.round(2) || 0,
+        max_investment: character_skills.maximum(:points_invested) || 0
+      }
+    end
+
+    # 全体統計
+    character_job_classes = job_class.character_job_classes.includes(:character_skills)
+    total_skill_points = character_job_classes.sum(:total_skill_points)
+    used_skill_points = character_job_classes.joins(:character_skills).sum('character_skills.points_invested')
+
+    render json: {
+      job_class: {
+        id: job_class.id,
+        name: job_class.name,
+        job_type: job_class.job_type
+      },
+      overall_stats: {
+        total_characters: character_job_classes.count,
+        total_skill_points: total_skill_points,
+        used_skill_points: used_skill_points,
+        available_skill_points: total_skill_points - used_skill_points,
+        utilization_rate: total_skill_points > 0 ? ((used_skill_points.to_f / total_skill_points) * 100).round(2) : 0
+      },
+      skill_line_stats: skill_line_stats
+    }
+  end
+
   private
 
   def job_class_params
@@ -166,6 +282,26 @@ class Admin::JobClassesController < Admin::BaseController
       :magic_attack_multiplier, :magic_defense_multiplier, :agility_multiplier, :luck_multiplier,
       :can_equip_left_hand
     )
+  end
+
+  def calculate_skill_line_investments(job_class, skill_line)
+    character_skills = skill_line.character_skills.where(job_class: job_class).includes(:character)
+    
+    {
+      total_investments: character_skills.sum(:points_invested),
+      character_count: character_skills.where('points_invested > 0').count,
+      average_investment: character_skills.where('points_invested > 0').average(:points_invested)&.round(2) || 0,
+      top_investors: character_skills.where('points_invested > 0')
+                                   .order(points_invested: :desc)
+                                   .limit(5)
+                                   .map do |cs|
+        {
+          character_name: cs.character.name,
+          points_invested: cs.points_invested,
+          unlocked_nodes_count: cs.unlocked_nodes.count
+        }
+      end
+    }
   end
 
 end
