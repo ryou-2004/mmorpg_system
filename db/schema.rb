@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_04_144115) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -85,11 +85,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "skill_points", default: 0, null: false
+    t.integer "total_skill_points", default: 0, null: false
     t.index ["active"], name: "index_character_job_classes_on_active"
     t.index ["character_id", "job_class_id"], name: "index_character_job_classes_on_character_id_and_job_class_id", unique: true
     t.index ["character_id"], name: "index_character_job_classes_on_character_id"
     t.index ["job_class_id"], name: "index_character_job_classes_on_job_class_id"
     t.index ["level"], name: "index_character_job_classes_on_level"
+  end
+
+  create_table "character_skills", force: :cascade do |t|
+    t.integer "character_id", null: false
+    t.integer "job_class_id", null: false
+    t.integer "skill_line_id", null: false
+    t.integer "points_invested", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "job_class_id", "skill_line_id"], name: "index_character_skills_unique", unique: true
+    t.index ["character_id", "job_class_id"], name: "index_character_skills_on_character_id_and_job_class_id"
+    t.index ["character_id"], name: "index_character_skills_on_character_id"
+    t.index ["job_class_id"], name: "index_character_skills_on_job_class_id"
+    t.index ["skill_line_id"], name: "index_character_skills_on_skill_line_id"
   end
 
   create_table "character_warehouses", force: :cascade do |t|
@@ -147,6 +162,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
     t.index ["weapon_category"], name: "index_items_on_weapon_category"
   end
 
+  create_table "job_class_skill_lines", force: :cascade do |t|
+    t.integer "job_class_id", null: false
+    t.integer "skill_line_id", null: false
+    t.integer "unlock_level", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_class_id", "skill_line_id"], name: "index_job_class_skill_lines_unique", unique: true
+    t.index ["job_class_id"], name: "index_job_class_skill_lines_on_job_class_id"
+    t.index ["skill_line_id"], name: "index_job_class_skill_lines_on_skill_line_id"
+    t.index ["unlock_level"], name: "index_job_class_skill_lines_on_unlock_level"
+  end
+
   create_table "job_classes", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -179,6 +206,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
     t.index ["name"], name: "index_job_classes_on_name", unique: true
   end
 
+  create_table "skill_lines", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "skill_line_type", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_skill_lines_on_active"
+    t.index ["skill_line_type"], name: "index_skill_lines_on_skill_line_type"
+  end
+
+  create_table "skill_nodes", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "node_type", null: false
+    t.integer "points_required", default: 1, null: false
+    t.text "effects"
+    t.integer "position_x", default: 0
+    t.integer "position_y", default: 0
+    t.integer "skill_line_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_skill_nodes_on_active"
+    t.index ["node_type"], name: "index_skill_nodes_on_node_type"
+    t.index ["skill_line_id"], name: "index_skill_nodes_on_skill_line_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
@@ -197,7 +252,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_105357) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_job_classes", "characters"
   add_foreign_key "character_job_classes", "job_classes"
+  add_foreign_key "character_skills", "characters"
+  add_foreign_key "character_skills", "job_classes"
+  add_foreign_key "character_skills", "skill_lines"
   add_foreign_key "character_warehouses", "characters"
   add_foreign_key "characters", "character_job_classes", column: "current_character_job_class_id"
   add_foreign_key "characters", "users"
+  add_foreign_key "job_class_skill_lines", "job_classes"
+  add_foreign_key "job_class_skill_lines", "skill_lines"
+  add_foreign_key "skill_nodes", "skill_lines"
 end

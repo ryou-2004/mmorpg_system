@@ -1,6 +1,9 @@
 class JobClass < ApplicationRecord
   has_many :character_job_classes, dependent: :destroy
   has_many :characters, through: :character_job_classes
+  has_many :job_class_skill_lines, dependent: :destroy
+  has_many :skill_lines, through: :job_class_skill_lines
+  has_many :character_skills, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :job_type, presence: true, inclusion: { in: %w[basic advanced special] }

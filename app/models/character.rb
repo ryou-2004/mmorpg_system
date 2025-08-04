@@ -5,6 +5,7 @@ class Character < ApplicationRecord
   has_many :character_items, dependent: :destroy
   has_many :items, through: :character_items
   has_many :character_warehouses, dependent: :destroy
+  has_many :character_skills, dependent: :destroy
   belongs_to :current_character_job_class, class_name: "CharacterJobClass", optional: true
 
   attr_accessor :skip_job_validation

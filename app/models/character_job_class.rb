@@ -1,11 +1,13 @@
 class CharacterJobClass < ApplicationRecord
   belongs_to :character
   belongs_to :job_class
+  has_many :character_skills, foreign_key: [:character_id, :job_class_id], primary_key: [:character_id, :job_class_id], dependent: :destroy
 
   validates :level, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
   validates :experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :unlocked_at, presence: true
   validates :skill_points, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :total_skill_points, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   validate :level_within_job_class_limits
   validate :unique_character_job_class
@@ -125,6 +127,51 @@ class CharacterJobClass < ApplicationRecord
 
   def max_level?
     level >= 100
+  end
+
+  # スキルシステムメソッド
+  def available_skill_points
+    total_skill_points - used_skill_points
+  end
+
+  def used_skill_points
+    character_skills.sum(:points_invested)
+  end
+
+  def available_skill_lines
+    job_class.skill_lines.joins(:job_class_skill_lines)
+             .where('job_class_skill_lines.unlock_level <= ?', level)
+  end
+
+  def unlocked_skill_lines
+    available_skill_lines
+  end
+
+  def skill_investment_for_line(skill_line)
+    character_skills.find_by(skill_line: skill_line)&.points_invested || 0
+  end
+
+  def can_invest_in_skill_line?(skill_line, points)
+    return false unless available_skill_lines.include?(skill_line)
+    available_skill_points >= points
+  end
+
+  def invest_skill_points!(skill_line, points)
+    return false unless can_invest_in_skill_line?(skill_line, points)
+
+    ActiveRecord::Base.transaction do
+      character_skill = character_skills.find_or_create_by(
+        character: character,
+        job_class: job_class,
+        skill_line: skill_line
+      )
+      
+      character_skill.increment!(:points_invested, points)
+      true
+    end
+  rescue => e
+    Rails.logger.error "Failed to invest skill points: #{e.message}"
+    false
   end
 
   # 動的ステータス計算メソッド
