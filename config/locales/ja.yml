@@ -260,3 +260,22 @@ ja:
       not_equipped: 未装備
       can_equip: 装備可能
       cannot_equip: 装備不可
+      skill_points: スキルポイント
+      total_skill_points: 合計スキルポイント
+      available_skill_points: 利用可能スキルポイント
+      used_skill_points: 使用済みスキルポイント
+      skill_investment: スキル投資
+      invest_skill_points: スキルポイント投資
+      reset_skill_points: スキルポイントリセット
+      add_skill_points: スキルポイント追加
+      
+  skill_lines:
+    types:
+      weapon: 武器スキル
+      job_specific: 職業専用スキル
+      
+  skill_nodes:
+    types:
+      stat_boost: ステータス上昇
+      technique: 特技
+      passive: パッシブスキル

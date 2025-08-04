@@ -35,6 +35,21 @@ Rails.application.routes.draw do
     resources :job_class_stats, only: [ :index, :show ]
     resources :job_level_samples, only: [ :index, :show ]
     resources :job_comparisons, only: [ :index, :create ]
+
+    # スキルシステム関連
+    resources :skill_lines, only: [ :index, :show, :create, :update, :destroy ] do
+      resources :skill_nodes, only: [ :index, :show, :create, :update, :destroy ]
+    end
+    
+    resources :characters, only: [] do
+      resources :character_skills, only: [ :index, :show ] do
+        member do
+          post :invest_points
+          post :reset_points
+          post :add_skill_points
+        end
+      end
+    end
   end
 
   namespace :api do
