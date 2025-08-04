@@ -49,5 +49,5 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # PostgreSQL adapter for CI environment
-  gem "pg", "~> 1.1"
+  gem "pg", "~> 1.6"
 end
