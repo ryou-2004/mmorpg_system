@@ -38,7 +38,7 @@ class Admin::SkillLinesController < ApplicationController
         skill_line_type: @skill_line.skill_line_type,
         skill_line_type_name: I18n.t("skill_lines.types.#{@skill_line.skill_line_type}", default: @skill_line.skill_line_type),
         active: @skill_line.active,
-        skill_nodes: @skill_line.skill_nodes.active.map do |node|
+        skill_nodes: @skill_line.skill_nodes.active.ordered.map do |node|
           {
             id: node.id,
             name: node.name,
@@ -47,8 +47,7 @@ class Admin::SkillLinesController < ApplicationController
             node_type_name: I18n.t("skill_nodes.types.#{node.node_type}", default: node.node_type),
             points_required: node.points_required,
             effects: node.effects_data,
-            position_x: node.position_x,
-            position_y: node.position_y,
+            display_order: node.display_order,
             active: node.active
           }
         end,

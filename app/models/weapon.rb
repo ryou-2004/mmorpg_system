@@ -7,41 +7,45 @@ class Weapon < Item
     axe: "axe",                         # 斧
     spear: "spear",                     # 槍
     hammer: "hammer",                   # ハンマー
-    staff: "staff",                     # 杖
+    staff: "staff",                     # 杖（両手杖）
+    stick: "stick",                     # スティック（片手杖）
     whip: "whip",                       # ムチ
     bow: "bow",                         # 弓
-    boomerang: "boomerang"              # ブーメラン
+    boomerang: "boomerang",             # ブーメラン
+    fan: "fan",                         # 扇
+    claw: "claw",                       # ツメ
+    martial_arts: "martial_arts"        # 格闘（素手）
   }, validate: true
 
   validates :weapon_category, presence: true
 
-  scope :one_handed, -> { where(weapon_category: %w[one_hand_sword dagger club staff whip boomerang]) }
-  scope :two_handed, -> { where(weapon_category: %w[two_hand_sword axe spear hammer bow]) }
-  scope :physical, -> { where(weapon_category: %w[one_hand_sword two_hand_sword dagger club axe spear hammer whip]) }
-  scope :magical, -> { where(weapon_category: %w[staff]) }
+  scope :one_handed, -> { where(weapon_category: %w[one_hand_sword dagger club stick whip boomerang fan claw]) }
+  scope :two_handed, -> { where(weapon_category: %w[two_hand_sword axe spear hammer staff bow]) }
+  scope :physical, -> { where(weapon_category: %w[one_hand_sword two_hand_sword dagger club axe spear hammer whip fan claw martial_arts]) }
+  scope :magical, -> { where(weapon_category: %w[staff stick]) }
   scope :ranged, -> { where(weapon_category: %w[bow boomerang]) }
   scope :slashing, -> { where(weapon_category: %w[one_hand_sword two_hand_sword axe whip]) }
   scope :thrusting, -> { where(weapon_category: %w[dagger spear bow]) }
   scope :blunt, -> { where(weapon_category: %w[club hammer]) }
 
   def one_handed?
-    %w[one_hand_sword dagger club staff whip boomerang].include?(weapon_category)
+    %w[one_hand_sword dagger club stick whip boomerang fan claw].include?(weapon_category)
   end
 
   def two_handed?
-    %w[two_hand_sword axe spear hammer bow].include?(weapon_category)
+    %w[two_hand_sword axe spear hammer staff bow].include?(weapon_category)
   end
 
   def can_use_left_hand?
-    %w[dagger].include?(weapon_category)
+    %w[dagger claw].include?(weapon_category)
   end
 
   def physical?
-    %w[one_hand_sword two_hand_sword dagger club axe spear hammer whip].include?(weapon_category)
+    %w[one_hand_sword two_hand_sword dagger club axe spear hammer whip fan claw martial_arts].include?(weapon_category)
   end
 
   def magical?
-    %w[staff].include?(weapon_category)
+    %w[staff stick].include?(weapon_category)
   end
 
   def ranged?
@@ -52,14 +56,16 @@ class Weapon < Item
     case weapon_category
     when 'one_hand_sword', 'two_hand_sword', 'axe', 'whip'
       'slash'
-    when 'dagger', 'spear', 'bow'
+    when 'dagger', 'spear', 'bow', 'claw'
       'thrust'
     when 'club', 'hammer'
       'blunt'
-    when 'staff'
+    when 'staff', 'stick'
       'magical'
-    when 'boomerang'
+    when 'boomerang', 'fan'
       'slash'
+    when 'martial_arts'
+      'blunt'
     else
       'physical'
     end

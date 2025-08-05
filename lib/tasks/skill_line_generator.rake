@@ -3,7 +3,7 @@ namespace :skill_lines do
   task generate_from_weapons: :environment do
     puts "職業別スキルライン自動生成を開始します..."
     
-    # 武器カテゴリごとのスキルライン情報
+    # 武器カテゴリごとのスキルライン情報（ドラクエ10準拠）
     weapon_skill_lines = {
       'one_hand_sword' => {
         name: '片手剣',
@@ -34,8 +34,12 @@ namespace :skill_lines do
         description: '重い一撃で敵を粉砕するハンマーの技術を習得します。'
       },
       'staff' => {
-        name: '杖',
-        description: '魔力を増幅させる杖の扱い方と、魔法攻撃の威力を高めます。'
+        name: '両手杖',
+        description: '魔力を増幅させる両手杖の扱い方と、魔法攻撃の威力を高めます。'
+      },
+      'stick' => {
+        name: 'スティック',
+        description: '片手で扱える軽量な杖で、素早い魔法を放ちます。'
       },
       'whip' => {
         name: 'ムチ',
@@ -48,6 +52,18 @@ namespace :skill_lines do
       'boomerang' => {
         name: 'ブーメラン',
         description: '投げた武器が戻ってくる特殊な技術で、複数の敵を攻撃します。'
+      },
+      'fan' => {
+        name: '扇',
+        description: '優雅な扇の舞で敵を魅了し、多彩な技を繰り出します。'
+      },
+      'claw' => {
+        name: 'ツメ',
+        description: '野生の本能を活かした爪での連続攻撃を極めます。'
+      },
+      'martial_arts' => {
+        name: '格闘',
+        description: '素手による格闘術で、己の拳を武器とする技術を習得します。'
       }
     }
     
@@ -60,15 +76,14 @@ namespace :skill_lines do
         skill_line_info = weapon_skill_lines[jcw.weapon_category]
         next unless skill_line_info
         
-        # 職業別スキルラインを作成または取得
-        skill_line_name = "#{job_class.name}の#{skill_line_info[:name]}"
-        skill_line = SkillLine.find_or_create_by!(
+        # スキルラインを作成または取得（職業名なし、重複許可）
+        skill_line_name = skill_line_info[:name]
+        skill_line = SkillLine.create!(
           name: skill_line_name,
-          skill_line_type: 'weapon'
-        ) do |sl|
-          sl.description = "#{job_class.name}として#{skill_line_info[:description]}"
-          sl.active = true
-        end
+          skill_line_type: 'weapon',
+          description: skill_line_info[:description],
+          active: true
+        )
         
         # 職業とスキルラインの関連付け
         JobClassSkillLine.find_or_create_by!(
@@ -88,13 +103,12 @@ namespace :skill_lines do
       end
       
       # 職業専用スキルラインの作成
-      job_specific_skill_line = SkillLine.find_or_create_by!(
+      job_specific_skill_line = SkillLine.create!(
         name: "#{job_class.name}の心得",
-        skill_line_type: 'job_specific'
-      ) do |sl|
-        sl.description = "#{job_class.name}としての基本的な戦闘技術と精神力を鍛えます。"
-        sl.active = true
-      end
+        skill_line_type: 'job_specific',
+        description: "#{job_class.name}としての基本的な戦闘技術と精神力を鍛えます。",
+        active: true
+      )
       
       JobClassSkillLine.find_or_create_by!(
         job_class: job_class,

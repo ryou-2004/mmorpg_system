@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_105546) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_05_145233) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -235,13 +235,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_105546) do
     t.string "node_type", null: false
     t.integer "points_required", default: 1, null: false
     t.text "effects"
-    t.integer "position_x", default: 0
-    t.integer "position_y", default: 0
     t.integer "skill_line_id", null: false
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "display_order", default: 0, null: false
     t.index ["active"], name: "index_skill_nodes_on_active"
+    t.index ["display_order"], name: "index_skill_nodes_on_display_order"
     t.index ["node_type"], name: "index_skill_nodes_on_node_type"
     t.index ["skill_line_id"], name: "index_skill_nodes_on_skill_line_id"
   end

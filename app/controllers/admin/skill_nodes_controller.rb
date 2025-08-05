@@ -3,7 +3,7 @@ class Admin::SkillNodesController < ApplicationController
   before_action :set_skill_node, only: [:show, :update, :destroy]
 
   def index
-    skill_nodes = @skill_line.skill_nodes.active.order(:position_y, :position_x)
+    skill_nodes = @skill_line.skill_nodes.active.ordered
 
     render json: {
       skill_nodes: skill_nodes.map do |node|
@@ -81,7 +81,7 @@ class Admin::SkillNodesController < ApplicationController
 
   def skill_node_params
     params.require(:skill_node).permit(:name, :description, :node_type, :points_required, 
-                                       :position_x, :position_y, :active, effects: {})
+                                       :display_order, :active, effects: {})
   end
 
   def format_skill_node(skill_node)
@@ -93,8 +93,7 @@ class Admin::SkillNodesController < ApplicationController
       node_type_name: I18n.t("skill_nodes.types.#{skill_node.node_type}", default: skill_node.node_type),
       points_required: skill_node.points_required,
       effects: skill_node.effects_data,
-      position_x: skill_node.position_x,
-      position_y: skill_node.position_y,
+      display_order: skill_node.display_order,
       active: skill_node.active,
       skill_line_id: skill_node.skill_line_id,
       created_at: skill_node.created_at,

@@ -4,11 +4,13 @@ class SkillNode < ApplicationRecord
   validates :name, presence: true
   validates :node_type, presence: true, inclusion: { in: %w[stat_boost technique passive] }
   validates :points_required, presence: true, numericality: { greater_than: 0 }
+  validates :display_order, presence: true, numericality: { greater_than: 0 }
 
   scope :active, -> { where(active: true) }
   scope :stat_boosts, -> { where(node_type: 'stat_boost') }
   scope :techniques, -> { where(node_type: 'technique') }
   scope :passives, -> { where(node_type: 'passive') }
+  scope :ordered, -> { order(:display_order) }
 
   before_save :serialize_effects
 
