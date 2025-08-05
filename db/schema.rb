@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_144115) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_05_105546) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -168,10 +168,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_144115) do
     t.integer "unlock_level", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["job_class_id", "skill_line_id"], name: "index_job_class_skill_lines_unique", unique: true
     t.index ["job_class_id"], name: "index_job_class_skill_lines_on_job_class_id"
     t.index ["skill_line_id"], name: "index_job_class_skill_lines_on_skill_line_id"
     t.index ["unlock_level"], name: "index_job_class_skill_lines_on_unlock_level"
+  end
+
+  create_table "job_class_weapons", force: :cascade do |t|
+    t.integer "job_class_id", null: false
+    t.string "weapon_category", null: false
+    t.integer "unlock_level", default: 1, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_class_id", "weapon_category"], name: "index_job_class_weapons_on_job_class_id_and_weapon_category", unique: true
+    t.index ["job_class_id"], name: "index_job_class_weapons_on_job_class_id"
   end
 
   create_table "job_classes", force: :cascade do |t|
@@ -260,5 +272,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_144115) do
   add_foreign_key "characters", "users"
   add_foreign_key "job_class_skill_lines", "job_classes"
   add_foreign_key "job_class_skill_lines", "skill_lines"
+  add_foreign_key "job_class_weapons", "job_classes"
   add_foreign_key "skill_nodes", "skill_lines"
 end
