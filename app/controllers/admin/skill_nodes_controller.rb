@@ -21,8 +21,35 @@ class Admin::SkillNodesController < ApplicationController
   end
 
   def show
+    # 関連データを事前ロード
+    job_class_skill_line = @skill_line.job_class_skill_lines.includes(:job_class).first
+    job_class = job_class_skill_line&.job_class
+
+    # キャッシュヘッダーを設定
+    cache_key = "skill_node_#{@skill_node.id}_#{@skill_node.updated_at.to_i}"
+    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
+    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+
     render json: {
-      skill_node: format_skill_node(@skill_node)
+      id: @skill_node.id,
+      name: @skill_node.name,
+      description: @skill_node.description,
+      points_required: @skill_node.points_required,
+      display_order: @skill_node.display_order,
+      active: @skill_node.active,
+      created_at: @skill_node.created_at,
+      updated_at: @skill_node.updated_at,
+      skill_line: {
+        id: @skill_line.id,
+        name: @skill_line.name,
+        skill_line_type: @skill_line.skill_line_type,
+        skill_line_type_name: I18n.t("skill_lines.types.#{@skill_line.skill_line_type}", default: @skill_line.skill_line_type)
+      },
+      job_class: job_class ? {
+        id: job_class.id,
+        name: job_class.name,
+        job_type: job_class.job_type
+      } : nil
     }
   end
 

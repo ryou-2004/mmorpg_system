@@ -230,40 +230,41 @@ class Admin::JobClassesController < Admin::BaseController
 
   def skill_line
     job_class = JobClass.find(params[:id])
-    skill_line = job_class.skill_lines.find(params[:skill_line_id])
+    skill_line = job_class.skill_lines.includes(:skill_nodes).find(params[:skill_line_id])
     jcsl = skill_line.job_class_skill_lines.find_by(job_class: job_class)
 
+    # キャッシュヘッダーを設定
+    cache_key = "skill_line_#{skill_line.id}_#{skill_line.updated_at.to_i}"
+    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
+    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+
     render json: {
+      id: skill_line.id,
+      name: skill_line.name,
+      description: skill_line.description,
+      skill_line_type: skill_line.skill_line_type,
+      skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
+      unlock_level: jcsl&.unlock_level || 1,
+      active: skill_line.active,
+      created_at: skill_line.created_at,
+      updated_at: skill_line.updated_at,
       job_class: {
         id: job_class.id,
         name: job_class.name,
         job_type: job_class.job_type
       },
-      skill_line: {
-        id: skill_line.id,
-        name: skill_line.name,
-        description: skill_line.description,
-        skill_line_type: skill_line.skill_line_type,
-        skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
-        unlock_level: jcsl&.unlock_level || 1,
-        active: skill_line.active,
-        skill_nodes: skill_line.skill_nodes.active.ordered.map do |node|
-          {
-            id: node.id,
-            name: node.name,
-            description: node.description,
-            node_type: node.node_type,
-            node_type_name: I18n.t("skill_nodes.types.#{node.node_type}", default: node.node_type),
-            points_required: node.points_required,
-            effects: node.effects_data,
-            display_order: node.display_order,
-            active: node.active
-          }
-        end,
-        character_investments: calculate_skill_line_investments(job_class, skill_line),
-        created_at: skill_line.created_at,
-        updated_at: skill_line.updated_at
-      }
+      skill_nodes: skill_line.skill_nodes.active.order(:display_order).map do |node|
+        {
+          id: node.id,
+          name: node.name,
+          description: node.description,
+          points_required: node.points_required,
+          display_order: node.display_order,
+          active: node.active,
+          created_at: node.created_at,
+          updated_at: node.updated_at
+        }
+      end
     }
   end
 
