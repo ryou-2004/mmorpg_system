@@ -1,10 +1,18 @@
 class Admin::JobClassesController < Admin::BaseController
 
   def index
-    job_classes = JobClass.left_joins(:character_job_classes)
-                         .select("job_classes.*, COUNT(character_job_classes.id) as characters_count")
-                         .group("job_classes.id")
-                         .order(:id)
+    cache_key = "job_classes_index_#{JobClass.maximum(:updated_at)&.to_i}"
+    
+    job_classes = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+      JobClass.left_joins(:character_job_classes)
+              .select("job_classes.*, COUNT(character_job_classes.id) as characters_count")
+              .group("job_classes.id")
+              .order(:id)
+    end
+
+    # キャッシュヘッダーを設定
+    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
+    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       data: job_classes.map do |job_class|
@@ -44,6 +52,7 @@ class Admin::JobClassesController < Admin::BaseController
 
   def show
     job_class = JobClass.find(params[:id])
+    cache_key = "job_class_#{job_class.id}_#{job_class.updated_at.to_i}"
 
     # 職業に関連するキャラクターの統計データを取得
     character_job_classes = job_class.character_job_classes.includes(:character)
@@ -74,6 +83,10 @@ class Admin::JobClassesController < Admin::BaseController
         }
       }
     end
+
+    # キャッシュヘッダーを設定
+    response.headers['Cache-Control'] = 'public, max-age=600' # 10分
+    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       id: job_class.id,
@@ -158,10 +171,34 @@ class Admin::JobClassesController < Admin::BaseController
   # スキルライン関連メソッド
   def skill_lines
     job_class = JobClass.find(params[:id])
-    skill_lines = job_class.skill_lines.includes(:skill_nodes, :job_class_skill_lines)
+    
+    # パフォーマンス最適化: カウントクエリを事前実行
+    skill_lines = job_class.skill_lines
+                           .includes(
+                             :job_class_skill_lines, 
+                             skill_nodes: []
+                           )
+                           .joins("LEFT JOIN skill_nodes ON skill_nodes.skill_line_id = skill_lines.id AND skill_nodes.active = true")
+                           .select("skill_lines.*, COUNT(skill_nodes.id) as nodes_count")
+                           .group("skill_lines.id")
 
     skill_lines = skill_lines.where(skill_line_type: params[:skill_line_type]) if params[:skill_line_type].present?
-    skill_lines = skill_lines.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+    skill_lines = skill_lines.where("skill_lines.name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+
+    # 配列に変換してcount問題を回避
+    skill_lines_array = skill_lines.to_a
+
+    # job_class_skill_linesのマップを事前作成（N+1回避）
+    jcsl_map = {}
+    skill_lines_array.each do |skill_line|
+      jcsl = skill_line.job_class_skill_lines.find { |j| j.job_class_id == job_class.id }
+      jcsl_map[skill_line.id] = jcsl
+    end
+
+    # キャッシュヘッダーを設定
+    cache_key = "job_class_#{job_class.id}_skill_lines_#{skill_lines_array.size}"
+    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
+    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       job_class: {
@@ -169,8 +206,8 @@ class Admin::JobClassesController < Admin::BaseController
         name: job_class.name,
         job_type: job_class.job_type
       },
-      skill_lines: skill_lines.map do |skill_line|
-        jcsl = skill_line.job_class_skill_lines.find { |j| j.job_class_id == job_class.id }
+      skill_lines: skill_lines_array.map do |skill_line|
+        jcsl = jcsl_map[skill_line.id]
         
         {
           id: skill_line.id,
@@ -179,14 +216,14 @@ class Admin::JobClassesController < Admin::BaseController
           skill_line_type: skill_line.skill_line_type,
           skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
           unlock_level: jcsl&.unlock_level || 1,
-          nodes_count: skill_line.skill_nodes.active.count,
+          nodes_count: skill_line.nodes_count || 0, # SQLのCOUNT結果を使用
           active: skill_line.active,
           created_at: skill_line.created_at,
           updated_at: skill_line.updated_at
         }
       end,
       meta: {
-        total_count: skill_lines.count
+        total_count: skill_lines_array.size
       }
     }
   end
