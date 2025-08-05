@@ -60,12 +60,13 @@ namespace :skill_lines do
         skill_line_info = weapon_skill_lines[jcw.weapon_category]
         next unless skill_line_info
         
-        # スキルラインを作成または取得
+        # 職業別スキルラインを作成または取得
+        skill_line_name = "#{job_class.name}の#{skill_line_info[:name]}"
         skill_line = SkillLine.find_or_create_by!(
-          name: skill_line_info[:name],
+          name: skill_line_name,
           skill_line_type: 'weapon'
         ) do |sl|
-          sl.description = skill_line_info[:description]
+          sl.description = "#{job_class.name}として#{skill_line_info[:description]}"
           sl.active = true
         end
         
