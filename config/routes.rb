@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :quests, only: [:index, :show, :create, :update, :destroy]
+    resources :character_quests, only: [:index, :show, :create, :update, :destroy] do
+      member do
+        patch :complete
+        patch :abandon
+        patch :reset
+      end
+    end
     resources :weapons, only: [:index, :show, :create, :update, :destroy]
     resources :armors, only: [:index, :show, :create, :update, :destroy]
     resource :session, only: [ :show, :create, :destroy ]

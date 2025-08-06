@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  quest_type: MyString
+  level_requirement: 1
+  experience_reward: 1
+  gold_reward: 1
+  status: MyString
+  active: false
+
+two:
+  title: MyString
+  description: MyText
+  quest_type: MyString
+  level_requirement: 1
+  experience_reward: 1
+  gold_reward: 1
+  status: MyString
+  active: false

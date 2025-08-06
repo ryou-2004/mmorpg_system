@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_133250) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -91,6 +91,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
     t.index ["character_id"], name: "index_character_job_classes_on_character_id"
     t.index ["job_class_id"], name: "index_character_job_classes_on_job_class_id"
     t.index ["level"], name: "index_character_job_classes_on_level"
+  end
+
+  create_table "character_quests", force: :cascade do |t|
+    t.integer "character_id", null: false
+    t.integer "quest_id", null: false
+    t.string "status", default: "started", null: false
+    t.datetime "started_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "completed_at"
+    t.json "progress", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "quest_id"], name: "index_character_quests_on_character_id_and_quest_id", unique: true
+    t.index ["character_id"], name: "index_character_quests_on_character_id"
+    t.index ["completed_at"], name: "index_character_quests_on_completed_at"
+    t.index ["quest_id"], name: "index_character_quests_on_quest_id"
+    t.index ["started_at"], name: "index_character_quests_on_started_at"
+    t.index ["status"], name: "index_character_quests_on_status"
   end
 
   create_table "character_skills", force: :cascade do |t|
@@ -216,6 +233,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
     t.index ["name"], name: "index_job_classes_on_name", unique: true
   end
 
+  create_table "quest_rewards", force: :cascade do |t|
+    t.integer "quest_id", null: false
+    t.string "reward_type", null: false
+    t.string "reward_item_type"
+    t.integer "reward_item_id"
+    t.integer "quantity", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quest_id"], name: "index_quest_rewards_on_quest_id"
+    t.index ["reward_item_id"], name: "index_quest_rewards_on_reward_item_id"
+    t.index ["reward_item_type"], name: "index_quest_rewards_on_reward_item_type"
+    t.index ["reward_type"], name: "index_quest_rewards_on_reward_type"
+  end
+
+  create_table "quests", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.string "quest_type", null: false
+    t.integer "level_requirement", default: 1, null: false
+    t.integer "experience_reward", default: 0, null: false
+    t.integer "gold_reward", default: 0, null: false
+    t.string "status", default: "available", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "prerequisite_quest_id"
+    t.integer "display_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "item_rewards", default: []
+    t.integer "skill_point_reward", default: 0, null: false
+    t.index ["active"], name: "index_quests_on_active"
+    t.index ["display_order"], name: "index_quests_on_display_order"
+    t.index ["level_requirement"], name: "index_quests_on_level_requirement"
+    t.index ["prerequisite_quest_id"], name: "index_quests_on_prerequisite_quest_id"
+    t.index ["quest_type"], name: "index_quests_on_quest_type"
+    t.index ["status"], name: "index_quests_on_status"
+  end
+
   create_table "skill_lines", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -262,6 +316,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_job_classes", "characters"
   add_foreign_key "character_job_classes", "job_classes"
+  add_foreign_key "character_quests", "characters"
+  add_foreign_key "character_quests", "quests"
   add_foreign_key "character_skills", "characters"
   add_foreign_key "character_skills", "job_classes"
   add_foreign_key "character_skills", "skill_lines"
@@ -271,5 +327,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
   add_foreign_key "job_class_skill_lines", "job_classes"
   add_foreign_key "job_class_skill_lines", "skill_lines"
   add_foreign_key "job_class_weapons", "job_classes"
+  add_foreign_key "quest_rewards", "quests"
+  add_foreign_key "quests", "quests", column: "prerequisite_quest_id"
   add_foreign_key "skill_nodes", "skill_lines"
 end
