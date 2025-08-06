@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resource :damage_calculator, only: [] do
+      collection do
+        post :verify
+        post :simulate
+        get :analyze
+      end
+    end
     resources :battles, only: [:index, :show, :create, :update, :destroy] do
       resources :battle_logs, only: [:index, :show, :create, :destroy], shallow: true
       member do
