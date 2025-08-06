@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :battles, only: [:index, :show, :create, :update, :destroy] do
+      resources :battle_logs, only: [:index, :show, :create, :destroy], shallow: true
+      member do
+        get :statistics
+        post :end_battle
+      end
+    end
     resources :shops, only: [:index, :show, :create, :update, :destroy] do
       resources :shop_items, only: [:index, :create, :update, :destroy], shallow: true
     end

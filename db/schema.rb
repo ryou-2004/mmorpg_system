@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_141333) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_143427) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_141333) do
     t.integer "winner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "participants_count", default: 0
     t.index ["battle_type"], name: "index_battles_on_battle_type"
     t.index ["start_time"], name: "index_battles_on_start_time"
     t.index ["status"], name: "index_battles_on_status"
