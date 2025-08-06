@@ -215,7 +215,6 @@ class Admin::JobClassesController < Admin::BaseController
           description: skill_line.description,
           skill_line_type: skill_line.skill_line_type,
           skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
-          unlock_level: jcsl&.unlock_level || 1,
           nodes_count: skill_line.nodes_count || 0, # SQLのCOUNT結果を使用
           active: skill_line.active,
           created_at: skill_line.created_at,

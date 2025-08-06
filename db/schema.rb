@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_145233) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_114616) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -165,14 +165,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_145233) do
   create_table "job_class_skill_lines", force: :cascade do |t|
     t.integer "job_class_id", null: false
     t.integer "skill_line_id", null: false
-    t.integer "unlock_level", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: true, null: false
     t.index ["job_class_id", "skill_line_id"], name: "index_job_class_skill_lines_unique", unique: true
     t.index ["job_class_id"], name: "index_job_class_skill_lines_on_job_class_id"
     t.index ["skill_line_id"], name: "index_job_class_skill_lines_on_skill_line_id"
-    t.index ["unlock_level"], name: "index_job_class_skill_lines_on_unlock_level"
   end
 
   create_table "job_class_weapons", force: :cascade do |t|

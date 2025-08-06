@@ -56,8 +56,7 @@ class Admin::SkillLinesController < ApplicationController
             id: jcsl.job_class.id,
             name: jcsl.job_class.name,
             job_type: jcsl.job_class.job_type,
-            job_type_name: jcsl.job_class.job_type_name,
-            unlock_level: jcsl.unlock_level
+            job_type_name: jcsl.job_class.job_type_name
           }
         end,
         created_at: @skill_line.created_at,

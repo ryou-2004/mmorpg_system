@@ -162,43 +162,39 @@ job_classes.each do |job_class|
   case job_class.name
   when "戦士"
     skill_lines = [
-      { skill_line: SkillLine.find_by(name: "片手剣"), unlock_level: 1 },
-      { skill_line: SkillLine.find_by(name: "両手剣"), unlock_level: 5 },
-      { skill_line: SkillLine.find_by(name: "戦士の心得"), unlock_level: 1 }
+      SkillLine.find_by(name: "片手剣"),
+      SkillLine.find_by(name: "両手剣"),
+      SkillLine.find_by(name: "戦士の心得")
     ]
   when "魔法使い"
     skill_lines = [
-      { skill_line: SkillLine.find_by(name: "杖"), unlock_level: 1 },
-      { skill_line: SkillLine.find_by(name: "短剣"), unlock_level: 10 },
-      { skill_line: SkillLine.find_by(name: "魔法使いの知識"), unlock_level: 1 }
+      SkillLine.find_by(name: "杖"),
+      SkillLine.find_by(name: "短剣"),
+      SkillLine.find_by(name: "魔法使いの知識")
     ]
   when "僧侶"
     skill_lines = [
-      { skill_line: SkillLine.find_by(name: "杖"), unlock_level: 1 },
-      { skill_line: SkillLine.find_by(name: "僧侶の信仰"), unlock_level: 1 }
+      SkillLine.find_by(name: "杖"),
+      SkillLine.find_by(name: "僧侶の信仰")
     ]
   when "盗賊"
     skill_lines = [
-      { skill_line: SkillLine.find_by(name: "短剣"), unlock_level: 1 },
-      { skill_line: SkillLine.find_by(name: "弓"), unlock_level: 5 },
-      { skill_line: SkillLine.find_by(name: "盗賊の技巧"), unlock_level: 1 }
+      SkillLine.find_by(name: "短剣"),
+      SkillLine.find_by(name: "弓"),
+      SkillLine.find_by(name: "盗賊の技巧")
     ]
   else
     # その他の職業は基本的なスキルラインを付与
     skill_lines = [
-      { skill_line: SkillLine.find_by(name: "片手剣"), unlock_level: 1 }
+      SkillLine.find_by(name: "片手剣")
     ]
   end
   
-  skill_lines.compact.each do |skill_line_data|
-    next unless skill_line_data[:skill_line]
-    
+  skill_lines.compact.each do |skill_line|
     JobClassSkillLine.find_or_create_by(
       job_class: job_class,
-      skill_line: skill_line_data[:skill_line]
-    ) do |jcsl|
-      jcsl.unlock_level = skill_line_data[:unlock_level]
-    end
+      skill_line: skill_line
+    )
   end
   
   puts "  - Assigned skill lines to: #{job_class.name}"
