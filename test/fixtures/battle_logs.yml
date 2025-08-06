@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  battle: one
+  attacker: one
+  defender: one
+  action_type: 1
+  damage_value: 1
+  critical_hit: false
+  skill_id: 1
+  calculation_details: MyText
+  occurred_at: 2025-08-06 23:13:33
+
+two:
+  battle: two
+  attacker: two
+  defender: two
+  action_type: 1
+  damage_value: 1
+  critical_hit: false
+  skill_id: 1
+  calculation_details: MyText
+  occurred_at: 2025-08-06 23:13:33

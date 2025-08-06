@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  battle_type: 1
+  status: 1
+  start_time: 2025-08-06 23:13:15
+  end_time: 2025-08-06 23:13:15
+  location: MyString
+  difficulty_level: 1
+  total_damage: 1
+  battle_duration: 1
+  winner_id: 1
+
+two:
+  battle_type: 1
+  status: 1
+  start_time: 2025-08-06 23:13:15
+  end_time: 2025-08-06 23:13:15
+  location: MyString
+  difficulty_level: 1
+  total_damage: 1
+  battle_duration: 1
+  winner_id: 1

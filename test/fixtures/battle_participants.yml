@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  battle: one
+  character: one
+  role: 1
+  initial_stats: MyText
+  final_stats: MyText
+  damage_dealt: 1
+  damage_received: 1
+  actions_taken: 1
+  survived: false
+
+two:
+  battle: two
+  character: two
+  role: 1
+  initial_stats: MyText
+  final_stats: MyText
+  damage_dealt: 1
+  damage_received: 1
+  actions_taken: 1
+  survived: false

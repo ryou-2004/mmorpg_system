@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_135007) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_141333) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -40,6 +40,60 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_135007) do
     t.index ["active"], name: "index_admin_users_on_active"
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["role"], name: "index_admin_users_on_role"
+  end
+
+  create_table "battle_logs", force: :cascade do |t|
+    t.integer "battle_id", null: false
+    t.integer "attacker_id"
+    t.integer "defender_id"
+    t.integer "action_type", null: false
+    t.integer "damage_value", default: 0
+    t.boolean "critical_hit", default: false
+    t.string "skill_name"
+    t.text "calculation_details"
+    t.datetime "occurred_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_type"], name: "index_battle_logs_on_action_type"
+    t.index ["attacker_id"], name: "index_battle_logs_on_attacker_id"
+    t.index ["battle_id", "occurred_at"], name: "index_battle_logs_on_battle_id_and_occurred_at"
+    t.index ["battle_id"], name: "index_battle_logs_on_battle_id"
+    t.index ["critical_hit"], name: "index_battle_logs_on_critical_hit"
+    t.index ["defender_id"], name: "index_battle_logs_on_defender_id"
+  end
+
+  create_table "battle_participants", force: :cascade do |t|
+    t.integer "battle_id", null: false
+    t.integer "character_id", null: false
+    t.integer "role"
+    t.text "initial_stats"
+    t.text "final_stats"
+    t.integer "damage_dealt"
+    t.integer "damage_received"
+    t.integer "actions_taken"
+    t.boolean "survived"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["battle_id"], name: "index_battle_participants_on_battle_id"
+    t.index ["character_id"], name: "index_battle_participants_on_character_id"
+  end
+
+  create_table "battles", force: :cascade do |t|
+    t.integer "battle_type", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time"
+    t.string "location"
+    t.integer "difficulty_level", default: 1
+    t.integer "total_damage", default: 0
+    t.integer "battle_duration"
+    t.integer "winner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["battle_type"], name: "index_battles_on_battle_type"
+    t.index ["start_time"], name: "index_battles_on_start_time"
+    t.index ["status"], name: "index_battles_on_status"
+    t.index ["winner_id"], name: "index_battles_on_winner_id"
   end
 
   create_table "character_items", force: :cascade do |t|
@@ -349,6 +403,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_135007) do
 
   add_foreign_key "admin_permissions", "admin_users"
   add_foreign_key "admin_permissions", "admin_users", column: "granted_by_id"
+  add_foreign_key "battle_logs", "battles"
+  add_foreign_key "battle_logs", "characters", column: "attacker_id"
+  add_foreign_key "battle_logs", "characters", column: "defender_id"
+  add_foreign_key "battle_participants", "battles"
+  add_foreign_key "battle_participants", "characters"
+  add_foreign_key "battles", "characters", column: "winner_id"
   add_foreign_key "character_items", "character_warehouses"
   add_foreign_key "character_items", "characters"
   add_foreign_key "character_items", "items"

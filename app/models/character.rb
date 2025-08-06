@@ -6,6 +6,11 @@ class Character < ApplicationRecord
   has_many :items, through: :character_items
   has_many :character_warehouses, dependent: :destroy
   has_many :character_skills, dependent: :destroy
+  has_many :battle_participants, dependent: :destroy
+  has_many :battles, through: :battle_participants
+  has_many :won_battles, class_name: 'Battle', foreign_key: 'winner_id'
+  has_many :attacker_logs, class_name: 'BattleLog', foreign_key: 'attacker_id'
+  has_many :defender_logs, class_name: 'BattleLog', foreign_key: 'defender_id'
   belongs_to :current_character_job_class, class_name: "CharacterJobClass", optional: true
 
   attr_accessor :skip_job_validation
