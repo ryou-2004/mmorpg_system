@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_133250) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_135007) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -270,6 +270,44 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_133250) do
     t.index ["status"], name: "index_quests_on_status"
   end
 
+  create_table "shop_items", force: :cascade do |t|
+    t.integer "shop_id", null: false
+    t.integer "item_id", null: false
+    t.integer "buy_price", null: false
+    t.integer "sell_price"
+    t.integer "stock_quantity", default: 0
+    t.boolean "unlimited_stock", default: false, null: false
+    t.boolean "active", default: true, null: false
+    t.integer "display_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_shop_items_on_active"
+    t.index ["buy_price"], name: "index_shop_items_on_buy_price"
+    t.index ["display_order"], name: "index_shop_items_on_display_order"
+    t.index ["item_id"], name: "index_shop_items_on_item_id"
+    t.index ["sell_price"], name: "index_shop_items_on_sell_price"
+    t.index ["shop_id", "item_id"], name: "index_shop_items_on_shop_id_and_item_id", unique: true
+    t.index ["shop_id"], name: "index_shop_items_on_shop_id"
+    t.index ["unlimited_stock"], name: "index_shop_items_on_unlimited_stock"
+  end
+
+  create_table "shops", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "shop_type", null: false
+    t.string "location"
+    t.string "npc_name"
+    t.boolean "active", default: true, null: false
+    t.integer "display_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_shops_on_active"
+    t.index ["display_order"], name: "index_shops_on_display_order"
+    t.index ["location"], name: "index_shops_on_location"
+    t.index ["name"], name: "index_shops_on_name", unique: true
+    t.index ["shop_type"], name: "index_shops_on_shop_type"
+  end
+
   create_table "skill_lines", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -329,5 +367,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_133250) do
   add_foreign_key "job_class_weapons", "job_classes"
   add_foreign_key "quest_rewards", "quests"
   add_foreign_key "quests", "quests", column: "prerequisite_quest_id"
+  add_foreign_key "shop_items", "items"
+  add_foreign_key "shop_items", "shops"
   add_foreign_key "skill_nodes", "skill_lines"
 end

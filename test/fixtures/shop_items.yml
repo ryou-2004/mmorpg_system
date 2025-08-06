@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shop: one
+  item: one
+  buy_price: 1
+  sell_price: 1
+  stock_quantity: 1
+  unlimited_stock: false
+  active: false
+  display_order: 1
+
+two:
+  shop: two
+  item: two
+  buy_price: 1
+  sell_price: 1
+  stock_quantity: 1
+  unlimited_stock: false
+  active: false
+  display_order: 1

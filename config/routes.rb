@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   namespace :admin do
+    resources :shops, only: [:index, :show, :create, :update, :destroy] do
+      resources :shop_items, only: [:index, :create, :update, :destroy], shallow: true
+    end
     resources :quests, only: [:index, :show, :create, :update, :destroy]
     resources :character_quests, only: [:index, :show, :create, :update, :destroy] do
       member do
