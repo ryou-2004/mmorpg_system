@@ -243,7 +243,6 @@ class Admin::JobClassesController < Admin::BaseController
       description: skill_line.description,
       skill_line_type: skill_line.skill_line_type,
       skill_line_type_name: I18n.t("skill_lines.types.#{skill_line.skill_line_type}", default: skill_line.skill_line_type),
-      unlock_level: jcsl&.unlock_level || 1,
       active: skill_line.active,
       created_at: skill_line.created_at,
       updated_at: skill_line.updated_at,

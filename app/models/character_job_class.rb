@@ -140,7 +140,6 @@ class CharacterJobClass < ApplicationRecord
 
   def available_skill_lines
     job_class.skill_lines.joins(:job_class_skill_lines)
-             .where('job_class_skill_lines.unlock_level <= ?', level)
   end
 
   def unlocked_skill_lines
