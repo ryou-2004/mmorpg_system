@@ -69,7 +69,8 @@ class Admin::QuestsController < ApplicationController
   def quest_params
     params.require(:quest).permit(:title, :description, :quest_type, :level_requirement,
                                   :experience_reward, :gold_reward, :skill_point_reward,
-                                  :status, :active, :prerequisite_quest_id, :display_order, :quest_category_id)
+                                  :status, :active, :prerequisite_quest_id, :display_order, 
+                                  :quest_category_id, :display_number)
   end
 
   def filter_params
@@ -112,9 +113,12 @@ class Admin::QuestsController < ApplicationController
     {
       id: quest.id,
       title: quest.title,
+      display_title: quest.display_title,
       description: quest.description,
       quest_type: quest.quest_type,
       quest_type_name: quest.quest_type_name,
+      display_number: quest.display_number,
+      has_display_number: quest.has_display_number?,
       level_requirement: quest.level_requirement,
       experience_reward: quest.experience_reward,
       gold_reward: quest.gold_reward,

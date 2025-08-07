@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_122838) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_124825) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -329,11 +329,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_122838) do
     t.json "item_rewards", default: []
     t.integer "skill_point_reward", default: 0, null: false
     t.integer "quest_category_id"
+    t.integer "display_number"
     t.index ["active"], name: "index_quests_on_active"
     t.index ["display_order"], name: "index_quests_on_display_order"
     t.index ["level_requirement"], name: "index_quests_on_level_requirement"
     t.index ["prerequisite_quest_id"], name: "index_quests_on_prerequisite_quest_id"
     t.index ["quest_category_id"], name: "index_quests_on_quest_category_id"
+    t.index ["quest_type", "display_number"], name: "index_quests_on_quest_type_and_display_number", unique: true, where: "display_number IS NOT NULL"
     t.index ["quest_type"], name: "index_quests_on_quest_type"
     t.index ["status"], name: "index_quests_on_status"
   end

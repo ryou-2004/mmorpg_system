@@ -6,7 +6,8 @@ class Quest < ApplicationRecord
   belongs_to :quest_category, optional: true
 
   validates :title, presence: true, length: { maximum: 255 }
-  validates :quest_type, presence: true, inclusion: { in: %w[main sub daily weekly event] }
+  validates :quest_type, presence: true, inclusion: { in: %w[main_story sub_story super_helpful helpful craftsman job random] }
+  validates :display_number, uniqueness: { scope: :quest_type }, allow_nil: true
   validates :level_requirement, presence: true, numericality: { greater_than: 0, less_than_or_equal: 100 }
   validates :experience_reward, presence: true, numericality: { greater_than_or_equal: 0 }
   validates :gold_reward, presence: true, numericality: { greater_than_or_equal: 0 }
@@ -22,11 +23,13 @@ class Quest < ApplicationRecord
 
   def quest_type_name
     case quest_type
-    when "main" then "メインクエスト"
-    when "sub" then "サブクエスト"
-    when "daily" then "デイリークエスト"
-    when "weekly" then "ウィークリークエスト"
-    when "event" then "イベントクエスト"
+    when "main_story" then "メインストーリー"
+    when "sub_story" then "サブストーリー"
+    when "super_helpful" then "超お役立ち機能"
+    when "helpful" then "お役立ち機能"
+    when "craftsman" then "職人クエスト"
+    when "job" then "職業クエスト"
+    when "random" then "ランダム"
     else quest_type
     end
   end
@@ -59,6 +62,18 @@ class Quest < ApplicationRecord
     end
 
     rewards
+  end
+
+  def display_title
+    if display_number && quest_type != "random"
+      "#{quest_type_name}#{display_number}・#{title}"
+    else
+      title
+    end
+  end
+
+  def has_display_number?
+    quest_type != "random"
   end
 
   def add_item_reward(type, item_id, quantity)
