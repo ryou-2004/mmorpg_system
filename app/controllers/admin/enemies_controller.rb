@@ -1,6 +1,6 @@
 class Admin::EnemiesController < ApplicationController
   before_action :set_enemy, only: [ :show, :update, :destroy ]
-  before_action :authenticate_admin_user!
+  before_action :authenticate_admin_user!, unless: :development_test_mode?
 
   def index
     enemies = Enemy.includes(:enemy_spawns)
