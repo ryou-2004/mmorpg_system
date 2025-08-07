@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_124825) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_134402) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -343,8 +343,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_124825) do
   create_table "shop_items", force: :cascade do |t|
     t.integer "shop_id", null: false
     t.integer "item_id", null: false
-    t.integer "buy_price", null: false
-    t.integer "sell_price"
     t.integer "stock_quantity", default: 0
     t.boolean "unlimited_stock", default: false, null: false
     t.boolean "active", default: true, null: false
@@ -352,10 +350,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_124825) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_shop_items_on_active"
-    t.index ["buy_price"], name: "index_shop_items_on_buy_price"
     t.index ["display_order"], name: "index_shop_items_on_display_order"
     t.index ["item_id"], name: "index_shop_items_on_item_id"
-    t.index ["sell_price"], name: "index_shop_items_on_sell_price"
     t.index ["shop_id", "item_id"], name: "index_shop_items_on_shop_id_and_item_id", unique: true
     t.index ["shop_id"], name: "index_shop_items_on_shop_id"
     t.index ["unlimited_stock"], name: "index_shop_items_on_unlimited_stock"

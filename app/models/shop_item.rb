@@ -3,8 +3,6 @@ class ShopItem < ApplicationRecord
   belongs_to :item
 
   validates :shop_id, uniqueness: { scope: :item_id }
-  validates :buy_price, presence: true, numericality: { greater_than: 0 }
-  validates :sell_price, numericality: { greater_than_or_equal: 0 }, allow_nil: true
   validates :stock_quantity, presence: true, numericality: { greater_than_or_equal: 0 }
   validates :display_order, presence: true, numericality: { greater_than_or_equal: 0 }
 
@@ -19,6 +17,14 @@ class ShopItem < ApplicationRecord
 
   def out_of_stock?
     active? && !unlimited_stock? && stock_quantity <= 0
+  end
+
+  def buy_price
+    item.buy_price
+  end
+
+  def sell_price
+    item.sell_price
   end
 
   def profit_margin

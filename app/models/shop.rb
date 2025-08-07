@@ -28,7 +28,7 @@ class Shop < ApplicationRecord
   end
 
   def total_items_value
-    shop_items.active.sum(:buy_price)
+    shop_items.active.includes(:item).sum { |shop_item| shop_item.buy_price }
   end
 
   def available_items

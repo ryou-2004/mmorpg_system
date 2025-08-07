@@ -168,18 +168,19 @@ class Admin::ShopsController < ApplicationController
   end
 
   def shop_item_stats(shop)
-    shop_items = shop.shop_items.active
+    shop_items = shop.shop_items.active.includes(:item)
+    prices = shop_items.map(&:buy_price)
 
     {
       total_items: shop_items.count,
       available_items: shop_items.available.count,
       out_of_stock_items: shop_items.out_of_stock.count,
       unlimited_stock_items: shop_items.where(unlimited_stock: true).count,
-      total_value: shop_items.sum(:buy_price),
-      average_price: shop_items.count > 0 ? (shop_items.sum(:buy_price) / shop_items.count).round : 0,
+      total_value: prices.sum,
+      average_price: prices.any? ? (prices.sum / prices.count.to_f).round : 0,
       price_range: {
-        min: shop_items.minimum(:buy_price) || 0,
-        max: shop_items.maximum(:buy_price) || 0
+        min: prices.min || 0,
+        max: prices.max || 0
       }
     }
   end
