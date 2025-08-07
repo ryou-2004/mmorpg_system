@@ -9,8 +9,30 @@ class Admin::QuestsController < ApplicationController
                    .limit(limit_params)
                    .offset(offset_params)
 
+    # 表示順に基づくIDを計算
+    ordered_quests = Quest.includes(:prerequisite_quest, :dependent_quests, :quest_category)
+                          .where(filter_params)
+                          .order(Arel.sql("CASE WHEN display_order = 0 THEN 1 ELSE 0 END, display_order, id"))
+    
+    quest_with_display_ids = []
+    display_id_counter = 1
+    
+    ordered_quests.each do |quest|
+      quest_data = quest_json(quest)
+      if quest.display_order.present? && quest.display_order > 0
+        quest_data[:display_order_id] = display_id_counter
+        display_id_counter += 1
+      else
+        quest_data[:display_order_id] = nil
+      end
+      quest_with_display_ids << quest_data
+    end
+
+    # ページングされたクエストのみ取得
+    paginated_quests = quest_with_display_ids.slice(offset_params, limit_params) || []
+
     render json: {
-      quests: @quests.map { |quest| quest_json(quest) },
+      quests: paginated_quests,
       meta: {
         total_count: Quest.where(filter_params).count,
         page: page_params,
@@ -93,7 +115,8 @@ class Admin::QuestsController < ApplicationController
     when "created"
       :created_at
     else
-      [ :display_order, :id ]
+      # display_order=0のものは最後に表示
+      Arel.sql("CASE WHEN display_order = 0 THEN 1 ELSE 0 END, display_order, id")
     end
   end
 
