@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  display_name: MyString
+  description: MyText
+  world_position_x: 1
+  world_position_y: 1
+  grid_width: 1
+  grid_height: 1
+  unlock_condition: MyString
+  active: false
+
+two:
+  name: MyString
+  display_name: MyString
+  description: MyText
+  world_position_x: 1
+  world_position_y: 1
+  grid_width: 1
+  grid_height: 1
+  unlock_condition: MyString
+  active: false

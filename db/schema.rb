@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_165313) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -218,6 +218,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
     t.index ["user_id"], name: "index_characters_on_user_id"
   end
 
+  create_table "continents", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "display_name", null: false
+    t.text "description"
+    t.integer "world_position_x", default: 0
+    t.integer "world_position_y", default: 0
+    t.integer "grid_width", default: 8, null: false
+    t.integer "grid_height", default: 8, null: false
+    t.string "unlock_condition"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_continents_on_name", unique: true
+    t.index ["world_position_x", "world_position_y"], name: "index_continents_on_world_position_x_and_world_position_y", unique: true
+  end
+
   create_table "enemies", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -267,11 +283,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
     t.integer "max_spawns", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "region_id"
+    t.integer "continent_id"
     t.index ["active"], name: "index_enemy_spawns_on_active"
+    t.index ["continent_id"], name: "index_enemy_spawns_on_continent_id"
     t.index ["enemy_id"], name: "index_enemy_spawns_on_enemy_id"
     t.index ["location", "active"], name: "index_enemy_spawns_on_location_and_active"
     t.index ["location"], name: "index_enemy_spawns_on_location"
     t.index ["min_level", "max_level"], name: "index_enemy_spawns_on_level_range"
+    t.index ["region_id"], name: "index_enemy_spawns_on_region_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -469,6 +489,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
     t.index ["status"], name: "index_quests_on_status"
   end
 
+  create_table "regions", force: :cascade do |t|
+    t.integer "continent_id", null: false
+    t.string "grid_x", limit: 1, null: false
+    t.integer "grid_y", null: false
+    t.string "name", null: false
+    t.string "display_name", null: false
+    t.text "description"
+    t.string "region_type", null: false
+    t.integer "level_range_min", default: 1
+    t.integer "level_range_max", default: 1
+    t.string "terrain_type"
+    t.string "climate"
+    t.string "accessibility", default: "always"
+    t.string "unlock_condition"
+    t.string "background_image"
+    t.string "background_music"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["continent_id", "grid_x", "grid_y"], name: "index_regions_on_continent_id_and_grid_x_and_grid_y", unique: true
+    t.index ["continent_id"], name: "index_regions_on_continent_id"
+    t.index ["level_range_min", "level_range_max"], name: "index_regions_on_level_range_min_and_level_range_max"
+    t.index ["region_type"], name: "index_regions_on_region_type"
+    t.index ["terrain_type"], name: "index_regions_on_terrain_type"
+  end
+
   create_table "shop_items", force: :cascade do |t|
     t.integer "shop_id", null: false
     t.integer "item_id", null: false
@@ -569,7 +615,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
   add_foreign_key "character_warehouses", "characters"
   add_foreign_key "characters", "character_job_classes", column: "current_character_job_class_id"
   add_foreign_key "characters", "users"
+  add_foreign_key "enemy_spawns", "continents"
   add_foreign_key "enemy_spawns", "enemies"
+  add_foreign_key "enemy_spawns", "regions"
   add_foreign_key "job_class_skill_lines", "job_classes"
   add_foreign_key "job_class_skill_lines", "skill_lines"
   add_foreign_key "job_class_weapons", "job_classes"
@@ -582,6 +630,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_145136) do
   add_foreign_key "quest_rewards", "quests"
   add_foreign_key "quests", "quest_categories", on_delete: :nullify
   add_foreign_key "quests", "quests", column: "prerequisite_quest_id"
+  add_foreign_key "regions", "continents"
   add_foreign_key "shop_items", "items"
   add_foreign_key "shop_items", "shops"
   add_foreign_key "skill_nodes", "skill_lines"
