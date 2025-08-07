@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_144444) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -146,6 +146,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
     t.index ["character_id"], name: "index_character_job_classes_on_character_id"
     t.index ["job_class_id"], name: "index_character_job_classes_on_job_class_id"
     t.index ["level"], name: "index_character_job_classes_on_level"
+  end
+
+  create_table "character_npc_interactions", force: :cascade do |t|
+    t.integer "character_id", null: false
+    t.integer "npc_id", null: false
+    t.string "interaction_type", null: false
+    t.json "metadata", default: {}
+    t.datetime "last_interaction_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "npc_id"], name: "index_character_npc_interactions_on_character_id_and_npc_id", unique: true
+    t.index ["character_id"], name: "index_character_npc_interactions_on_character_id"
+    t.index ["interaction_type"], name: "index_character_npc_interactions_on_interaction_type"
+    t.index ["last_interaction_at"], name: "index_character_npc_interactions_on_last_interaction_at"
+    t.index ["npc_id"], name: "index_character_npc_interactions_on_npc_id"
   end
 
   create_table "character_quests", force: :cascade do |t|
@@ -286,6 +301,50 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
     t.index ["can_equip_left_hand"], name: "index_job_classes_on_can_equip_left_hand"
     t.index ["job_type"], name: "index_job_classes_on_job_type"
     t.index ["name"], name: "index_job_classes_on_name", unique: true
+  end
+
+  create_table "npc_quests", force: :cascade do |t|
+    t.integer "npc_id", null: false
+    t.integer "quest_id", null: false
+    t.string "relationship_type", default: "giver", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["npc_id", "quest_id"], name: "index_npc_quests_on_npc_id_and_quest_id", unique: true
+    t.index ["npc_id"], name: "index_npc_quests_on_npc_id"
+    t.index ["quest_id"], name: "index_npc_quests_on_quest_id"
+    t.index ["relationship_type"], name: "index_npc_quests_on_relationship_type"
+  end
+
+  create_table "npc_shops", force: :cascade do |t|
+    t.integer "npc_id", null: false
+    t.integer "shop_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["npc_id", "shop_id"], name: "index_npc_shops_on_npc_id_and_shop_id", unique: true
+    t.index ["npc_id"], name: "index_npc_shops_on_npc_id"
+    t.index ["shop_id"], name: "index_npc_shops_on_shop_id"
+  end
+
+  create_table "npcs", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "location"
+    t.string "npc_type", null: false
+    t.boolean "has_dialogue", default: false, null: false
+    t.boolean "has_shop", default: false, null: false
+    t.boolean "has_quests", default: false, null: false
+    t.boolean "has_training", default: false, null: false
+    t.boolean "has_battle", default: false, null: false
+    t.text "appearance"
+    t.text "personality"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_npcs_on_active"
+    t.index ["has_dialogue", "has_shop", "has_quests", "has_training", "has_battle"], name: "index_npcs_on_functions"
+    t.index ["location"], name: "index_npcs_on_location"
+    t.index ["name"], name: "index_npcs_on_name", unique: true
+    t.index ["npc_type"], name: "index_npcs_on_npc_type"
   end
 
   create_table "player_shop_purchases", force: :cascade do |t|
@@ -444,6 +503,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
   add_foreign_key "character_items", "items"
   add_foreign_key "character_job_classes", "characters"
   add_foreign_key "character_job_classes", "job_classes"
+  add_foreign_key "character_npc_interactions", "characters"
+  add_foreign_key "character_npc_interactions", "npcs"
   add_foreign_key "character_quests", "characters"
   add_foreign_key "character_quests", "quests"
   add_foreign_key "character_skills", "characters"
@@ -455,6 +516,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
   add_foreign_key "job_class_skill_lines", "job_classes"
   add_foreign_key "job_class_skill_lines", "skill_lines"
   add_foreign_key "job_class_weapons", "job_classes"
+  add_foreign_key "npc_quests", "npcs"
+  add_foreign_key "npc_quests", "quests"
+  add_foreign_key "npc_shops", "npcs"
+  add_foreign_key "npc_shops", "shops"
   add_foreign_key "player_shop_purchases", "characters"
   add_foreign_key "player_shop_purchases", "shop_items"
   add_foreign_key "quest_rewards", "quests"

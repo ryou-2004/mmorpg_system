@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  character: one
+  npc: one
+  interaction_type: MyString
+  metadata: 
+  last_interaction_at: 2025-08-07 23:44:44
+
+two:
+  character: two
+  npc: two
+  interaction_type: MyString
+  metadata: 
+  last_interaction_at: 2025-08-07 23:44:44

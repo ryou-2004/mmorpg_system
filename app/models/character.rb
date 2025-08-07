@@ -13,6 +13,8 @@ class Character < ApplicationRecord
   has_many :attacker_logs, class_name: "BattleLog", foreign_key: "attacker_id"
   has_many :defender_logs, class_name: "BattleLog", foreign_key: "defender_id"
   belongs_to :current_character_job_class, class_name: "CharacterJobClass", optional: true
+  has_many :character_npc_interactions, dependent: :destroy
+  has_many :interacted_npcs, through: :character_npc_interactions, source: :npc
 
   attr_accessor :skip_job_validation
 

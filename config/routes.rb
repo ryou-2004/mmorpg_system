@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     end
     resources :quest_categories, only: [ :index, :show, :create, :update, :destroy ]
     resources :quests, only: [ :index, :show, :create, :update, :destroy ]
+    resources :npcs, only: [ :index, :show, :create, :update, :destroy ]
     resources :character_quests, only: [ :index, :show, :create, :update, :destroy ] do
       member do
         patch :complete

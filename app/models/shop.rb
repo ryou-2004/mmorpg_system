@@ -1,6 +1,8 @@
 class Shop < ApplicationRecord
   has_many :shop_items, dependent: :destroy
   has_many :items, through: :shop_items
+  has_many :npc_shops, dependent: :destroy
+  has_many :npcs, through: :npc_shops
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 255 }
   validates :shop_type, presence: true, inclusion: { in: %w[general weapon armor potion material special] }

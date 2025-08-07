@@ -4,6 +4,8 @@ class Quest < ApplicationRecord
   belongs_to :prerequisite_quest, class_name: "Quest", optional: true
   has_many :dependent_quests, class_name: "Quest", foreign_key: "prerequisite_quest_id"
   belongs_to :quest_category, optional: true
+  has_many :npc_quests, dependent: :destroy
+  has_many :npcs, through: :npc_quests
 
   validates :title, presence: true, length: { maximum: 255 }
   validates :quest_type, presence: true, inclusion: { in: %w[main_story sub_story super_helpful helpful craftsman job random] }

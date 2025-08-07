@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  description: MyText
+  location: MyString
+  npc_type: MyString
+  has_dialogue: false
+  has_shop: false
+  has_quests: false
+  has_training: false
+  has_battle: false
+  appearance: MyText
+  personality: MyText
+  active: false
+
+two:
+  name: MyString
+  description: MyText
+  location: MyString
+  npc_type: MyString
+  has_dialogue: false
+  has_shop: false
+  has_quests: false
+  has_training: false
+  has_battle: false
+  appearance: MyText
+  personality: MyText
+  active: false
