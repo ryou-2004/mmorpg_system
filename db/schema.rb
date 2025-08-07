@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_134402) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_141219) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -288,6 +288,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_134402) do
     t.index ["name"], name: "index_job_classes_on_name", unique: true
   end
 
+  create_table "player_shop_purchases", force: :cascade do |t|
+    t.integer "character_id", null: false
+    t.integer "shop_item_id", null: false
+    t.integer "purchased_quantity", default: 0, null: false
+    t.datetime "last_purchased_at"
+    t.datetime "reset_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id", "shop_item_id"], name: "index_player_shop_purchases_unique", unique: true
+    t.index ["character_id"], name: "index_player_shop_purchases_on_character_id"
+    t.index ["last_purchased_at"], name: "index_player_shop_purchases_on_last_purchased_at"
+    t.index ["shop_item_id"], name: "index_player_shop_purchases_on_shop_item_id"
+  end
+
   create_table "quest_categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description", null: false
@@ -349,9 +363,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_134402) do
     t.integer "display_order", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "player_stock_limit"
+    t.string "purchase_reset_type", default: "none"
     t.index ["active"], name: "index_shop_items_on_active"
     t.index ["display_order"], name: "index_shop_items_on_display_order"
     t.index ["item_id"], name: "index_shop_items_on_item_id"
+    t.index ["player_stock_limit"], name: "index_shop_items_on_player_stock_limit"
+    t.index ["purchase_reset_type"], name: "index_shop_items_on_purchase_reset_type"
     t.index ["shop_id", "item_id"], name: "index_shop_items_on_shop_id_and_item_id", unique: true
     t.index ["shop_id"], name: "index_shop_items_on_shop_id"
     t.index ["unlimited_stock"], name: "index_shop_items_on_unlimited_stock"
@@ -437,6 +455,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_134402) do
   add_foreign_key "job_class_skill_lines", "job_classes"
   add_foreign_key "job_class_skill_lines", "skill_lines"
   add_foreign_key "job_class_weapons", "job_classes"
+  add_foreign_key "player_shop_purchases", "characters"
+  add_foreign_key "player_shop_purchases", "shop_items"
   add_foreign_key "quest_rewards", "quests"
   add_foreign_key "quests", "quest_categories", on_delete: :nullify
   add_foreign_key "quests", "quests", column: "prerequisite_quest_id"

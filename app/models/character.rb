@@ -8,6 +8,7 @@ class Character < ApplicationRecord
   has_many :character_skills, dependent: :destroy
   has_many :battle_participants, dependent: :destroy
   has_many :battles, through: :battle_participants
+  has_many :player_shop_purchases, dependent: :destroy
   has_many :won_battles, class_name: "Battle", foreign_key: "winner_id"
   has_many :attacker_logs, class_name: "BattleLog", foreign_key: "attacker_id"
   has_many :defender_logs, class_name: "BattleLog", foreign_key: "defender_id"
