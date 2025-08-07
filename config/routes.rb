@@ -20,6 +20,11 @@ Rails.application.routes.draw do
     resources :quest_categories, only: [ :index, :show, :create, :update, :destroy ]
     resources :quests, only: [ :index, :show, :create, :update, :destroy ]
     resources :npcs, only: [ :index, :show, :create, :update, :destroy ]
+    resources :enemies, only: [ :index, :show, :create, :update, :destroy ] do
+      collection do
+        get :encounter_simulation
+      end
+    end
     resources :character_quests, only: [ :index, :show, :create, :update, :destroy ] do
       member do
         patch :complete

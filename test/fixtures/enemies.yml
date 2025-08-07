@@ -1,0 +1,41 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  description: MyText
+  enemy_type: MyString
+  level: 1
+  hp: 1
+  max_hp: 1
+  mp: 1
+  max_mp: 1
+  attack: 1
+  defense: 1
+  magic_attack: 1
+  magic_defense: 1
+  agility: 1
+  luck: 1
+  experience_reward: 1
+  gold_reward: 1
+  location: MyString
+  active: false
+
+two:
+  name: MyString
+  description: MyText
+  enemy_type: MyString
+  level: 1
+  hp: 1
+  max_hp: 1
+  mp: 1
+  max_mp: 1
+  attack: 1
+  defense: 1
+  magic_attack: 1
+  magic_defense: 1
+  agility: 1
+  luck: 1
+  experience_reward: 1
+  gold_reward: 1
+  location: MyString
+  active: false
