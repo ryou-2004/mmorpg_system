@@ -36,10 +36,10 @@ class Item < ApplicationRecord
   validates :buy_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :sell_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :level_requirement, presence: true, numericality: { greater_than: 0 }
-  validates :equipment_slot, inclusion: { 
-    in: EQUIPMENT_SLOTS, 
+  validates :equipment_slot, inclusion: {
+    in: EQUIPMENT_SLOTS,
     allow_nil: true,
-    message: "は有効な装備スロットではありません" 
+    message: "は有効な装備スロットではありません"
   }
 
   # STI関連のバリデーション
@@ -119,36 +119,36 @@ class Item < ApplicationRecord
   # 効果の日本語説明を生成
   def formatted_effects
     return [] unless effects.present?
-    
+
     effects.map do |effect|
-      description = case effect['type']
-      when 'stat_boost'
-        stat_name = I18n.t("items.stats.#{effect['stat']}", default: effect['stat'])
-        value = effect['value'].to_i > 0 ? "+#{effect['value']}" : effect['value'].to_s
-        I18n.t('items.effects.stat_boost', stat: stat_name, value: value)
-      when 'damage_bonus'
-        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
-        I18n.t('items.effects.damage_bonus', target: target, multiplier: effect['multiplier'])
-      when 'damage_reduction'
-        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
-        I18n.t('items.effects.damage_reduction', target: target, multiplier: effect['multiplier'])
-      when 'resistance'
-        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect['target'] || I18n.t('items.effect_targets.all'))
-        I18n.t('items.effects.resistance', target: target, value: effect['value'])
-      when 'heal'
-        I18n.t('items.effects.heal', value: effect['value'])
-      when 'mp_heal'
-        I18n.t('items.effects.mp_heal', value: effect['value'])
-      when 'exp_boost'
-        I18n.t('items.effects.exp_boost', multiplier: effect['multiplier'], duration: effect['duration'])
-      when 'mp_regeneration'
-        I18n.t('items.effects.mp_regeneration', value: effect['value'])
+      description = case effect["type"]
+      when "stat_boost"
+        stat_name = I18n.t("items.stats.#{effect['stat']}", default: effect["stat"])
+        value = effect["value"].to_i > 0 ? "+#{effect['value']}" : effect["value"].to_s
+        I18n.t("items.effects.stat_boost", stat: stat_name, value: value)
+      when "damage_bonus"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect["target"] || I18n.t("items.effect_targets.all"))
+        I18n.t("items.effects.damage_bonus", target: target, multiplier: effect["multiplier"])
+      when "damage_reduction"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect["target"] || I18n.t("items.effect_targets.all"))
+        I18n.t("items.effects.damage_reduction", target: target, multiplier: effect["multiplier"])
+      when "resistance"
+        target = I18n.t("items.effect_targets.#{effect['target']}", default: effect["target"] || I18n.t("items.effect_targets.all"))
+        I18n.t("items.effects.resistance", target: target, value: effect["value"])
+      when "heal"
+        I18n.t("items.effects.heal", value: effect["value"])
+      when "mp_heal"
+        I18n.t("items.effects.mp_heal", value: effect["value"])
+      when "exp_boost"
+        I18n.t("items.effects.exp_boost", multiplier: effect["multiplier"], duration: effect["duration"])
+      when "mp_regeneration"
+        I18n.t("items.effects.mp_regeneration", value: effect["value"])
       else
         effect.to_json # フォールバック
       end
-      
+
       {
-        type: effect['type'],
+        type: effect["type"],
         description: description,
         raw: effect
       }
@@ -158,14 +158,14 @@ class Item < ApplicationRecord
   # STI用のtype更新メソッド
   def update_sti_type!
     new_type = case item_type
-               when 'weapon' then 'Weapon'
-               when 'armor' then 'Armor'
-               when 'accessory' then 'Accessory'
-               when 'consumable' then 'Consumable'
-               when 'material' then 'Material'
-               when 'quest' then 'QuestItem'
-               else 'Item'
-               end
+    when "weapon" then "Weapon"
+    when "armor" then "Armor"
+    when "accessory" then "Accessory"
+    when "consumable" then "Consumable"
+    when "material" then "Material"
+    when "quest" then "QuestItem"
+    else "Item"
+    end
     update_column(:type, new_type) if type != new_type
   end
 end

@@ -33,7 +33,7 @@ job_class_weapons_data = {
     { weapon_category: 'dagger', unlock_level: 5 },
     { weapon_category: 'club', unlock_level: 10 }
   ],
-  
+
   # 上級職業
   'バトルマスター' => [
     { weapon_category: 'one_hand_sword', unlock_level: 1 },
@@ -91,7 +91,7 @@ job_class_weapons_data = {
     { weapon_category: 'bow', unlock_level: 10 },
     { weapon_category: 'whip', unlock_level: 15 }
   ],
-  
+
   # 特殊職業
   '海賊' => [
     { weapon_category: 'axe', unlock_level: 1 },
@@ -125,7 +125,7 @@ job_class_weapons_data = {
 job_class_weapons_data.each do |job_name, weapons|
   job_class = JobClass.find_by(name: job_name)
   next unless job_class
-  
+
   weapons.each do |weapon_data|
     JobClassWeapon.find_or_create_by!(
       job_class: job_class,
@@ -138,7 +138,7 @@ job_class_weapons_data.each do |job_name, weapons|
 end
 
 # 二刀流可能職業の設定（ドラクエ10準拠）
-dual_wield_jobs = ['武闘家', '盗賊', '踊り子']
+dual_wield_jobs = [ '武闘家', '盗賊', '踊り子' ]
 
 dual_wield_jobs.each do |job_name|
   job = JobClass.find_by(name: job_name)

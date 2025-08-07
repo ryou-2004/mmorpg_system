@@ -1,5 +1,5 @@
 class Admin::CharacterQuestsController < ApplicationController
-  before_action :set_character_quest, only: [:show, :update, :destroy, :complete, :abandon, :reset]
+  before_action :set_character_quest, only: [ :show, :update, :destroy, :complete, :abandon, :reset ]
   before_action :handle_development_test_mode
 
   def index
@@ -32,25 +32,25 @@ class Admin::CharacterQuestsController < ApplicationController
   def create
     character = Character.find(params[:character_quest][:character_id])
     quest = Quest.find(params[:character_quest][:quest_id])
-    
+
     if character.character_quests.exists?(quest: quest)
-      render json: { error: '既にこのクエストを受注しています' }, status: :unprocessable_entity
+      render json: { error: "既にこのクエストを受注しています" }, status: :unprocessable_entity
       return
     end
-    
+
     unless quest_available_for_character?(quest, character)
-      render json: { error: 'クエストの前提条件を満たしていません' }, status: :unprocessable_entity
+      render json: { error: "クエストの前提条件を満たしていません" }, status: :unprocessable_entity
       return
     end
 
     @character_quest = CharacterQuest.new(
       character: character,
       quest: quest,
-      status: 'started',
+      status: "started",
       started_at: Time.current,
       progress: {}
     )
-    
+
     if @character_quest.save
       render json: { character_quest: character_quest_detail_json(@character_quest) }, status: :created
     else
@@ -69,54 +69,54 @@ class Admin::CharacterQuestsController < ApplicationController
   def complete
     if @character_quest.active?
       @character_quest.update!(
-        status: 'completed',
+        status: "completed",
         completed_at: Time.current,
-        progress: @character_quest.progress.merge('completed' => true)
+        progress: @character_quest.progress.merge("completed" => true)
       )
-      
+
       grant_rewards(@character_quest)
-      render json: { 
+      render json: {
         character_quest: character_quest_detail_json(@character_quest),
-        message: 'クエストを完了しました'
+        message: "クエストを完了しました"
       }
     else
-      render json: { error: '進行中のクエストではありません' }, status: :unprocessable_entity
+      render json: { error: "進行中のクエストではありません" }, status: :unprocessable_entity
     end
   end
 
   def abandon
     if @character_quest.active?
       @character_quest.update!(
-        status: 'abandoned',
-        progress: @character_quest.progress.merge('abandoned' => true, 'abandoned_at' => Time.current)
+        status: "abandoned",
+        progress: @character_quest.progress.merge("abandoned" => true, "abandoned_at" => Time.current)
       )
-      
-      render json: { 
+
+      render json: {
         character_quest: character_quest_detail_json(@character_quest),
-        message: 'クエストを放棄しました'
+        message: "クエストを放棄しました"
       }
     else
-      render json: { error: '進行中のクエストではありません' }, status: :unprocessable_entity
+      render json: { error: "進行中のクエストではありません" }, status: :unprocessable_entity
     end
   end
 
   def reset
     @character_quest.update!(
-      status: 'started',
+      status: "started",
       started_at: Time.current,
       completed_at: nil,
       progress: {}
     )
-    
-    render json: { 
+
+    render json: {
       character_quest: character_quest_detail_json(@character_quest),
-      message: 'クエストをリセットしました'
+      message: "クエストをリセットしました"
     }
   end
 
   def destroy
     @character_quest.destroy
-    render json: { message: 'クエスト進行状況を削除しました' }
+    render json: { message: "クエスト進行状況を削除しました" }
   end
 
   private
@@ -124,7 +124,7 @@ class Admin::CharacterQuestsController < ApplicationController
   def set_character_quest
     @character_quest = CharacterQuest.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'クエスト進行状況が見つかりません' }, status: :not_found
+    render json: { error: "クエスト進行状況が見つかりません" }, status: :not_found
   end
 
   def character_quest_params
@@ -141,21 +141,21 @@ class Admin::CharacterQuestsController < ApplicationController
 
   def order_params
     case params[:sort]
-    when 'character'
+    when "character"
       { characters: :name }
-    when 'quest'
+    when "quest"
       { quests: :title }
-    when 'started'
+    when "started"
       :started_at
-    when 'completed'
+    when "completed"
       :completed_at
     else
-      [:started_at, :id]
+      [ :started_at, :id ]
     end
   end
 
   def limit_params
-    [(params[:per_page] || 20).to_i, 100].min
+    [ (params[:per_page] || 20).to_i, 100 ].min
   end
 
   def offset_params
@@ -163,7 +163,7 @@ class Admin::CharacterQuestsController < ApplicationController
   end
 
   def page_params
-    [params[:page].to_i, 1].max
+    [ params[:page].to_i, 1 ].max
   end
 
   def character_quest_json(character_quest)
@@ -222,23 +222,23 @@ class Admin::CharacterQuestsController < ApplicationController
       total_quests: CharacterQuest.count,
       completed: CharacterQuest.completed.count,
       in_progress: CharacterQuest.active.count,
-      abandoned: CharacterQuest.where(status: 'abandoned').count,
-      completion_rate: CharacterQuest.count > 0 ? 
+      abandoned: CharacterQuest.where(status: "abandoned").count,
+      completion_rate: CharacterQuest.count > 0 ?
         (CharacterQuest.completed.count.to_f / CharacterQuest.count * 100).round(2) : 0
     }
   end
 
   def quest_available_for_character?(quest, character)
-    return false unless quest.active? && quest.status == 'available'
+    return false unless quest.active? && quest.status == "available"
     return false if character.current_character_job_class.level < quest.level_requirement
-    
+
     if quest.prerequisite_quest_id
       prerequisite_completed = character.character_quests
                                        .completed
                                        .exists?(quest_id: quest.prerequisite_quest_id)
       return false unless prerequisite_completed
     end
-    
+
     true
   end
 
@@ -246,16 +246,16 @@ class Admin::CharacterQuestsController < ApplicationController
     quest = character_quest.quest
     character = character_quest.character
     current_job_class = character.current_character_job_class
-    
+
     return unless current_job_class
-    
+
     new_experience = current_job_class.experience + quest.experience_reward
     new_gold = character.gold + quest.gold_reward
     new_skill_points = current_job_class.skill_points + quest.skill_point_reward
-    
+
     current_job_class.update!(experience: new_experience, skill_points: new_skill_points)
     character.update!(gold: new_gold)
-    
+
     if quest.item_rewards.present?
       quest.item_rewards.each do |item_reward|
         grant_item_reward(character, item_reward)
@@ -264,25 +264,25 @@ class Admin::CharacterQuestsController < ApplicationController
   end
 
   def grant_item_reward(character, item_reward)
-    case item_reward['type']
-    when 'Item'
-      item = Item.find_by(id: item_reward['item_id'])
+    case item_reward["type"]
+    when "Item"
+      item = Item.find_by(id: item_reward["item_id"])
       return unless item
-      
+
       character.character_items.create!(
         item: item,
-        quantity: item_reward['quantity'],
-        location: 'inventory',
+        quantity: item_reward["quantity"],
+        location: "inventory",
         obtained_at: Time.current
       )
     end
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end

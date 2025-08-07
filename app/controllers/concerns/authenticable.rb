@@ -41,12 +41,12 @@ module Authenticable
   end
 
   def render_unauthorized
-    render json: { error: I18n.t('messages.errors.authentication_required') }, status: :unauthorized
+    render json: { error: I18n.t("messages.errors.authentication_required") }, status: :unauthorized
   end
 
   def require_permission(action, resource_type, resource_id = nil)
     unless current_user.can?(action.to_s, resource_type, resource_id)
-      render json: { error: I18n.t('messages.errors.access_denied') }, status: :forbidden
+      render json: { error: I18n.t("messages.errors.access_denied") }, status: :forbidden
     end
   end
 end

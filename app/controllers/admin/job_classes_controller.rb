@@ -1,8 +1,7 @@
 class Admin::JobClassesController < Admin::BaseController
-
   def index
     cache_key = "job_classes_index_#{JobClass.maximum(:updated_at)&.to_i}"
-    
+
     job_classes = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
       JobClass.left_joins(:character_job_classes)
               .select("job_classes.*, COUNT(character_job_classes.id) as characters_count")
@@ -11,8 +10,8 @@ class Admin::JobClassesController < Admin::BaseController
     end
 
     # キャッシュヘッダーを設定
-    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
-    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+    response.headers["Cache-Control"] = "public, max-age=300" # 5分
+    response.headers["ETag"] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       data: job_classes.map do |job_class|
@@ -85,8 +84,8 @@ class Admin::JobClassesController < Admin::BaseController
     end
 
     # キャッシュヘッダーを設定
-    response.headers['Cache-Control'] = 'public, max-age=600' # 10分
-    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+    response.headers["Cache-Control"] = "public, max-age=600" # 10分
+    response.headers["ETag"] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       id: job_class.id,
@@ -171,11 +170,11 @@ class Admin::JobClassesController < Admin::BaseController
   # スキルライン関連メソッド
   def skill_lines
     job_class = JobClass.find(params[:id])
-    
+
     # パフォーマンス最適化: カウントクエリを事前実行
     skill_lines = job_class.skill_lines
                            .includes(
-                             :job_class_skill_lines, 
+                             :job_class_skill_lines,
                              skill_nodes: []
                            )
                            .joins("LEFT JOIN skill_nodes ON skill_nodes.skill_line_id = skill_lines.id AND skill_nodes.active = true")
@@ -197,8 +196,8 @@ class Admin::JobClassesController < Admin::BaseController
 
     # キャッシュヘッダーを設定
     cache_key = "job_class_#{job_class.id}_skill_lines_#{skill_lines_array.size}"
-    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
-    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+    response.headers["Cache-Control"] = "public, max-age=300" # 5分
+    response.headers["ETag"] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       job_class: {
@@ -208,7 +207,7 @@ class Admin::JobClassesController < Admin::BaseController
       },
       skill_lines: skill_lines_array.map do |skill_line|
         jcsl = jcsl_map[skill_line.id]
-        
+
         {
           id: skill_line.id,
           name: skill_line.name,
@@ -234,8 +233,8 @@ class Admin::JobClassesController < Admin::BaseController
 
     # キャッシュヘッダーを設定
     cache_key = "skill_line_#{skill_line.id}_#{skill_line.updated_at.to_i}"
-    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
-    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+    response.headers["Cache-Control"] = "public, max-age=300" # 5分
+    response.headers["ETag"] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       id: skill_line.id,
@@ -268,18 +267,18 @@ class Admin::JobClassesController < Admin::BaseController
 
   def skill_statistics
     job_class = JobClass.find(params[:id])
-    
+
     # スキルライン別投資統計
     skill_line_stats = job_class.skill_lines.includes(:character_skills).map do |skill_line|
       character_skills = skill_line.character_skills.where(job_class: job_class)
-      
+
       {
         id: skill_line.id,
         name: skill_line.name,
         skill_line_type: skill_line.skill_line_type,
         total_investments: character_skills.sum(:points_invested),
-        character_count: character_skills.where('points_invested > 0').count,
-        average_investment: character_skills.where('points_invested > 0').average(:points_invested)&.round(2) || 0,
+        character_count: character_skills.where("points_invested > 0").count,
+        average_investment: character_skills.where("points_invested > 0").average(:points_invested)&.round(2) || 0,
         max_investment: character_skills.maximum(:points_invested) || 0
       }
     end
@@ -287,7 +286,7 @@ class Admin::JobClassesController < Admin::BaseController
     # 全体統計
     character_job_classes = job_class.character_job_classes.includes(:character_skills)
     total_skill_points = character_job_classes.sum(:total_skill_points)
-    used_skill_points = character_job_classes.joins(:character_skills).sum('character_skills.points_invested')
+    used_skill_points = character_job_classes.joins(:character_skills).sum("character_skills.points_invested")
 
     render json: {
       job_class: {
@@ -321,12 +320,12 @@ class Admin::JobClassesController < Admin::BaseController
 
   def calculate_skill_line_investments(job_class, skill_line)
     character_skills = skill_line.character_skills.where(job_class: job_class).includes(:character)
-    
+
     {
       total_investments: character_skills.sum(:points_invested),
-      character_count: character_skills.where('points_invested > 0').count,
-      average_investment: character_skills.where('points_invested > 0').average(:points_invested)&.round(2) || 0,
-      top_investors: character_skills.where('points_invested > 0')
+      character_count: character_skills.where("points_invested > 0").count,
+      average_investment: character_skills.where("points_invested > 0").average(:points_invested)&.round(2) || 0,
+      top_investors: character_skills.where("points_invested > 0")
                                    .order(points_invested: :desc)
                                    .limit(5)
                                    .map do |cs|
@@ -338,5 +337,4 @@ class Admin::JobClassesController < Admin::BaseController
       end
     }
   end
-
 end

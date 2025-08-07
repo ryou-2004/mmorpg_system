@@ -3,7 +3,7 @@ class Material < Item
 
   scope :crafting, -> { where("description LIKE ?", "%作成%") }
   scope :enhancement, -> { where("description LIKE ?", "%強化%") }
-  scope :rare, -> { where(rarity: ['rare', 'epic', 'legendary']) }
+  scope :rare, -> { where(rarity: [ "rare", "epic", "legendary" ]) }
 
   def stackable?
     max_stack > 1
@@ -14,11 +14,11 @@ class Material < Item
   end
 
   def for_crafting?
-    description.to_s.include?('作成')
+    description.to_s.include?("作成")
   end
 
   def for_enhancement?
-    description.to_s.include?('強化')
+    description.to_s.include?("強化")
   end
 
   def crafting_material?
@@ -31,11 +31,11 @@ class Material < Item
 
   def rarity_value
     case rarity
-    when 'common' then 1
-    when 'uncommon' then 2
-    when 'rare' then 3
-    when 'epic' then 4
-    when 'legendary' then 5
+    when "common" then 1
+    when "uncommon" then 2
+    when "rare" then 3
+    when "epic" then 4
+    when "legendary" then 5
     else 0
     end
   end

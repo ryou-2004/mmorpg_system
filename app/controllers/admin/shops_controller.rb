@@ -1,5 +1,5 @@
 class Admin::ShopsController < ApplicationController
-  before_action :set_shop, only: [:show, :update, :destroy]
+  before_action :set_shop, only: [ :show, :update, :destroy ]
   before_action :handle_development_test_mode
 
   def index
@@ -32,7 +32,7 @@ class Admin::ShopsController < ApplicationController
 
   def create
     @shop = Shop.new(shop_params)
-    
+
     if @shop.save
       render json: { shop: shop_detail_json(@shop) }, status: :created
     else
@@ -50,10 +50,10 @@ class Admin::ShopsController < ApplicationController
 
   def destroy
     if @shop.shop_items.exists?
-      render json: { error: 'ショップアイテムが存在するため削除できません' }, status: :unprocessable_entity
+      render json: { error: "ショップアイテムが存在するため削除できません" }, status: :unprocessable_entity
     else
       @shop.destroy
-      render json: { message: 'ショップを削除しました' }
+      render json: { message: "ショップを削除しました" }
     end
   end
 
@@ -62,11 +62,11 @@ class Admin::ShopsController < ApplicationController
   def set_shop
     @shop = Shop.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'ショップが見つかりません' }, status: :not_found
+    render json: { error: "ショップが見つかりません" }, status: :not_found
   end
 
   def shop_params
-    params.require(:shop).permit(:name, :description, :shop_type, :location, 
+    params.require(:shop).permit(:name, :description, :shop_type, :location,
                                  :npc_name, :active, :display_order)
   end
 
@@ -80,22 +80,22 @@ class Admin::ShopsController < ApplicationController
 
   def order_params
     case params[:sort]
-    when 'name'
+    when "name"
       :name
-    when 'type'
+    when "type"
       :shop_type
-    when 'location'
+    when "location"
       :location
-    when 'items'
+    when "items"
       # 複雑な並び順なのでSQLで処理
-      'shop_items_count DESC'
+      "shop_items_count DESC"
     else
-      [:display_order, :id]
+      [ :display_order, :id ]
     end
   end
 
   def limit_params
-    [(params[:per_page] || 20).to_i, 100].min
+    [ (params[:per_page] || 20).to_i, 100 ].min
   end
 
   def offset_params
@@ -103,7 +103,7 @@ class Admin::ShopsController < ApplicationController
   end
 
   def page_params
-    [params[:page].to_i, 1].max
+    [ params[:page].to_i, 1 ].max
   end
 
   def shop_json(shop)
@@ -169,7 +169,7 @@ class Admin::ShopsController < ApplicationController
 
   def shop_item_stats(shop)
     shop_items = shop.shop_items.active
-    
+
     {
       total_items: shop_items.count,
       available_items: shop_items.available.count,
@@ -191,15 +191,15 @@ class Admin::ShopsController < ApplicationController
       total_shop_items: ShopItem.count,
       available_shop_items: ShopItem.available.count,
       shop_types: Shop.group(:shop_type).count.transform_keys { |k| Shop.new(shop_type: k).shop_type_name },
-      locations: Shop.where.not(location: [nil, '']).group(:location).count
+      locations: Shop.where.not(location: [ nil, "" ]).group(:location).count
     }
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end

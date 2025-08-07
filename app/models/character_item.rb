@@ -20,20 +20,20 @@ class CharacterItem < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :enchantment_level, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :locked, inclusion: { in: [ true, false ] }
-  
+
   # 装備スロット定義
   EQUIPMENT_SLOTS = {
     "右手" => "右手",
     "左手" => "左手",
     "頭" => "頭",
     "胴" => "胴",
-    "腰" => "腰", 
+    "腰" => "腰",
     "腕" => "腕",
     "足" => "足",
     "指輪" => "指輪",
     "首飾り" => "首飾り"
   }.freeze
-  
+
   validates :equipment_slot, inclusion: { in: EQUIPMENT_SLOTS.keys }, allow_nil: true
   validates :equipment_slot, presence: true, if: :equipped?
   validates :equipment_slot, uniqueness: { scope: :character_id }, if: :equipped?
@@ -50,11 +50,11 @@ class CharacterItem < ApplicationRecord
   def can_equip?
     available? && !locked? && item.equipment? && (inventory? || warehouse?)
   end
-  
+
   def can_equip_to_slot?(slot)
     return false unless can_equip?
     return false unless EQUIPMENT_SLOTS.key?(slot)
-    
+
     # アイテムタイプと装備スロットの対応チェック
     case item.item_type
     when "weapon"
@@ -168,7 +168,7 @@ class CharacterItem < ApplicationRecord
   def move_to_inventory!
     raise "アイテムを移動できません" unless can_move?
     raise "既にインベントリにあります" if inventory?
-    
+
     transaction do
       update!(
         location: "inventory",
@@ -183,7 +183,7 @@ class CharacterItem < ApplicationRecord
     raise "倉庫が見つかりません" unless warehouse
     raise "キャラクターの倉庫ではありません" unless warehouse.character == character
     raise "倉庫の容量が不足しています" unless warehouse.has_available_slots?
-    
+
     transaction do
       update!(
         location: "warehouse",
@@ -195,11 +195,11 @@ class CharacterItem < ApplicationRecord
 
   def equip_to_slot!(slot)
     raise "装備できません" unless can_equip_to_slot?(slot)
-    
+
     # 既存の装備を外す
     existing_equipment = character.character_items.equipped_in_slot(slot).first
     existing_equipment&.unequip!
-    
+
     transaction do
       update!(
         location: "equipped",
@@ -210,7 +210,7 @@ class CharacterItem < ApplicationRecord
 
   def unequip!
     raise "装備を外せません" unless equipped?
-    
+
     transaction do
       update!(
         location: "inventory",
@@ -222,9 +222,9 @@ class CharacterItem < ApplicationRecord
   def use_item!
     raise "アイテムを使用できません" unless can_use?
     raise "消耗品ではありません" unless item.consumable?
-    
+
     effects = apply_item_effects!
-    
+
     transaction do
       if quantity > 1
         update!(quantity: quantity - 1)
@@ -232,7 +232,7 @@ class CharacterItem < ApplicationRecord
         destroy!
       end
     end
-    
+
     {
       message: "#{item.name}を使用しました",
       effects: effects
@@ -244,10 +244,10 @@ class CharacterItem < ApplicationRecord
   def apply_item_effects!
     effects_applied = []
     return effects_applied unless item.effects.is_a?(Array)
-    
+
     item.effects.each do |effect|
       next unless effect.is_a?(Hash)
-      
+
       case effect["type"]
       when "heal"
         apply_heal_effect(effect)
@@ -260,7 +260,7 @@ class CharacterItem < ApplicationRecord
         effects_applied << "ステータス効果: #{effect['name']}"
       end
     end
-    
+
     effects_applied
   end
 

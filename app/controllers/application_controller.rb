@@ -36,7 +36,7 @@ class ApplicationController < ActionController::API
   end
 
   def render_unauthorized
-    render json: { error: I18n.t('messages.errors.authentication_required') }, status: :unauthorized
+    render json: { error: I18n.t("messages.errors.authentication_required") }, status: :unauthorized
   end
 
   def development_test_mode?

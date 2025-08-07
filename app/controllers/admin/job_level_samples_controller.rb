@@ -1,5 +1,4 @@
 class Admin::JobLevelSamplesController < Admin::BaseController
-
   def index
     level = (params[:level] || 20).to_i
     level = [ [ level, 1 ].max, 100 ].min
@@ -82,5 +81,4 @@ class Admin::JobLevelSamplesController < Admin::BaseController
 
     rankings
   end
-
 end

@@ -1,6 +1,6 @@
 class Admin::BattleLogsController < ApplicationController
-  before_action :set_battle_log, only: [:show, :destroy]
-  before_action :set_battle, only: [:index, :create]
+  before_action :set_battle_log, only: [ :show, :destroy ]
+  before_action :set_battle, only: [ :index, :create ]
   before_action :handle_development_test_mode
 
   def index
@@ -41,12 +41,12 @@ class Admin::BattleLogsController < ApplicationController
   def create
     @battle_log = @battle.battle_logs.build(battle_log_params)
     @battle_log.occurred_at = Time.current
-    
+
     if @battle_log.save
       update_battle_totals(@battle)
-      render json: { 
+      render json: {
         battle_log: battle_log_detail_json(@battle_log),
-        message: '戦闘ログを記録しました'
+        message: "戦闘ログを記録しました"
       }, status: :created
     else
       render json: { errors: @battle_log.errors.full_messages }, status: :unprocessable_entity
@@ -58,7 +58,7 @@ class Admin::BattleLogsController < ApplicationController
     @battle_log.destroy
     battle = Battle.find(battle_id)
     update_battle_totals(battle)
-    render json: { message: '戦闘ログを削除しました' }
+    render json: { message: "戦闘ログを削除しました" }
   end
 
   private
@@ -66,18 +66,18 @@ class Admin::BattleLogsController < ApplicationController
   def set_battle_log
     @battle_log = BattleLog.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: '戦闘ログが見つかりません' }, status: :not_found
+    render json: { error: "戦闘ログが見つかりません" }, status: :not_found
   end
 
   def set_battle
     @battle = Battle.find(params[:battle_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: '戦闘が見つかりません' }, status: :not_found
+    render json: { error: "戦闘が見つかりません" }, status: :not_found
   end
 
   def battle_log_params
-    params.require(:battle_log).permit(:attacker_id, :defender_id, :action_type, 
-                                      :damage_value, :critical_hit, :skill_name, 
+    params.require(:battle_log).permit(:attacker_id, :defender_id, :action_type,
+                                      :damage_value, :critical_hit, :skill_name,
                                       :calculation_details)
   end
 
@@ -92,11 +92,11 @@ class Admin::BattleLogsController < ApplicationController
 
   def order_params
     case params[:sort]
-    when 'damage'
+    when "damage"
       { damage_value: :desc }
-    when 'action_type'
-      [:action_type, :occurred_at]
-    when 'critical'
+    when "action_type"
+      [ :action_type, :occurred_at ]
+    when "critical"
       { critical_hit: :desc }
     else
       { occurred_at: :asc }
@@ -132,7 +132,7 @@ class Admin::BattleLogsController < ApplicationController
 
   def battle_log_stats(logs)
     return {} if logs.empty?
-    
+
     {
       total_logs: logs.count,
       damage_events: logs.with_damage.count,
@@ -153,7 +153,7 @@ class Admin::BattleLogsController < ApplicationController
   def update_battle_totals(battle)
     total_damage = battle.battle_logs.sum(:damage_value)
     participants_count = battle.battle_participants.count
-    
+
     battle.update_columns(
       total_damage: total_damage,
       participants_count: participants_count
@@ -161,10 +161,10 @@ class Admin::BattleLogsController < ApplicationController
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end

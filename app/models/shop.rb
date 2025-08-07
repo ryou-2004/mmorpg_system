@@ -13,12 +13,12 @@ class Shop < ApplicationRecord
 
   def shop_type_name
     case shop_type
-    when 'general' then '雑貨店'
-    when 'weapon' then '武器屋'
-    when 'armor' then '防具屋'
-    when 'potion' then '道具屋'
-    when 'material' then '素材屋'
-    when 'special' then '特殊ショップ'
+    when "general" then "雑貨店"
+    when "weapon" then "武器屋"
+    when "armor" then "防具屋"
+    when "potion" then "道具屋"
+    when "material" then "素材屋"
+    when "special" then "特殊ショップ"
     else shop_type
     end
   end
@@ -33,7 +33,7 @@ class Shop < ApplicationRecord
 
   def available_items
     shop_items.includes(:item).active.where(
-      'unlimited_stock = ? OR stock_quantity > ?',
+      "unlimited_stock = ? OR stock_quantity > ?",
       true, 0
     ).order(:display_order)
   end

@@ -17,23 +17,23 @@ end
     status: :completed,
     start_time: rand(1..30).days.ago,
     end_time: rand(5..120).minutes.ago,
-    location: ["フィールド", "ダンジョン", "闘技場", "ボス部屋", "訓練場"].sample,
+    location: [ "フィールド", "ダンジョン", "闘技場", "ボス部屋", "訓練場" ].sample,
     difficulty_level: rand(1..10),
     total_damage: 0,
     winner: characters.sample
   )
-  
+
   # Add participants
   participants_count = rand(2..4)
   selected_chars = characters.sample(participants_count)
-  
+
   total_damage = 0
-  
+
   selected_chars.each_with_index do |char, idx|
     damage_dealt = rand(100..2000)
     damage_received = rand(50..1500)
     total_damage += damage_dealt
-    
+
     participant = BattleParticipant.create!(
       battle: battle,
       character: char,
@@ -45,7 +45,7 @@ end
         defense: char.defense
       }.to_json,
       final_stats: {
-        hp: [char.max_hp - damage_received, 0].max,
+        hp: [ char.max_hp - damage_received, 0 ].max,
         mp: rand(0..char.max_mp),
         attack: char.attack,
         defense: char.defense
@@ -55,12 +55,12 @@ end
       actions_taken: rand(5..25),
       survived: rand > 0.2
     )
-    
+
     # Create battle logs for this participant
     action_count = rand(5..15)
     action_count.times do |action_idx|
       opponent = selected_chars.reject { |c| c.id == char.id }.sample
-      
+
       BattleLog.create!(
         battle: battle,
         attacker: char,
@@ -68,7 +68,7 @@ end
         action_type: BattleLog.action_types.keys.sample,
         damage_value: rand(0..300),
         critical_hit: rand > 0.85,
-        skill_name: ["斬撃", "魔法弾", "回復", "バフ", "必殺技"].sample,
+        skill_name: [ "斬撃", "魔法弾", "回復", "バフ", "必殺技" ].sample,
         calculation_details: {
           base_damage: rand(100..200),
           multiplier: rand(0.8..1.5).round(2),
@@ -79,7 +79,7 @@ end
       )
     end
   end
-  
+
   # Update battle total damage
   battle.update!(total_damage: total_damage, battle_duration: (battle.end_time - battle.start_time).to_i / 60)
 end

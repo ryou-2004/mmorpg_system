@@ -3,13 +3,13 @@ class Admin::CharacterEquipmentController < Admin::BaseController
 
   def index
     equipped_items = @character.equipped_items.includes(:item)
-    
+
     # 装備スロット別にグループ化
     equipment_by_slot = {}
     CharacterItem::EQUIPMENT_SLOTS.keys.each do |slot|
       equipment_by_slot[slot] = equipped_items.find { |ci| ci.equipment_slot == slot }
     end
-    
+
     # 合計ステータス計算
     current_job_class = @character.current_character_job_class
     total_stats = if current_job_class
@@ -72,31 +72,31 @@ class Admin::CharacterEquipmentController < Admin::BaseController
   def equip
     character_item = @character.character_items.find(params[:character_item_id])
     slot = params[:slot]
-    
+
     unless CharacterItem::EQUIPMENT_SLOTS.key?(slot)
-      return render json: { error: I18n.t('messages.errors.invalid_slot') }, status: :bad_request
+      return render json: { error: I18n.t("messages.errors.invalid_slot") }, status: :bad_request
     end
-    
+
     unless character_item.can_equip_to_slot?(slot)
-      return render json: { error: I18n.t('messages.errors.cannot_equip_item') }, status: :bad_request
+      return render json: { error: I18n.t("messages.errors.cannot_equip_item") }, status: :bad_request
     end
-    
+
     # 職業制限チェック
     current_job = @character.current_character_job_class&.job_class
     if current_job && character_item.item.job_requirement.present?
       unless character_item.item.job_requirement.include?(current_job.name)
-        return render json: { error: I18n.t('messages.errors.job_restriction') }, status: :bad_request
+        return render json: { error: I18n.t("messages.errors.job_restriction") }, status: :bad_request
       end
     end
-    
+
     # レベル制限チェック
     current_level = @character.current_character_job_class&.level || 1
     if character_item.item.level_requirement > current_level
-      return render json: { 
-        error: I18n.t('messages.errors.level_requirement')
+      return render json: {
+        error: I18n.t("messages.errors.level_requirement")
       }, status: :bad_request
     end
-    
+
     if @character.equip_item!(character_item, slot)
       # 最新の装備状態とステータスを取得
       equipped_items = @character.equipped_items.includes(:item)
@@ -123,9 +123,9 @@ class Admin::CharacterEquipmentController < Admin::BaseController
         {}
       end
 
-      render json: { 
-        success: true, 
-        message: I18n.t('messages.success.item_equipped', item_name: character_item.item.name),
+      render json: {
+        success: true,
+        message: I18n.t("messages.success.item_equipped", item_name: character_item.item.name),
         equipped_item: format_character_item(character_item.reload),
         total_stats: total_stats,
         equipped_items: equipment_by_slot.transform_values do |character_item|
@@ -133,13 +133,13 @@ class Admin::CharacterEquipmentController < Admin::BaseController
         end
       }
     else
-      render json: { error: I18n.t('messages.errors.equip_failed') }, status: :unprocessable_entity
+      render json: { error: I18n.t("messages.errors.equip_failed") }, status: :unprocessable_entity
     end
   end
 
   def unequip
     character_item = @character.character_items.equipped_items.find(params[:character_item_id])
-    
+
     if @character.unequip_item!(character_item)
       # 最新の装備状態とステータスを取得
       equipped_items = @character.equipped_items.includes(:item)
@@ -166,16 +166,16 @@ class Admin::CharacterEquipmentController < Admin::BaseController
         {}
       end
 
-      render json: { 
-        success: true, 
-        message: I18n.t('messages.success.item_unequipped', item_name: character_item.item.name),
+      render json: {
+        success: true,
+        message: I18n.t("messages.success.item_unequipped", item_name: character_item.item.name),
         total_stats: total_stats,
         equipped_items: equipment_by_slot.transform_values do |character_item|
           character_item ? format_character_item(character_item) : nil
         end
       }
     else
-      render json: { error: I18n.t('messages.errors.unequip_failed') }, status: :unprocessable_entity
+      render json: { error: I18n.t("messages.errors.unequip_failed") }, status: :unprocessable_entity
     end
   end
 
@@ -183,18 +183,18 @@ class Admin::CharacterEquipmentController < Admin::BaseController
 
   def set_character
     @character = Character.includes(
-      :current_character_job_class, 
+      :current_character_job_class,
       character_items: :item
     ).find(params[:character_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: I18n.t('messages.errors.character_not_found') }, status: :not_found
+    render json: { error: I18n.t("messages.errors.character_not_found") }, status: :not_found
   end
 
   def available_equipment_items
     @character.character_items
               .joins(:item)
-              .where(location: ["inventory", "warehouse"])
-              .where(items: { item_type: ["weapon", "armor", "accessory"] })
+              .where(location: [ "inventory", "warehouse" ])
+              .where(items: { item_type: [ "weapon", "armor", "accessory" ] })
               .character_accessible
               .includes(:item)
               .map { |ci| format_character_item(ci) }

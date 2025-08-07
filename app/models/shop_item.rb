@@ -9,7 +9,7 @@ class ShopItem < ApplicationRecord
   validates :display_order, presence: true, numericality: { greater_than_or_equal: 0 }
 
   scope :active, -> { where(active: true) }
-  scope :available, -> { where('unlimited_stock = ? OR stock_quantity > ?', true, 0) }
+  scope :available, -> { where("unlimited_stock = ? OR stock_quantity > ?", true, 0) }
   scope :out_of_stock, -> { where(unlimited_stock: false, stock_quantity: 0) }
   scope :ordered, -> { order(:display_order, :id) }
 
@@ -27,15 +27,15 @@ class ShopItem < ApplicationRecord
   end
 
   def stock_status
-    return '無制限' if unlimited_stock?
-    return '在庫切れ' if stock_quantity <= 0
-    return '残りわずか' if stock_quantity <= 5
+    return "無制限" if unlimited_stock?
+    return "在庫切れ" if stock_quantity <= 0
+    return "残りわずか" if stock_quantity <= 5
     "在庫: #{stock_quantity}"
   end
 
   def decrease_stock!(quantity = 1)
     return true if unlimited_stock?
-    
+
     if stock_quantity >= quantity
       update!(stock_quantity: stock_quantity - quantity)
       true
@@ -46,7 +46,7 @@ class ShopItem < ApplicationRecord
 
   def increase_stock!(quantity = 1)
     return true if unlimited_stock?
-    
+
     update!(stock_quantity: stock_quantity + quantity)
     true
   end

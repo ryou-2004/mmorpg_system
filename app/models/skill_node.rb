@@ -7,9 +7,9 @@ class SkillNode < ApplicationRecord
   validates :display_order, presence: true, numericality: { greater_than: 0 }
 
   scope :active, -> { where(active: true) }
-  scope :stat_boosts, -> { where(node_type: 'stat_boost') }
-  scope :techniques, -> { where(node_type: 'technique') }
-  scope :passives, -> { where(node_type: 'passive') }
+  scope :stat_boosts, -> { where(node_type: "stat_boost") }
+  scope :techniques, -> { where(node_type: "technique") }
+  scope :passives, -> { where(node_type: "passive") }
   scope :ordered, -> { order(:display_order) }
 
   before_save :serialize_effects
@@ -22,15 +22,15 @@ class SkillNode < ApplicationRecord
   end
 
   def stat_boost?
-    node_type == 'stat_boost'
+    node_type == "stat_boost"
   end
 
   def technique?
-    node_type == 'technique'
+    node_type == "technique"
   end
 
   def passive?
-    node_type == 'passive'
+    node_type == "passive"
   end
 
   def can_unlock_with_points?(invested_points)

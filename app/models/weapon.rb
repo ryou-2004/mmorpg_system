@@ -54,20 +54,20 @@ class Weapon < Item
 
   def attack_type
     case weapon_category
-    when 'one_hand_sword', 'two_hand_sword', 'axe', 'whip'
-      'slash'
-    when 'dagger', 'spear', 'bow', 'claw'
-      'thrust'
-    when 'club', 'hammer'
-      'blunt'
-    when 'staff', 'stick'
-      'magical'
-    when 'boomerang', 'fan'
-      'slash'
-    when 'martial_arts'
-      'blunt'
+    when "one_hand_sword", "two_hand_sword", "axe", "whip"
+      "slash"
+    when "dagger", "spear", "bow", "claw"
+      "thrust"
+    when "club", "hammer"
+      "blunt"
+    when "staff", "stick"
+      "magical"
+    when "boomerang", "fan"
+      "slash"
+    when "martial_arts"
+      "blunt"
     else
-      'physical'
+      "physical"
     end
   end
 
@@ -80,6 +80,6 @@ class Weapon < Item
   end
 
   def equipment_slot
-    can_use_left_hand? ? I18n.t('equipment_slots.left_hand') : I18n.t('equipment_slots.right_hand')
+    can_use_left_hand? ? I18n.t("equipment_slots.left_hand") : I18n.t("equipment_slots.right_hand")
   end
 end

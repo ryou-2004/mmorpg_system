@@ -32,7 +32,7 @@ dq10_job_classes = [
     agility_multiplier: 1.1,
     luck_multiplier: 1.2
   },
-  
+
   # 上級職業
   {
     name: 'バトルマスター',
@@ -155,7 +155,7 @@ dq10_job_classes = [
     agility_multiplier: 1.1,
     luck_multiplier: 1.4
   },
-  
+
   # 特殊職業
   {
     name: '海賊',
@@ -252,7 +252,7 @@ dq10_job_classes.each do |job_data|
     j.can_equip_left_hand = job_data[:can_equip_left_hand] || false
     j.active = true
   end
-  
+
   # 既存の職業の二刀流設定も更新
   if job_data[:can_equip_left_hand] && !job.can_equip_left_hand
     job.update!(can_equip_left_hand: true)

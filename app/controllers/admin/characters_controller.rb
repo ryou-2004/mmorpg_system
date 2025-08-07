@@ -1,5 +1,4 @@
 class Admin::CharactersController < Admin::BaseController
-
   def index
     characters = Character.includes(current_character_job_class: :job_class)
                    .order(created_at: :desc)
@@ -173,5 +172,4 @@ class Admin::CharactersController < Admin::BaseController
   end
 
   private
-
 end

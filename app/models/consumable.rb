@@ -19,15 +19,15 @@ class Consumable < Item
   end
 
   def has_healing_effect?
-    effects.to_s.include?('heal')
+    effects.to_s.include?("heal")
   end
 
   def has_buff_effect?
-    effects.to_s.include?('buff')
+    effects.to_s.include?("buff")
   end
 
   def has_recovery_effect?
-    effects.to_s.include?('recovery')
+    effects.to_s.include?("recovery")
   end
 
   def effect_duration

@@ -1,5 +1,5 @@
 class Admin::SkillLinesController < ApplicationController
-  before_action :set_skill_line, only: [:show, :update, :destroy]
+  before_action :set_skill_line, only: [ :show, :update, :destroy ]
 
   def index
     skill_lines = SkillLine.includes(:skill_nodes, :job_classes)
@@ -100,7 +100,7 @@ class Admin::SkillLinesController < ApplicationController
     }
   rescue => e
     render json: {
-      errors: [e.message]
+      errors: [ e.message ]
     }, status: :unprocessable_entity
   end
 

@@ -4,10 +4,10 @@ class CharacterSkill < ApplicationRecord
   belongs_to :skill_line
 
   validates :points_invested, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :character_id, uniqueness: { scope: [:job_class_id, :skill_line_id] }
+  validates :character_id, uniqueness: { scope: [ :job_class_id, :skill_line_id ] }
 
   def unlocked_nodes
-    skill_line.skill_nodes.active.where('points_required <= ?', points_invested)
+    skill_line.skill_nodes.active.where("points_required <= ?", points_invested)
   end
 
   def can_invest_points?(additional_points)

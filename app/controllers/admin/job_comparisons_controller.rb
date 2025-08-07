@@ -1,12 +1,11 @@
 class Admin::JobComparisonsController < Admin::BaseController
-
   def index
     job_ids = params[:job_ids] || []
     job_ids = job_ids.split(",") if job_ids.is_a?(String)
     level = (params[:level] || 20).to_i
 
     if job_ids.empty?
-      render json: { error: I18n.t('messages.errors.select_job_classes_to_compare') }, status: :unprocessable_entity
+      render json: { error: I18n.t("messages.errors.select_job_classes_to_compare") }, status: :unprocessable_entity
       return
     end
 
@@ -27,7 +26,7 @@ class Admin::JobComparisonsController < Admin::BaseController
     comparison_type = params[:comparison_type] || "basic"
 
     if job_ids.empty?
-      render json: { error: I18n.t('messages.errors.select_job_classes_to_compare') }, status: :unprocessable_entity
+      render json: { error: I18n.t("messages.errors.select_job_classes_to_compare") }, status: :unprocessable_entity
       return
     end
 
@@ -131,5 +130,4 @@ class Admin::JobComparisonsController < Admin::BaseController
       luck: job_class.luck_at_level(level)
     }
   end
-
 end

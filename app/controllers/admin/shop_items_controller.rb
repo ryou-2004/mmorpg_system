@@ -1,6 +1,6 @@
 class Admin::ShopItemsController < ApplicationController
-  before_action :set_shop_item, only: [:update, :destroy]
-  before_action :set_shop, only: [:index, :create]
+  before_action :set_shop_item, only: [ :update, :destroy ]
+  before_action :set_shop, only: [ :index, :create ]
   before_action :handle_development_test_mode
 
   def index
@@ -17,11 +17,11 @@ class Admin::ShopItemsController < ApplicationController
 
   def create
     @shop_item = @shop.shop_items.build(shop_item_params)
-    
+
     if @shop_item.save
-      render json: { 
+      render json: {
         shop_item: shop_item_json(@shop_item),
-        message: 'ショップアイテムを追加しました'
+        message: "ショップアイテムを追加しました"
       }, status: :created
     else
       render json: { errors: @shop_item.errors.full_messages }, status: :unprocessable_entity
@@ -30,9 +30,9 @@ class Admin::ShopItemsController < ApplicationController
 
   def update
     if @shop_item.update(shop_item_params)
-      render json: { 
+      render json: {
         shop_item: shop_item_json(@shop_item),
-        message: 'ショップアイテムを更新しました'
+        message: "ショップアイテムを更新しました"
       }
     else
       render json: { errors: @shop_item.errors.full_messages }, status: :unprocessable_entity
@@ -42,9 +42,9 @@ class Admin::ShopItemsController < ApplicationController
   def destroy
     shop_name = @shop_item.shop.name
     item_name = @shop_item.item.name
-    
+
     @shop_item.destroy
-    render json: { 
+    render json: {
       message: "#{shop_name}から#{item_name}を削除しました"
     }
   end
@@ -54,18 +54,18 @@ class Admin::ShopItemsController < ApplicationController
   def set_shop_item
     @shop_item = ShopItem.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'ショップアイテムが見つかりません' }, status: :not_found
+    render json: { error: "ショップアイテムが見つかりません" }, status: :not_found
   end
 
   def set_shop
     @shop = Shop.find(params[:shop_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'ショップが見つかりません' }, status: :not_found
+    render json: { error: "ショップが見つかりません" }, status: :not_found
   end
 
   def shop_item_params
-    params.require(:shop_item).permit(:item_id, :buy_price, :sell_price, 
-                                     :stock_quantity, :unlimited_stock, 
+    params.require(:shop_item).permit(:item_id, :buy_price, :sell_price,
+                                     :stock_quantity, :unlimited_stock,
                                      :active, :display_order)
   end
 
@@ -78,16 +78,16 @@ class Admin::ShopItemsController < ApplicationController
 
   def order_params
     case params[:sort]
-    when 'name'
+    when "name"
       { items: :name }
-    when 'price'
+    when "price"
       :buy_price
-    when 'stock'
+    when "stock"
       :stock_quantity
-    when 'type'
+    when "type"
       { items: :item_type }
     else
-      [:display_order, :id]
+      [ :display_order, :id ]
     end
   end
 
@@ -142,10 +142,10 @@ class Admin::ShopItemsController < ApplicationController
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end

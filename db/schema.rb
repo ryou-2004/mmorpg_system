@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_143427) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_122838) do
   create_table "admin_permissions", force: :cascade do |t|
     t.integer "admin_user_id", null: false
     t.string "resource_type", null: false
@@ -288,6 +288,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_143427) do
     t.index ["name"], name: "index_job_classes_on_name", unique: true
   end
 
+  create_table "quest_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description", null: false
+    t.integer "display_order", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_quest_categories_on_active"
+    t.index ["display_order"], name: "index_quest_categories_on_display_order"
+  end
+
   create_table "quest_rewards", force: :cascade do |t|
     t.integer "quest_id", null: false
     t.string "reward_type", null: false
@@ -317,10 +328,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_143427) do
     t.datetime "updated_at", null: false
     t.json "item_rewards", default: []
     t.integer "skill_point_reward", default: 0, null: false
+    t.integer "quest_category_id"
     t.index ["active"], name: "index_quests_on_active"
     t.index ["display_order"], name: "index_quests_on_display_order"
     t.index ["level_requirement"], name: "index_quests_on_level_requirement"
     t.index ["prerequisite_quest_id"], name: "index_quests_on_prerequisite_quest_id"
+    t.index ["quest_category_id"], name: "index_quests_on_quest_category_id"
     t.index ["quest_type"], name: "index_quests_on_quest_type"
     t.index ["status"], name: "index_quests_on_status"
   end
@@ -427,6 +440,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_143427) do
   add_foreign_key "job_class_skill_lines", "skill_lines"
   add_foreign_key "job_class_weapons", "job_classes"
   add_foreign_key "quest_rewards", "quests"
+  add_foreign_key "quests", "quest_categories", on_delete: :nullify
   add_foreign_key "quests", "quests", column: "prerequisite_quest_id"
   add_foreign_key "shop_items", "items"
   add_foreign_key "shop_items", "shops"

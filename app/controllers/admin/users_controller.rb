@@ -1,5 +1,4 @@
 class Admin::UsersController < Admin::BaseController
-
   def index
     users = User.left_joins(:characters)
                 .select("users.*, COUNT(characters.id) as character_count")
@@ -63,6 +62,6 @@ class Admin::UsersController < Admin::BaseController
       }
     }
   rescue ActiveRecord::RecordNotFound
-    render json: { error: I18n.t('messages.errors.not_found', model: I18n.t('activerecord.models.user')) }, status: :not_found
+    render json: { error: I18n.t("messages.errors.not_found", model: I18n.t("activerecord.models.user")) }, status: :not_found
   end
 end

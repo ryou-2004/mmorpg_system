@@ -1,11 +1,11 @@
 class Admin::CharacterSkillsController < ApplicationController
   before_action :set_character
-  before_action :set_character_job_class, only: [:show, :invest_points, :reset_points]
+  before_action :set_character_job_class, only: [ :show, :invest_points, :reset_points ]
 
   def index
     character_job_classes = @character.character_job_classes.includes(
-      :job_class, 
-      character_skills: [:skill_line, :job_class]
+      :job_class,
+      character_skills: [ :skill_line, :job_class ]
     )
 
     render json: {
@@ -71,7 +71,7 @@ class Admin::CharacterSkillsController < ApplicationController
       },
       available_skill_lines: available_skill_lines.map do |skill_line|
         invested_points = @character_job_class.skill_investment_for_line(skill_line)
-        
+
         {
           id: skill_line.id,
           name: skill_line.name,
@@ -80,7 +80,7 @@ class Admin::CharacterSkillsController < ApplicationController
           points_invested: invested_points,
           skill_nodes: skill_line.skill_nodes.active.order(:points_required).map do |node|
             is_unlocked = invested_points >= node.points_required
-            
+
             {
               id: node.id,
               name: node.name,
@@ -116,7 +116,7 @@ class Admin::CharacterSkillsController < ApplicationController
       }
     else
       render json: {
-        errors: ["スキルポイントの投資に失敗しました"]
+        errors: [ "スキルポイントの投資に失敗しました" ]
       }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
@@ -125,7 +125,7 @@ class Admin::CharacterSkillsController < ApplicationController
 
   def reset_points
     skill_line = SkillLine.find(params[:skill_line_id])
-    
+
     character_skill = @character.character_skills.find_by(
       job_class: @character_job_class.job_class,
       skill_line: skill_line
@@ -142,7 +142,7 @@ class Admin::CharacterSkillsController < ApplicationController
       }
     else
       render json: {
-        errors: ["スキル投資情報が見つかりません"]
+        errors: [ "スキル投資情報が見つかりません" ]
       }, status: :not_found
     end
   rescue ActiveRecord::RecordNotFound
@@ -154,7 +154,7 @@ class Admin::CharacterSkillsController < ApplicationController
     reason = params[:reason] || "管理者による手動調整"
 
     if additional_points <= 0
-      render json: { errors: ["追加ポイントは1以上である必要があります"] }, status: :unprocessable_entity
+      render json: { errors: [ "追加ポイントは1以上である必要があります" ] }, status: :unprocessable_entity
       return
     end
 

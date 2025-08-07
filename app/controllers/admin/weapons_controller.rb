@@ -1,23 +1,23 @@
 class Admin::WeaponsController < ApplicationController
-  before_action :set_weapon, only: [:show, :update, :destroy]
+  before_action :set_weapon, only: [ :show, :update, :destroy ]
 
   def index
     @weapons = Weapon.includes(:character_items).order(:weapon_category, :rarity, :name)
-    
+
     if params[:search].present?
       @weapons = @weapons.where("name LIKE ?", "%#{params[:search]}%")
     end
-    
+
     if params[:weapon_category].present?
       @weapons = @weapons.where(weapon_category: params[:weapon_category])
     end
-    
+
     if params[:rarity].present?
       @weapons = @weapons.where(rarity: params[:rarity])
     end
-    
+
     if params[:active].present?
-      @weapons = @weapons.where(active: params[:active] == 'true')
+      @weapons = @weapons.where(active: params[:active] == "true")
     end
 
     render json: {
@@ -106,7 +106,7 @@ class Admin::WeaponsController < ApplicationController
 
   def destroy
     @weapon.destroy
-    render json: { message: I18n.t('messages.success.deleted', model: I18n.t('activerecord.models.weapon')) }
+    render json: { message: I18n.t("messages.success.deleted", model: I18n.t("activerecord.models.weapon")) }
   end
 
   private

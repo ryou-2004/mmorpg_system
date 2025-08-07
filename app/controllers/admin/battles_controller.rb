@@ -1,5 +1,5 @@
 class Admin::BattlesController < ApplicationController
-  before_action :set_battle, only: [:show, :update, :destroy, :statistics, :end_battle]
+  before_action :set_battle, only: [ :show, :update, :destroy, :statistics, :end_battle ]
   before_action :handle_development_test_mode
 
   def index
@@ -9,7 +9,7 @@ class Admin::BattlesController < ApplicationController
                     .limit(50)
 
     battles_json = @battles.map { |battle| battle_json(battle) }
-    
+
     render json: {
       battles: battles_json,
       stats: battle_stats(@battles),
@@ -35,11 +35,11 @@ class Admin::BattlesController < ApplicationController
     @battle = Battle.new(battle_params)
     @battle.status = :ongoing
     @battle.start_time = Time.current
-    
+
     if @battle.save
-      render json: { 
+      render json: {
         battle: battle_json(@battle),
-        message: '戦闘を開始しました'
+        message: "戦闘を開始しました"
       }, status: :created
     else
       render json: { errors: @battle.errors.full_messages }, status: :unprocessable_entity
@@ -48,9 +48,9 @@ class Admin::BattlesController < ApplicationController
 
   def update
     if @battle.update(battle_params)
-      render json: { 
+      render json: {
         battle: battle_json(@battle),
-        message: '戦闘情報を更新しました'
+        message: "戦闘情報を更新しました"
       }
     else
       render json: { errors: @battle.errors.full_messages }, status: :unprocessable_entity
@@ -81,12 +81,12 @@ class Admin::BattlesController < ApplicationController
         winner: winner,
         battle_duration: ((Time.current - @battle.start_time) / 1.minute).round
       )
-      render json: { 
+      render json: {
         battle: battle_json(@battle),
-        message: '戦闘を終了しました'
+        message: "戦闘を終了しました"
       }
     else
-      render json: { error: '進行中の戦闘ではありません' }, status: :unprocessable_entity
+      render json: { error: "進行中の戦闘ではありません" }, status: :unprocessable_entity
     end
   end
 
@@ -95,7 +95,7 @@ class Admin::BattlesController < ApplicationController
   def set_battle
     @battle = Battle.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: '戦闘が見つかりません' }, status: :not_found
+    render json: { error: "戦闘が見つかりません" }, status: :not_found
   end
 
   def battle_params
@@ -112,11 +112,11 @@ class Admin::BattlesController < ApplicationController
 
   def order_params
     case params[:sort]
-    when 'start_time'
+    when "start_time"
       { start_time: :desc }
-    when 'duration'
+    when "duration"
       { battle_duration: :desc }
-    when 'damage'
+    when "damage"
       { total_damage: :desc }
     else
       { start_time: :desc }
@@ -189,7 +189,7 @@ class Admin::BattlesController < ApplicationController
       by_status: battles.group(:status).count,
       avg_duration: battles.where.not(battle_duration: nil).average(:battle_duration)&.round(2) || 0,
       total_damage: battles.sum(:total_damage),
-      avg_participants: (battles.sum(:participants_count).to_f / [battles.count, 1].max).round(2)
+      avg_participants: (battles.sum(:participants_count).to_f / [ battles.count, 1 ].max).round(2)
     }
   end
 
@@ -226,7 +226,7 @@ class Admin::BattlesController < ApplicationController
   def damage_analysis(battle)
     logs = battle.battle_logs.with_damage
     return {} if logs.empty?
-    
+
     damage_values = logs.pluck(:damage_value)
     {
       total_damage_events: logs.count,
@@ -252,15 +252,15 @@ class Admin::BattlesController < ApplicationController
   def determine_winner(battle)
     survivors = battle.battle_participants.survivors.includes(:character)
     return nil if survivors.empty?
-    
+
     survivors.max_by(&:effectiveness_score)&.character
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache' 
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end

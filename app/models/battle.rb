@@ -1,7 +1,7 @@
 class Battle < ApplicationRecord
   enum :battle_type, {
     pve: 0,        # Player vs Environment
-    pvp: 1,        # Player vs Player  
+    pvp: 1,        # Player vs Player
     boss: 2,       # Boss Battle
     raid: 3,       # Raid Battle
     training: 4    # Training/Practice
@@ -14,8 +14,8 @@ class Battle < ApplicationRecord
     cancelled: 3
   }
 
-  belongs_to :winner, class_name: 'Character', optional: true
-  
+  belongs_to :winner, class_name: "Character", optional: true
+
   has_many :battle_participants, dependent: :destroy
   has_many :characters, through: :battle_participants
   has_many :battle_logs, dependent: :destroy

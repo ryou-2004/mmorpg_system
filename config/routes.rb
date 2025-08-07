@@ -7,34 +7,35 @@ Rails.application.routes.draw do
         get :analyze
       end
     end
-    resources :battles, only: [:index, :show, :create, :update, :destroy] do
-      resources :battle_logs, only: [:index, :show, :create, :destroy], shallow: true
+    resources :battles, only: [ :index, :show, :create, :update, :destroy ] do
+      resources :battle_logs, only: [ :index, :show, :create, :destroy ], shallow: true
       member do
         get :statistics
         post :end_battle
       end
     end
-    resources :shops, only: [:index, :show, :create, :update, :destroy] do
-      resources :shop_items, only: [:index, :create, :update, :destroy], shallow: true
+    resources :shops, only: [ :index, :show, :create, :update, :destroy ] do
+      resources :shop_items, only: [ :index, :create, :update, :destroy ], shallow: true
     end
-    resources :quests, only: [:index, :show, :create, :update, :destroy]
-    resources :character_quests, only: [:index, :show, :create, :update, :destroy] do
+    resources :quest_categories, only: [ :index, :show, :create, :update, :destroy ]
+    resources :quests, only: [ :index, :show, :create, :update, :destroy ]
+    resources :character_quests, only: [ :index, :show, :create, :update, :destroy ] do
       member do
         patch :complete
         patch :abandon
         patch :reset
       end
     end
-    resources :weapons, only: [:index, :show, :create, :update, :destroy]
-    resources :armors, only: [:index, :show, :create, :update, :destroy]
+    resources :weapons, only: [ :index, :show, :create, :update, :destroy ]
+    resources :armors, only: [ :index, :show, :create, :update, :destroy ]
     resource :session, only: [ :show, :create, :destroy ]
     resource :dashboard, only: [ :show ]
     resources :users, only: [ :index, :show ]
-    
+
     namespace :characters do
       resources :equipments, only: [ :index ]
     end
-    
+
     resources :characters, only: [ :index, :show ] do
       member do
         patch :switch_job
@@ -48,7 +49,7 @@ Rails.application.routes.draw do
         end
       end
       resources :character_job_classes, only: [ :show ]
-      resource :equipment, only: [], controller: 'character_equipment' do
+      resource :equipment, only: [], controller: "character_equipment" do
         get :index
         post :equip
         post :unequip
@@ -58,7 +59,7 @@ Rails.application.routes.draw do
       member do
         get :skill_lines
         get :skill_statistics
-        get 'skill_lines/:skill_line_id', to: 'job_classes#skill_line', as: :skill_line
+        get "skill_lines/:skill_line_id", to: "job_classes#skill_line", as: :skill_line
       end
     end
     resources :items, only: [ :index, :show, :create, :update, :destroy ]
@@ -71,7 +72,7 @@ Rails.application.routes.draw do
     resources :skill_lines, only: [ :index, :show, :create, :update, :destroy ] do
       resources :skill_nodes, only: [ :index, :show, :create, :update, :destroy ]
     end
-    
+
     resources :characters, only: [] do
       resources :character_skills, only: [ :index, :show ] do
         member do

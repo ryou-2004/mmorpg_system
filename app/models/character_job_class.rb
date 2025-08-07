@@ -1,7 +1,7 @@
 class CharacterJobClass < ApplicationRecord
   belongs_to :character
   belongs_to :job_class
-  has_many :character_skills, foreign_key: [:character_id, :job_class_id], primary_key: [:character_id, :job_class_id], dependent: :destroy
+  has_many :character_skills, foreign_key: [ :character_id, :job_class_id ], primary_key: [ :character_id, :job_class_id ], dependent: :destroy
 
   validates :level, presence: true, numericality: { greater_than: 0, less_than_or_equal_to: 100 }
   validates :experience, presence: true, numericality: { greater_than_or_equal_to: 0 }
@@ -18,7 +18,7 @@ class CharacterJobClass < ApplicationRecord
   # 経験値テーブル生成（Dragon Quest風の成長カーブ）
   def self.generate_exp_table
     table = { 1 => 0 }
-    
+
     (2..100).each do |level|
       case level
       when 2..10   # 初期レベル: 緩やかな成長
@@ -40,10 +40,10 @@ class CharacterJobClass < ApplicationRecord
         base_exp = 28720 + (level - 90) * 1000
         growth = ((level - 90) ** 1.5 * 200).to_i
       end
-      
+
       table[level] = base_exp + growth
     end
-    
+
     table
   end
 
@@ -164,7 +164,7 @@ class CharacterJobClass < ApplicationRecord
         job_class: job_class,
         skill_line: skill_line
       )
-      
+
       character_skill.increment!(:points_invested, points)
       true
     end
@@ -219,11 +219,11 @@ class CharacterJobClass < ApplicationRecord
   # ステータス計算（JobClassの基本計算 + 装備ボーナス）
   def calculate_stat(stat_type)
     # max_hp, max_mp は hp, mp として扱う
-    base_stat_type = stat_type.to_s.gsub(/^max_/, '').to_sym
-    
+    base_stat_type = stat_type.to_s.gsub(/^max_/, "").to_sym
+
     # JobClassから基本ステータスを取得
     base_stat = job_class.calculate_base_stat(base_stat_type, level)
-    
+
     # 装備ボーナスを計算
     equipment_bonus = calculate_equipment_bonus(stat_type)
 
@@ -258,32 +258,32 @@ class CharacterJobClass < ApplicationRecord
 
     ((level - 1) * growth_per_level * multiplier).to_i
   end
-  
+
   # 装備ボーナス計算
   def calculate_equipment_bonus(stat_type)
     # characterが存在しない場合（統計表示など）は0を返す
     return 0 if character.nil?
-    
+
     equipped_items = character.character_items.equipped_items.includes(:item)
     total_bonus = 0
-    
+
     equipped_items.each do |character_item|
       item_effects = character_item.item.effects
       next unless item_effects.is_a?(Array)
-      
+
       item_effects.each do |effect|
         next unless effect.is_a?(Hash) && effect["type"] == "stat_boost"
-        
+
         stat_key = stat_type.to_s
         # max_hp, max_mp は hp, mp として扱う
-        stat_key = stat_key.gsub(/^max_/, '')
-        
+        stat_key = stat_key.gsub(/^max_/, "")
+
         if effect["stat"] == stat_key
           total_bonus += effect["value"].to_i
         end
       end
     end
-    
+
     total_bonus
   end
 

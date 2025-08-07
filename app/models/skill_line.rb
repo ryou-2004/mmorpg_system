@@ -8,15 +8,15 @@ class SkillLine < ApplicationRecord
   validates :skill_line_type, presence: true, inclusion: { in: %w[weapon job_specific] }
 
   scope :active, -> { where(active: true) }
-  scope :weapon_skills, -> { where(skill_line_type: 'weapon') }
-  scope :job_skills, -> { where(skill_line_type: 'job_specific') }
+  scope :weapon_skills, -> { where(skill_line_type: "weapon") }
+  scope :job_skills, -> { where(skill_line_type: "job_specific") }
 
   def weapon_skill?
-    skill_line_type == 'weapon'
+    skill_line_type == "weapon"
   end
 
   def job_specific_skill?
-    skill_line_type == 'job_specific'
+    skill_line_type == "job_specific"
   end
 
   def available_for_job_class?(job_class)

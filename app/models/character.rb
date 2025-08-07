@@ -8,9 +8,9 @@ class Character < ApplicationRecord
   has_many :character_skills, dependent: :destroy
   has_many :battle_participants, dependent: :destroy
   has_many :battles, through: :battle_participants
-  has_many :won_battles, class_name: 'Battle', foreign_key: 'winner_id'
-  has_many :attacker_logs, class_name: 'BattleLog', foreign_key: 'attacker_id'
-  has_many :defender_logs, class_name: 'BattleLog', foreign_key: 'defender_id'
+  has_many :won_battles, class_name: "Battle", foreign_key: "winner_id"
+  has_many :attacker_logs, class_name: "BattleLog", foreign_key: "attacker_id"
+  has_many :defender_logs, class_name: "BattleLog", foreign_key: "defender_id"
   belongs_to :current_character_job_class, class_name: "CharacterJobClass", optional: true
 
   attr_accessor :skip_job_validation
@@ -51,12 +51,12 @@ class Character < ApplicationRecord
     character_job_class = character_job_classes.find_or_create_by!(job_class: job_class) do |cjc|
       cjc.unlocked_at = Time.current
     end
-    
+
     # If this is the first job, set it as current
     if current_character_job_class.nil?
       update!(current_character_job_class: character_job_class)
     end
-    
+
     character_job_class
   end
 
@@ -96,17 +96,17 @@ class Character < ApplicationRecord
   def equipped_items
     character_items.equipped_items.character_accessible
   end
-  
+
   # 装備スロット別アイテム取得
   def equipment_in_slot(slot)
     character_items.equipped_in_slot(slot).character_accessible.first
   end
-  
+
   # アイテム装備
   def equip_item!(character_item, slot)
     return false unless character_item.can_equip_to_slot?(slot)
     return false unless character_item.character == self
-    
+
     transaction do
       # 既存の装備を解除
       current_equipment = equipment_in_slot(slot)
@@ -116,30 +116,30 @@ class Character < ApplicationRecord
           equipment_slot: nil
         )
       end
-      
+
       # 新しいアイテムを装備
       character_item.update!(
         location: "equipped",
         equipment_slot: slot
       )
     end
-    
+
     true
   rescue => e
     Rails.logger.error "Failed to equip item: #{e.message}"
     false
   end
-  
+
   # アイテム解除
   def unequip_item!(character_item)
     return false unless character_item.equipped?
     return false unless character_item.character == self
-    
+
     character_item.update!(
       location: "inventory",
       equipment_slot: nil
     )
-    
+
     true
   rescue => e
     Rails.logger.error "Failed to unequip item: #{e.message}"
@@ -173,6 +173,6 @@ class Character < ApplicationRecord
   private
 
   def create_default_warehouse
-    character_warehouses.create!(name: I18n.t('warehouses.main'), max_slots: 100)
+    character_warehouses.create!(name: I18n.t("warehouses.main"), max_slots: 100)
   end
 end

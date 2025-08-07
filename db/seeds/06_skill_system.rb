@@ -40,7 +40,7 @@ weapon_skill_lines.each do |skill_line_data|
     sl.skill_line_type = skill_line_data[:skill_line_type]
     sl.active = true
   end
-  
+
   puts "  - Created weapon skill line: #{skill_line.name}"
 end
 
@@ -74,7 +74,7 @@ job_specific_skills.each do |skill_line_data|
     sl.skill_line_type = skill_line_data[:skill_line_type]
     sl.active = true
   end
-  
+
   puts "  - Created job-specific skill line: #{skill_line.name}"
 end
 
@@ -83,7 +83,7 @@ skill_lines = SkillLine.all
 
 skill_lines.each do |skill_line|
   next if skill_line.skill_nodes.exists?
-  
+
   if skill_line.weapon_skill?
     # 武器スキルノード
     nodes = [
@@ -147,11 +147,11 @@ skill_lines.each do |skill_line|
       }
     ]
   end
-  
+
   nodes.each do |node_data|
     skill_line.skill_nodes.create!(node_data)
   end
-  
+
   puts "    - Created skill nodes for: #{skill_line.name}"
 end
 
@@ -189,14 +189,14 @@ job_classes.each do |job_class|
       SkillLine.find_by(name: "片手剣")
     ]
   end
-  
+
   skill_lines.compact.each do |skill_line|
     JobClassSkillLine.find_or_create_by(
       job_class: job_class,
       skill_line: skill_line
     )
   end
-  
+
   puts "  - Assigned skill lines to: #{job_class.name}"
 end
 

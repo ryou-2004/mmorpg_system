@@ -92,7 +92,7 @@ class Admin::ItemsController < Admin::BaseController
   def destroy
     @item.destroy
     render json: {
-      message: I18n.t('messages.success.deleted', model: I18n.t('activerecord.models.item'))
+      message: I18n.t("messages.success.deleted", model: I18n.t("activerecord.models.item"))
     }
   end
 
@@ -101,7 +101,7 @@ class Admin::ItemsController < Admin::BaseController
   def set_item
     @item = Item.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: I18n.t('messages.errors.not_found', model: I18n.t('activerecord.models.item')) }, status: :not_found
+    render json: { error: I18n.t("messages.errors.not_found", model: I18n.t("activerecord.models.item")) }, status: :not_found
   end
 
   def item_params

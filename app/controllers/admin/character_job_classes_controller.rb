@@ -1,5 +1,4 @@
 class Admin::CharacterJobClassesController < Admin::BaseController
-
   def show
     character_job_class = CharacterJobClass.includes(:character, :job_class)
                                           .find(params[:id])
@@ -55,9 +54,8 @@ class Admin::CharacterJobClassesController < Admin::BaseController
       level_history: level_history.last(10) # 最新10レベル分
     }
   rescue ActiveRecord::RecordNotFound
-    render json: { error: I18n.t('messages.errors.not_found', model: I18n.t('activerecord.models.character_job_class')) }, status: :not_found
+    render json: { error: I18n.t("messages.errors.not_found", model: I18n.t("activerecord.models.character_job_class")) }, status: :not_found
   end
 
   private
-
 end

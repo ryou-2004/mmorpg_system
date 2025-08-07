@@ -1,22 +1,21 @@
 class Admin::Characters::EquipmentsController < Admin::BaseController
-
   def index
     characters = Character.includes(
       :user,
       :current_character_job_class,
-      character_items: [:item]
+      character_items: [ :item ]
     ).where(active: true)
-    
+
     # フィルタリング
     if params[:character_name].present?
       characters = characters.where("characters.name ILIKE ?", "%#{params[:character_name]}%")
     end
-    
+
     if params[:job_class_id].present?
       characters = characters.joins(current_character_job_class: :job_class)
                            .where(job_classes: { id: params[:job_class_id] })
     end
-    
+
     if params[:missing_equipment].present?
       slot = params[:missing_equipment]
       if CharacterItem::EQUIPMENT_SLOTS.key?(slot)
@@ -32,7 +31,7 @@ class Admin::Characters::EquipmentsController < Admin::BaseController
       data: characters.map do |character|
         equipped_items = character.character_items.equipped_items.includes(:item)
         equipment_by_slot = {}
-        
+
         CharacterItem::EQUIPMENT_SLOTS.each do |slot, slot_name|
           equipped_item = equipped_items.find { |ci| ci.equipment_slot == slot }
           equipment_by_slot[slot] = equipped_item ? {
@@ -44,7 +43,7 @@ class Admin::Characters::EquipmentsController < Admin::BaseController
             max_durability: equipped_item.max_durability
           } : nil
         end
-        
+
         {
           id: character.id,
           name: character.name,
@@ -70,5 +69,4 @@ class Admin::Characters::EquipmentsController < Admin::BaseController
       }
     }
   end
-
 end

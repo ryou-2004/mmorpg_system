@@ -1,5 +1,4 @@
 class Admin::JobClassStatsController < Admin::BaseController
-
   def index
     job_classes = JobClass.active.order(:job_type, :id)
 
@@ -114,5 +113,4 @@ class Admin::JobClassStatsController < Admin::BaseController
 
     ((last_stat - first_stat).to_f / level_diff).round(2)
   end
-
 end

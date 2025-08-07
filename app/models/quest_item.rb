@@ -1,8 +1,8 @@
 class QuestItem < Item
   validates :equipment_slot, absence: { message: "クエストアイテムは装備できません" }
-  validates :sale_type, inclusion: { 
-    in: ['unsellable'], 
-    message: "クエストアイテムは売却不可である必要があります" 
+  validates :sale_type, inclusion: {
+    in: [ "unsellable" ],
+    message: "クエストアイテムは売却不可である必要があります"
   }
 
   scope :active_quest, -> { where(active: true) }
@@ -25,7 +25,7 @@ class QuestItem < Item
   end
 
   def important?
-    rarity.in?(['epic', 'legendary'])
+    rarity.in?([ "epic", "legendary" ])
   end
 
   def can_discard?

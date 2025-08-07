@@ -120,7 +120,7 @@ class Admin::CharacterItemsController < Admin::BaseController
 
   def move_to_inventory
     character_item = @character.character_items.find(params[:id])
-    
+
     unless character_item.can_move?
       render json: {
         success: false,
@@ -151,7 +151,7 @@ class Admin::CharacterItemsController < Admin::BaseController
   def move_to_warehouse
     character_item = @character.character_items.find(params[:id])
     warehouse_id = params[:warehouse_id]
-    
+
     unless character_item.can_move?
       render json: {
         success: false,
@@ -169,7 +169,7 @@ class Admin::CharacterItemsController < Admin::BaseController
     end
 
     warehouse = @character.character_warehouses.find(warehouse_id)
-    
+
     begin
       character_item.move_to_warehouse!(warehouse)
       render json: {
@@ -195,7 +195,7 @@ class Admin::CharacterItemsController < Admin::BaseController
 
   def use_item
     character_item = @character.character_items.find(params[:id])
-    
+
     unless character_item.can_use?
       render json: {
         success: false,
@@ -232,7 +232,6 @@ class Admin::CharacterItemsController < Admin::BaseController
       character_items: [ :item, :character_warehouse ]
     ).find(params[:character_id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: I18n.t('messages.errors.character_not_found') }, status: :not_found
+    render json: { error: I18n.t("messages.errors.character_not_found") }, status: :not_found
   end
-
 end

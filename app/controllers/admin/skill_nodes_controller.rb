@@ -1,6 +1,6 @@
 class Admin::SkillNodesController < ApplicationController
   before_action :set_skill_line
-  before_action :set_skill_node, only: [:show, :update, :destroy]
+  before_action :set_skill_node, only: [ :show, :update, :destroy ]
 
   def index
     skill_nodes = @skill_line.skill_nodes.active.ordered
@@ -27,8 +27,8 @@ class Admin::SkillNodesController < ApplicationController
 
     # キャッシュヘッダーを設定
     cache_key = "skill_node_#{@skill_node.id}_#{@skill_node.updated_at.to_i}"
-    response.headers['Cache-Control'] = 'public, max-age=300' # 5分
-    response.headers['ETag'] = Digest::MD5.hexdigest(cache_key)
+    response.headers["Cache-Control"] = "public, max-age=300" # 5分
+    response.headers["ETag"] = Digest::MD5.hexdigest(cache_key)
 
     render json: {
       id: @skill_node.id,
@@ -88,7 +88,7 @@ class Admin::SkillNodesController < ApplicationController
     }
   rescue => e
     render json: {
-      errors: [e.message]
+      errors: [ e.message ]
     }, status: :unprocessable_entity
   end
 
@@ -107,7 +107,7 @@ class Admin::SkillNodesController < ApplicationController
   end
 
   def skill_node_params
-    params.require(:skill_node).permit(:name, :description, :node_type, :points_required, 
+    params.require(:skill_node).permit(:name, :description, :node_type, :points_required,
                                        :display_order, :active, effects: {})
   end
 

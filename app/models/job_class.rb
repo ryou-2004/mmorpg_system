@@ -64,7 +64,7 @@ class JobClass < ApplicationRecord
     base_value = send("base_#{stat_type}")
     growth_rate = STAT_GROWTH_RATES[stat_type] || 1
     multiplier = send("#{stat_type}_multiplier")
-    
+
     base_value + ((level - 1) * growth_rate * multiplier).to_i
   end
 

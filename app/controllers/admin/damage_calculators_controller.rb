@@ -8,7 +8,7 @@ class Admin::DamageCalculatorsController < ApplicationController
 
     calculation_result = perform_damage_calculation(attacker_data, defender_data, skill_data)
     historical_data = find_similar_battle_data(attacker_data, defender_data, skill_data)
-    
+
     verification_result = {
       calculation: calculation_result,
       historical_average: historical_data[:average_damage],
@@ -29,13 +29,13 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def simulate
     simulation_params = params.permit(:attacker_id, :defender_id, :rounds, :skill_name)
-    rounds = [simulation_params[:rounds].to_i, 1000].min.positive? ? simulation_params[:rounds].to_i : 100
+    rounds = [ simulation_params[:rounds].to_i, 1000 ].min.positive? ? simulation_params[:rounds].to_i : 100
 
     attacker = Character.find(simulation_params[:attacker_id])
     defender = Character.find(simulation_params[:defender_id])
-    
+
     simulation_results = run_damage_simulation(attacker, defender, rounds, simulation_params[:skill_name])
-    
+
     render json: {
       simulation: {
         rounds: rounds,
@@ -51,10 +51,10 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def analyze
     analysis_params = params.permit(:battle_type, :date_range, :character_level_min, :character_level_max)
-    
+
     damage_patterns = analyze_damage_patterns(analysis_params)
     balance_issues = identify_balance_issues(damage_patterns)
-    
+
     render json: {
       analysis: {
         parameters: analysis_params,
@@ -73,14 +73,14 @@ class Admin::DamageCalculatorsController < ApplicationController
     base_attack = attacker[:attack].to_i
     base_defense = defender[:defense].to_i
     skill_multiplier = skill[:damage_multiplier].to_f.positive? ? skill[:damage_multiplier].to_f : 1.0
-    level_factor = [attacker[:level].to_i, 1].max / 50.0
-    
+    level_factor = [ attacker[:level].to_i, 1 ].max / 50.0
+
     raw_damage = (base_attack * skill_multiplier * level_factor) - (base_defense * 0.5)
-    expected_damage = [raw_damage, 1].max.round
-    
+    expected_damage = [ raw_damage, 1 ].max.round
+
     critical_rate = skill[:critical_rate].to_f.clamp(0.0, 1.0)
     critical_damage = (expected_damage * 1.5).round
-    
+
     damage_range = {
       min: (expected_damage * 0.8).round,
       max: (expected_damage * 1.2).round,
@@ -105,15 +105,15 @@ class Admin::DamageCalculatorsController < ApplicationController
   def find_similar_battle_data(attacker, defender, skill)
     level_range = 5
     attacker_level = attacker[:level].to_i
-    
+
     similar_logs = BattleLog
       .joins(:attacker, :defender)
       .where(action_type: determine_action_type(skill[:skill_type]))
-      .where('damage_value > 0')
+      .where("damage_value > 0")
       .limit(1000)
 
     damage_values = similar_logs.pluck(:damage_value)
-    
+
     if damage_values.any?
       {
         average_damage: (damage_values.sum.to_f / damage_values.size).round(2),
@@ -139,47 +139,47 @@ class Admin::DamageCalculatorsController < ApplicationController
     results = []
     total_damage = 0
     critical_count = 0
-    
+
     attacker_stats = {
       attack: attacker.attack,
       magic_attack: attacker.magic_attack,
       level: attacker.current_character_job_class&.level || 1
     }
-    
+
     defender_stats = {
       defense: defender.defense,
       magic_defense: defender.magic_defense,
       level: defender.current_character_job_class&.level || 1
     }
-    
+
     skill_data = {
       skill_name: skill_name,
-      skill_type: 'physical',
+      skill_type: "physical",
       damage_multiplier: 1.0 + (rand * 0.4 - 0.2),
       critical_rate: 0.1
     }
-    
+
     rounds.times do |i|
       calculation = perform_damage_calculation(attacker_stats, defender_stats, skill_data)
       is_critical = rand < calculation[:critical_rate]
-      
+
       damage = if is_critical
                  calculation[:damage_range][:critical]
-               else
+      else
                  rand(calculation[:damage_range][:min]..calculation[:damage_range][:max])
-               end
-      
+      end
+
       results << {
         round: i + 1,
         damage: damage,
         critical: is_critical,
         calculation_details: calculation[:debug_info]
       }
-      
+
       total_damage += damage
       critical_count += 1 if is_critical
     end
-    
+
     {
       individual_results: results.first(20),  # First 20 rounds for display
       summary: {
@@ -196,30 +196,30 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def analyze_damage_patterns(params)
     battles_query = Battle.includes(:battle_logs)
-    
+
     # Filter by battle type
     battles_query = battles_query.where(battle_type: params[:battle_type]) if params[:battle_type].present?
-    
+
     # Filter by date range
     if params[:date_range].present?
       case params[:date_range]
-      when 'last_week'
-        battles_query = battles_query.where('start_time >= ?', 1.week.ago)
-      when 'last_month'
-        battles_query = battles_query.where('start_time >= ?', 1.month.ago)
+      when "last_week"
+        battles_query = battles_query.where("start_time >= ?", 1.week.ago)
+      when "last_month"
+        battles_query = battles_query.where("start_time >= ?", 1.month.ago)
       end
     end
-    
+
     battles = battles_query.limit(100)
     all_logs = battles.flat_map(&:battle_logs).select { |log| log.damage_value > 0 }
-    
+
     patterns = {
       damage_distribution: calculate_damage_distribution(all_logs),
       action_type_analysis: analyze_action_types(all_logs),
       critical_hit_analysis: analyze_critical_hits(all_logs),
       time_based_patterns: analyze_time_patterns(all_logs)
     }
-    
+
     {
       total_battles: battles.count,
       date_range: battles.any? ? {
@@ -235,7 +235,7 @@ class Admin::DamageCalculatorsController < ApplicationController
       id: character.id,
       name: character.name,
       level: character.current_character_job_class&.level || 1,
-      job_class: character.current_character_job_class&.job_class&.name || 'None',
+      job_class: character.current_character_job_class&.job_class&.name || "None",
       attack: character.attack,
       magic_attack: character.magic_attack,
       defense: character.defense,
@@ -253,47 +253,47 @@ class Admin::DamageCalculatorsController < ApplicationController
   def balanced_assessment(calculation, historical)
     variance = calculate_variance(calculation[:expected_damage], historical[:average_damage])
     sample_size = historical[:samples_count]
-    
+
     {
       is_balanced: variance <= 20 && sample_size >= 10,
       confidence_level: calculate_confidence_level(sample_size),
       variance_status: case variance
-                       when 0..10 then 'excellent'
-                       when 11..20 then 'good'
-                       when 21..35 then 'acceptable'
-                       else 'needs_adjustment'
+                       when 0..10 then "excellent"
+                       when 11..20 then "good"
+                       when 21..35 then "acceptable"
+                       else "needs_adjustment"
                        end
     }
   end
 
   def generate_balance_recommendations(verification)
     recommendations = []
-    
+
     if verification[:variance_percentage] > 30
       recommendations << {
-        type: 'damage_adjustment',
-        priority: 'high',
-        description: 'ダメージ計算式の見直しが必要です',
-        suggested_change: 'スキル倍率または基本攻撃力の調整'
+        type: "damage_adjustment",
+        priority: "high",
+        description: "ダメージ計算式の見直しが必要です",
+        suggested_change: "スキル倍率または基本攻撃力の調整"
       }
     end
-    
+
     if verification[:samples_count] < 10
       recommendations << {
-        type: 'data_collection',
-        priority: 'medium',
-        description: 'より多くのデータサンプルが必要です',
-        suggested_action: 'テスト戦闘の実行'
+        type: "data_collection",
+        priority: "medium",
+        description: "より多くのデータサンプルが必要です",
+        suggested_action: "テスト戦闘の実行"
       }
     end
-    
+
     recommendations
   end
 
   def calculate_damage_distribution(logs)
     damage_values = logs.map(&:damage_value)
     return {} if damage_values.empty?
-    
+
     {
       min: damage_values.min,
       max: damage_values.max,
@@ -311,7 +311,7 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def calculate_std_deviation(values)
     return 0 if values.length <= 1
-    
+
     mean = values.sum.to_f / values.length
     variance = values.map { |v| (v - mean) ** 2 }.sum / (values.length - 1)
     Math.sqrt(variance).round(2)
@@ -319,10 +319,10 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def determine_action_type(skill_type)
     case skill_type&.downcase
-    when 'physical' then 'physical_attack'
-    when 'magical' then 'magical_attack' 
-    when 'heal' then 'heal'
-    else 'physical_attack'
+    when "physical" then "physical_attack"
+    when "magical" then "magical_attack"
+    when "heal" then "heal"
+    else "physical_attack"
     end
   end
 
@@ -340,7 +340,7 @@ class Admin::DamageCalculatorsController < ApplicationController
   def analyze_critical_hits(logs)
     critical_logs = logs.select(&:critical_hit)
     normal_logs = logs.reject(&:critical_hit)
-    
+
     {
       total_attacks: logs.size,
       critical_hits: critical_logs.size,
@@ -352,9 +352,9 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def analyze_time_patterns(logs)
     return {} if logs.empty?
-    
+
     time_groups = logs.group_by { |log| log.occurred_at.hour }
-    
+
     time_groups.transform_values do |hour_logs|
       {
         action_count: hour_logs.size,
@@ -365,48 +365,48 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def identify_balance_issues(patterns)
     issues = []
-    
+
     damage_dist = patterns[:patterns][:damage_distribution]
     if damage_dist[:std_deviation] && damage_dist[:std_deviation] > damage_dist[:average] * 0.5
       issues << {
-        type: 'high_variance',
-        severity: 'medium',
-        description: 'ダメージの分散が大きすぎます'
+        type: "high_variance",
+        severity: "medium",
+        description: "ダメージの分散が大きすぎます"
       }
     end
-    
+
     crit_analysis = patterns[:patterns][:critical_hit_analysis]
     if crit_analysis[:critical_rate] && (crit_analysis[:critical_rate] > 25 || crit_analysis[:critical_rate] < 5)
       issues << {
-        type: 'critical_rate_imbalance',
-        severity: 'high',
-        description: 'クリティカル率が適正範囲外です'
+        type: "critical_rate_imbalance",
+        severity: "high",
+        description: "クリティカル率が適正範囲外です"
       }
     end
-    
+
     issues
   end
 
   def generate_system_recommendations(balance_issues)
     balance_issues.map do |issue|
       case issue[:type]
-      when 'high_variance'
+      when "high_variance"
         {
-          action: 'damage_formula_adjustment',
-          description: 'ダメージ計算式の安定化',
+          action: "damage_formula_adjustment",
+          description: "ダメージ計算式の安定化",
           priority: issue[:severity]
         }
-      when 'critical_rate_imbalance'
+      when "critical_rate_imbalance"
         {
-          action: 'critical_rate_tuning',
-          description: 'クリティカル率の調整（目標: 10-20%）',
+          action: "critical_rate_tuning",
+          description: "クリティカル率の調整（目標: 10-20%）",
           priority: issue[:severity]
         }
       else
         {
-          action: 'further_analysis',
-          description: '詳細な分析が必要',
-          priority: 'low'
+          action: "further_analysis",
+          description: "詳細な分析が必要",
+          priority: "low"
         }
       end
     end
@@ -414,18 +414,18 @@ class Admin::DamageCalculatorsController < ApplicationController
 
   def calculate_confidence_level(sample_size)
     case sample_size
-    when 0..9 then 'low'
-    when 10..49 then 'medium'
-    when 50..199 then 'high'
-    else 'very_high'
+    when 0..9 then "low"
+    when 10..49 then "medium"
+    when 50..199 then "high"
+    else "very_high"
     end
   end
 
   def handle_development_test_mode
-    return unless Rails.env.development? && params[:test] == 'true'
-    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
+    return unless Rails.env.development? && params[:test] == "true"
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
   end
 end
