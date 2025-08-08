@@ -25,6 +25,18 @@ Rails.application.routes.draw do
         get :encounter_simulation
       end
     end
+    
+    resources :continents, only: [ :index, :show, :create, :update, :destroy ] do
+      member do
+        get :regions
+      end
+    end
+    
+    resources :regions, only: [ :index, :show, :create, :update, :destroy ] do
+      member do
+        get :enemies
+      end
+    end
     resources :character_quests, only: [ :index, :show, :create, :update, :destroy ] do
       member do
         patch :complete
