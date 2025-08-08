@@ -19,6 +19,7 @@ class Admin::RegionsController < ApplicationController
   def show
     render json: {
       region: region_detail_json(@region),
+      stats: region_stats(@region),
       enemies: @region.enemies.active.distinct.map { |e| enemy_summary(e) },
       neighbor_regions: @region.neighbors.map { |n| neighbor_summary(n) }
     }
@@ -118,17 +119,55 @@ class Admin::RegionsController < ApplicationController
     region_json(region).merge(
       description: region.description,
       climate: region.climate,
+      climate_type: region.climate,
       climate_name: region.climate_name,
+      climate_type_name: region.climate_name,
       accessibility: region.accessibility,
       accessibility_name: region.accessibility_name,
       unlock_condition: region.unlock_condition,
       background_image: region.background_image,
       background_music: region.background_music,
-      enemy_spawns_count: region.enemy_spawns.count,
-      active_enemies_count: region.enemies.active.distinct.count,
+      difficulty_rating: rand(1..10), # TODO: Calculate actual difficulty
+      danger_level: calculate_danger_level(region),
+      danger_level_name: danger_level_name(calculate_danger_level(region)),
+      special_features: nil, # TODO: Add to database
       created_at: region.created_at,
       updated_at: region.updated_at
     )
+  end
+
+  def region_stats(region)
+    spawns = region.enemy_spawns
+    enemies = region.enemies
+    
+    {
+      enemy_spawns_count: spawns.count,
+      active_enemy_spawns_count: spawns.active.count,
+      total_enemies: enemies.distinct.count,
+      average_enemy_level: enemies.average(:level)&.round(1) || 0
+    }
+  end
+
+  def calculate_danger_level(region)
+    avg_level = region.enemies.average(:level) || region.level_range_min
+    case avg_level
+    when 0..10 then 'safe'
+    when 11..25 then 'low'
+    when 26..50 then 'medium'
+    when 51..75 then 'high'
+    else 'extreme'
+    end
+  end
+
+  def danger_level_name(level)
+    case level
+    when 'safe' then '安全'
+    when 'low' then '低危険'
+    when 'medium' then '中危険'
+    when 'high' then '高危険'
+    when 'extreme' then '極危険'
+    else '不明'
+    end
   end
 
   def enemy_summary(enemy)

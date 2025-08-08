@@ -1,5 +1,7 @@
 class EnemySpawn < ApplicationRecord
   belongs_to :enemy
+  belongs_to :region, optional: true
+  belongs_to :continent, optional: true
 
   validates :location, presence: true
   validates :spawn_rate, presence: true, numericality: { in: 1..100 }
